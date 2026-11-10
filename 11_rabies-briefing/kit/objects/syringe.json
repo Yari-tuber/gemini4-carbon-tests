@@ -1,0 +1,51 @@
+{
+  "id": "syringe",
+  "w": 2400,
+  "h": 399,
+  "trim": [
+    36,
+    42,
+    2445,
+    442
+  ],
+  "anchors": {
+    "tip": [
+      0.98,
+      0.52
+    ],
+    "plunger": [
+      0.03,
+      0.5
+    ]
+  },
+  "credit": {
+    "title": "Fraxiparine 0,6ml white background.jpg (label text removed)",
+    "author": "Wesalius (Wikimedia Commons)",
+    "licence": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Fraxiparine_0,6ml_white_background.jpg"
+  },
+  "prep": {
+    "raw": "sources\\cleaned\\syringe_frax_clean.jpg",
+    "id": "syringe",
+    "rotate": 0,
+    "crop": "210,280,2680,820",
+    "mask": null,
+    "mask_mul": null,
+    "mask_max": null,
+    "thin_region": null,
+    "thin_color": null,
+    "radial": null,
+    "patch": [],
+    "poly": null,
+    "cut": [],
+    "keep_largest": true,
+    "min_island": 0.002,
+    "erode": 1,
+    "sat": 0.88,
+    "contrast": 1.06,
+    "warm": 0.015,
+    "gamma": 1.0,
+    "exposure": 0.0,
+    "max": 2400
+  }
+}

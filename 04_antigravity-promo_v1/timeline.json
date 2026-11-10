@@ -1,0 +1,463 @@
+{
+  "fps": 24,
+  "bpm": 120,
+  "beat": 0.5,
+  "bar": 2,
+  "dur": 48,
+  "shots": [
+    {
+      "id": "S1_constant",
+      "t0": 0,
+      "t1": 4.5,
+      "alt0": 0,
+      "alt1": 0
+    },
+    {
+      "id": "S2_ground",
+      "t0": 4.5,
+      "t1": 11,
+      "alt0": 0,
+      "alt1": 0
+    },
+    {
+      "id": "S3_ignition",
+      "t0": 11,
+      "t1": 17,
+      "alt0": 0,
+      "alt1": 120
+    },
+    {
+      "id": "S4_ascent",
+      "t0": 17,
+      "t1": 27,
+      "alt0": 120,
+      "alt1": 600
+    },
+    {
+      "id": "S5_studio",
+      "t0": 27,
+      "t1": 33,
+      "alt0": 600,
+      "alt1": 800
+    },
+    {
+      "id": "S6_zerog",
+      "t0": 33,
+      "t1": 38,
+      "alt0": 800,
+      "alt1": 900
+    },
+    {
+      "id": "S7_orbit",
+      "t0": 38,
+      "t1": 48,
+      "alt0": 900,
+      "alt1": 900
+    }
+  ],
+  "cues": {
+    "lock_9": 0.25,
+    "lock_dot1": 0.375,
+    "lock_8": 0.5,
+    "s1_collapse": 4.5,
+    "freeze_start": 11,
+    "ignite_chime": 12.25,
+    "console_open": 12.5,
+    "exec_press": 16,
+    "crane_ascent": 17,
+    "snap_grid": 22,
+    "studio_open": 27,
+    "studio_dive": 32.75,
+    "zerog_silence": 33,
+    "lock_0a": 33.5,
+    "lock_dot2": 33.625,
+    "lock_0b": 33.75,
+    "orbit_open": 38,
+    "hero_sweep": 38.5
+  },
+  "silences": [
+    {
+      "id": "digital_zero",
+      "t0": 11,
+      "t1": 12.25,
+      "mode": "zero"
+    },
+    {
+      "id": "zerog_breath",
+      "t0": 33,
+      "t1": 33.5,
+      "mode": "room"
+    }
+  ],
+  "drops": [
+    {
+      "id": "d0",
+      "beat": 3,
+      "col": 0,
+      "file": "legacy_auth.ts",
+      "err": "构建阻塞",
+      "sev": 1,
+      "idx": 0,
+      "tLand": 1.5,
+      "tSpawn": 1.14
+    },
+    {
+      "id": "d1",
+      "beat": 5,
+      "col": 2,
+      "file": "webpack.cfg",
+      "err": "依赖冲突",
+      "sev": 1,
+      "idx": 1,
+      "tLand": 2.5,
+      "tSpawn": 2.14
+    },
+    {
+      "id": "d2",
+      "beat": 7,
+      "col": 1,
+      "file": "env_patch.sh",
+      "err": "配置异常",
+      "sev": 1,
+      "idx": 2,
+      "tLand": 3.5,
+      "tSpawn": 3.14
+    },
+    {
+      "id": "d3",
+      "beat": 10,
+      "col": 0,
+      "file": "migration_04.sql",
+      "err": "合并锁死",
+      "sev": 1,
+      "idx": 3,
+      "tLand": 5,
+      "tSpawn": 4.64
+    },
+    {
+      "id": "d4",
+      "beat": 11,
+      "col": 3,
+      "file": "session_pool.ts",
+      "err": "超时重试",
+      "sev": 0,
+      "idx": 4,
+      "tLand": 5.5,
+      "tSpawn": 5.14
+    },
+    {
+      "id": "d5",
+      "beat": 12,
+      "col": 1,
+      "file": "ci_runner.yml",
+      "err": "测试挂起",
+      "sev": 1,
+      "idx": 5,
+      "tLand": 6,
+      "tSpawn": 5.64
+    },
+    {
+      "id": "d6",
+      "beat": 13,
+      "col": 2,
+      "file": "token_guard.ts",
+      "err": "构建阻塞",
+      "sev": 1,
+      "idx": 6,
+      "tLand": 6.5,
+      "tSpawn": 6.14
+    },
+    {
+      "id": "d7",
+      "beat": 14,
+      "col": 3,
+      "file": "proxy_route.js",
+      "err": "队列积压",
+      "sev": 0,
+      "idx": 7,
+      "tLand": 7,
+      "tSpawn": 6.64
+    },
+    {
+      "id": "d8",
+      "beat": 14.5,
+      "col": 0,
+      "file": "schema_diff.json",
+      "err": "依赖冲突",
+      "sev": 1,
+      "idx": 8,
+      "tLand": 7.25,
+      "tSpawn": 6.89
+    },
+    {
+      "id": "d9",
+      "beat": 15,
+      "col": 2,
+      "file": " manual_sync.sh",
+      "err": "手动切屏",
+      "sev": 0,
+      "idx": 9,
+      "tLand": 7.5,
+      "tSpawn": 7.14
+    },
+    {
+      "id": "d10",
+      "beat": 15.5,
+      "col": 1,
+      "file": "retry_queue.ts",
+      "err": "超时重试",
+      "sev": 1,
+      "idx": 10,
+      "tLand": 7.75,
+      "tSpawn": 7.39
+    },
+    {
+      "id": "d11",
+      "beat": 16.5,
+      "col": 3,
+      "file": "lockfile_v2.json",
+      "err": "配置异常",
+      "sev": 1,
+      "idx": 11,
+      "tLand": 8.25,
+      "tSpawn": 7.89
+    },
+    {
+      "id": "d12",
+      "beat": 17.5,
+      "col": 0,
+      "file": "hotfix_19.patch",
+      "err": "合并锁死",
+      "sev": 1,
+      "idx": 12,
+      "tLand": 8.75,
+      "tSpawn": 8.39
+    },
+    {
+      "id": "d13",
+      "beat": 18.25,
+      "col": 2,
+      "file": "lint_err_41.log",
+      "err": "构建阻塞",
+      "sev": 1,
+      "idx": 13,
+      "tLand": 9.125,
+      "tSpawn": 8.765
+    },
+    {
+      "id": "d14",
+      "beat": 18.75,
+      "col": 1,
+      "file": "auth_mock.spec",
+      "err": "测试挂起",
+      "sev": 1,
+      "idx": 14,
+      "tLand": 9.375,
+      "tSpawn": 9.015
+    },
+    {
+      "id": "d15",
+      "beat": 19.25,
+      "col": 3,
+      "file": "pkg_tree.lock",
+      "err": "依赖冲突",
+      "sev": 1,
+      "idx": 15,
+      "tLand": 9.625,
+      "tSpawn": 9.265
+    },
+    {
+      "id": "d16",
+      "beat": 19.75,
+      "col": 0,
+      "file": "deploy_halt.sh",
+      "err": "队列积压",
+      "sev": 1,
+      "idx": 16,
+      "tLand": 9.875,
+      "tSpawn": 9.515
+    },
+    {
+      "id": "d17",
+      "beat": 20.25,
+      "col": 2,
+      "file": "ctx_switch.tmp",
+      "err": "手动切屏",
+      "sev": 0,
+      "idx": 17,
+      "tLand": 10.125,
+      "tSpawn": 9.765
+    },
+    {
+      "id": "d18",
+      "beat": 20.5,
+      "col": 1,
+      "file": "core_panic.log",
+      "err": "构建阻塞",
+      "sev": 1,
+      "idx": 18,
+      "tLand": 10.25,
+      "tSpawn": 9.89
+    },
+    {
+      "id": "d19",
+      "beat": 20.75,
+      "col": 3,
+      "file": "port_bind.cfg",
+      "err": "配置异常",
+      "sev": 1,
+      "idx": 19,
+      "tLand": 10.375,
+      "tSpawn": 10.015
+    },
+    {
+      "id": "d20",
+      "beat": 21,
+      "col": 0,
+      "file": "trace_dump.txt",
+      "err": "超时重试",
+      "sev": 1,
+      "idx": 20,
+      "tLand": 10.5,
+      "tSpawn": 10.14
+    }
+  ],
+  "pillars": [
+    {
+      "id": 0,
+      "code": "01",
+      "name": "感知",
+      "trail": "#6E9ECF",
+      "items": [
+        "上下文索引",
+        "依赖解析",
+        "语义检索",
+        "状态对齐"
+      ]
+    },
+    {
+      "id": 1,
+      "code": "02",
+      "name": "规划",
+      "trail": "#8E88E8",
+      "items": [
+        "架构推演",
+        "接口契约",
+        "任务拆解",
+        "路径择优"
+      ]
+    },
+    {
+      "id": 2,
+      "code": "03",
+      "name": "编码",
+      "trail": "#68B0A0",
+      "items": [
+        "核心重构",
+        "并发补全",
+        "类型收敛",
+        "无感修补"
+      ]
+    },
+    {
+      "id": 3,
+      "code": "04",
+      "name": "验证",
+      "trail": "#A4B2CC",
+      "items": [
+        "回归校验",
+        "安全审计",
+        "基准压测",
+        "轨道签发"
+      ]
+    }
+  ],
+  "voices": [
+    {
+      "id": "L1",
+      "t0": 4.9,
+      "dur": 3.361,
+      "toast0": 4.9,
+      "toast1": 9,
+      "dense": 1,
+      "text": "写不完的配置与排错，像引力把创造压向地面。"
+    },
+    {
+      "id": "L2",
+      "t0": 12.65,
+      "dur": 3.314,
+      "toast0": 12.65,
+      "toast1": 16.65,
+      "dense": 0,
+      "text": "直到一句纯粹的意图，点燃反重力引擎。"
+    },
+    {
+      "id": "L3",
+      "t0": 17.2,
+      "dur": 3.955,
+      "toast0": 17.2,
+      "toast1": 21.85,
+      "dense": 0,
+      "text": "繁重任务轻盈升空，多智能体在四条轨道并行编排。"
+    },
+    {
+      "id": "L4",
+      "t0": 22.5,
+      "dur": 3.263,
+      "toast0": 22.5,
+      "toast1": 26.5,
+      "dense": 0,
+      "text": "每一次推演与修改，严丝合缝卡入秩序。"
+    },
+    {
+      "id": "L5",
+      "t0": 27.4,
+      "dur": 3.642,
+      "toast0": 27.4,
+      "toast1": 31.8,
+      "dense": 0,
+      "text": "预判你的下一行脉络，让整座代码库悄然失重。"
+    },
+    {
+      "id": "L6",
+      "t0": 38.8,
+      "dur": 4.339,
+      "toast0": 38.8,
+      "toast1": 43.9,
+      "dense": 0,
+      "text": "反重力。当工程摆脱引力，思想自由升空。"
+    }
+  ],
+  "srt": [
+    {
+      "t0": 4.9,
+      "t1": 9,
+      "text": "写不完的配置与排错，像引力把创造压向地面。"
+    },
+    {
+      "t0": 12.65,
+      "t1": 16.65,
+      "text": "直到一句纯粹的意图，点燃反重力引擎。"
+    },
+    {
+      "t0": 17.2,
+      "t1": 21.85,
+      "text": "繁重任务轻盈升空，多智能体在四条轨道并行编排。"
+    },
+    {
+      "t0": 22.5,
+      "t1": 26.5,
+      "text": "每一次推演与修改，严丝合缝卡入秩序。"
+    },
+    {
+      "t0": 27.4,
+      "t1": 31.8,
+      "text": "预判你的下一行脉络，让整座代码库悄然失重。"
+    },
+    {
+      "t0": 38.8,
+      "t1": 43.9,
+      "text": "反重力。当工程摆脱引力，思想自由升空。"
+    }
+  ]
+}

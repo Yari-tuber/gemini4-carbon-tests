@@ -1,0 +1,111 @@
+Engineering Briefing Board — "死线之前：狂犬病暴露后阻断简报" (Before the Deadline: Rabies PEP Briefing)
+Every third-party asset in the film, with its source, author, licence, and modifications.
+
+PHOTOGRAPHS & SCIENTIFIC MICROGRAPHS
+All 8 physical board objects were cut out at native photograph resolution with BiRefNet, edge-decontaminated, and colour-graded to a shared studio enamel-board lut (--sat 0.88 --contrast 1.06 --warm 0.015); commercial brand or drug lettering was removed where noted so that no real product or brand is shown. All 3 scientific micrographs are mounted on archival white photo-paper borders via kit/tools/make_print.py.
+
+1. Colorized TEM of rabies virus particles (kit object "em_niaid")
+   Title: "Rabies Virus 09282024.jpg"
+   Author: NIAID / Visualspecialist
+   Licence: CC0 1.0 Public Domain Dedication (https://creativecommons.org/publicdomain/zero/1.0/)
+   Source: https://commons.wikimedia.org/wiki/File:Rabies_Virus_09282024.jpg
+   Changes: cropped to central viral cluster, desaturated slightly (--sat 0.90), mounted on white photo print border.
+
+2. Bullet-shaped rabies virion TEM (kit object "print_phil_em")
+   Title: "Rabies Virus EM PHIL 1876.JPG"
+   Author: CDC / Dr. Fred Murphy (Public Health Image Library #1876)
+   Licence: Public Domain (US Federal Government work — CDC)
+   Source: https://commons.wikimedia.org/wiki/File:Rabies_Virus_EM_PHIL_1876.JPG
+   Changes: cropped, desaturated slightly (--sat 0.85), mounted on white photo print border.
+
+3. Rabies encephalitis neuron with Negri bodies (kit object "print_negri")
+   Title: "Rabies encephalitis Negri bodies PHIL 3377 lores.jpg"
+   Author: CDC / Dr. Daniel P. Perl (Public Health Image Library #3377)
+   Licence: Public Domain (US Federal Government work — CDC)
+   Source: https://commons.wikimedia.org/wiki/File:Rabies_encephalitis_Negri_bodies_PHIL_3377_lores.jpg
+   Changes: cropped, desaturated slightly (--sat 0.84), mounted on white photo print border.
+
+4. Domestic dog — yellow Labrador retriever (kit object "dog")
+   Title: "Yellow labrador retr.JPG"
+   Author: Ezhuttukari / Thachan.makan (Wikimedia Commons)
+   Licence: CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0/)
+   Source: https://commons.wikimedia.org/wiki/File:Yellow_labrador_retr.JPG
+   Changes: background removed, edge-decontaminated, colour graded, silhouette drop shadow generated.
+
+5. Domestic tabby cat (kit object "cat")
+   Title: "Cat August 2010-2.jpg"
+   Author: Alvesgaspar (Wikimedia Commons)
+   Licence: CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0/)
+   Source: https://commons.wikimedia.org/wiki/File:Cat_August_2010-2.jpg
+   Changes: background removed, edge-decontaminated, colour graded, silhouette drop shadow generated.
+
+6. Flying fox / bat in flight (kit object "bat")
+   Title: "Subic Flying Fox.jpg"
+   Author: Emman Asuncion Foronda (Wikimedia Commons)
+   Licence: CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+   Source: https://commons.wikimedia.org/wiki/File:Subic_Flying_Fox.jpg
+   Changes: background removed, edge-decontaminated, colour graded, silhouette drop shadow generated.
+
+7. Wall-mounted brass water tap (kit object "tap")
+   Title: "Benasque - Anciles - Grifo 01.jpg"
+   Author: Basotxerri (Wikimedia Commons)
+   Licence: CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+   Source: https://commons.wikimedia.org/wiki/File:Benasque_-_Anciles_-_Grifo_01.jpg
+   Changes: cropped to tap fixture, stone wall removed via polygon + BiRefNet matte, colour graded, silhouette drop shadow generated.
+
+8. Foaming natural soap bar (kit object "soap")
+   Title: "Nature Bar natural soap bar.jpg"
+   Author: MarliesVH (Wikimedia Commons)
+   Licence: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+   Source: https://commons.wikimedia.org/wiki/File:Nature_Bar_natural_soap_bar.jpg
+   Changes: embossed brand name and botanical stamp wiped using local foam/soap texture interpolation so no commercial mark appears; cropped, background removed, colour graded.
+
+9. Amber glass antiseptic bottle (kit object "iodine")
+   Title: "Antique Amber Medicine Bottle (42378014251).jpg"
+   Author: Cindy Shebley (Wikimedia Commons)
+   Licence: CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/)
+   Source: https://commons.wikimedia.org/wiki/File:Antique_Amber_Medicine_Bottle_(42378014251).jpg
+   Changes: background removed, edge-decontaminated, colour graded, silhouette drop shadow generated.
+
+10. Pre-filled glass medical syringe (kit object "syringe")
+    Title: "Fraxiparine 0,6ml white background.jpg"
+    Author: Wesalius (Wikimedia Commons)
+    Licence: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+    Source: https://commons.wikimedia.org/wiki/File:Fraxiparine_0,6ml_white_background.jpg
+    Changes: inner-barrel product lettering wiped with feathered clean barrel texture; cropped, background removed, colour graded.
+
+11. Glass injection vial with crimp cap (kit object "vial")
+    Title: "Cortisol for injection.jpg"
+    Author: LHcheM (Wikimedia Commons)
+    Licence: CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0/)
+    Source: https://commons.wikimedia.org/wiki/File:Cortisol_for_injection.jpg
+    Changes: printed drug text on paper label replaced with clean cylindrical paper shading so no unrelated drug name appears; cropped, background removed, colour graded.
+
+BOARD & PROCEDURAL GRAPHICS
+The porcelain-enamel whiteboard, studio vignette and ghosted wiped diagrams, brushed aluminium frame and marker tray, magnetic label strips, dome magnets, steel mm rulers, pinned briefing cards, rubber stamps, and all three-colour dry-erase marker strokes are drawn procedurally in code (kit/board.js, scenes/_gen_film.py).
+
+FONTS (SIL Open Font License 1.1; full licence texts in kit/fonts/OFL-*.txt; fetched via kit/tools/fetch_fonts.py)
+- LXGW Marker Gothic — The LXGW Marker Gothic Project Authors (subset: kit/fonts/LXGWMarkerGothic-sub.woff2)
+- Noto Sans SC — Adobe / Google (subsets: kit/fonts/NotoSansSC-{500,700,900}-sub.woff2)
+- Archivo — Omnibus-Type (kit/fonts/Archivo-VF.ttf)
+- IBM Plex Mono — IBM Corp. (kit/fonts/IBMPlexMono-{Medium,SemiBold}.ttf)
+
+VOICE & SPEECH VERIFICATION
+- Narration: Google AI Studio Gemini API — models/gemini-3.8-flash-tts, voice "Charon" (audio/gen_tts_gemini.py).
+- Speech-to-text verification: faster-whisper "small" model (MIT Licence).
+
+MUSIC & SOUND DESIGN
+- Original C-minor → C-major briefing score and procedural dry-erase / magnet / ruler / rubber-stamp / running-water / glass-vial foley written in code (audio/mix.py).
+- Instrument samples (100% CC0 1.0 Public Domain Dedication):
+  - Versilian Community Sample Library (VCSL) — Versilian Studios (cajon, snare, hi-hat, claves, woodblock, shaker, marimba, vibraphone, contrabass, trombone, tuba, horn, timpani, gran cassa, toms, suspended cymbal, tubular bells, glockenspiel)
+  - VS Chamber Orchestra 2: Community Edition (VSCO 2 CE) — Versilian Studios (orchestral brass, percussion, mallets)
+  - Karoryfer Samples "Sneakybass" — Karoryfer Lecolds (jazz bass)
+
+TOOLS
+- Foreground matting: BiRefNet-general (MIT Licence; ONNX weights via https://github.com/danielgatis/rembg/releases), run via onnxruntime (MIT Licence).
+- Rendering & mastering: Playwright headless Chromium (Apache-2.0), FFmpeg (LGPL/GPL).
+
+FACTS & MEDICAL SOURCES
+Every statistic, pathogen dimension, incubation/transport figure, and clinical PEP protocol step in the narration and on the board is documented and cross-checked in FACTS.md against:
+- World Health Organization (WHO), WHO Expert Consultation on Rabies: Third Report, WHO Technical Report Series No. 1012 (2018), ISBN 978-92-4-121021-8, & WHO Rabies Fact Sheet (2024).
+- Chinese Center for Disease Control and Prevention (China CDC / National Disease Control and Prevention Administration), Work Specification for Rabies Exposure Prophylaxis and Disposal (2023 Edition) / 《狂犬病暴露预防处置工作规范（2023年版）》.

@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>GRAND THEFT AUTO VI — Vice City / Leonida</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;800;900&family=Permanent+Marker&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --vice-pink: #ff2e93;
+      --vice-orange: #ff8c42;
+      --vice-cyan: #00f0ff;
+      --vice-purple: #7b2cbf;
+      --vice-gold: #ffd166;
+      --gta-green: #56d364;
+      --gta-blue: #38bdf8;
+      --gta-red: #ef4444;
+      --hud-bg: rgba(10, 12, 20, 0.76);
+      --hud-border: rgba(255, 255, 255, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #090612;
+      font-family: 'Inter', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+      color: #fff;
+    }
+
+    #game-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      display: block;
+      z-index: 1;
+    }
+
+    /* Vignette & Damage / Bullet-time screen FX */
+    #screen-fx {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      background: radial-gradient(circle at center, transparent 58%, rgba(8, 4, 18, 0.42) 100%);
+      transition: box-shadow 0.18s ease, backdrop-filter 0.2s ease;
+    }
+    #screen-fx.damage {
+      box-shadow: inset 0 0 110px rgba(255, 20, 60, 0.68);
+    }
+    #screen-fx.special-active {
+      box-shadow: inset 0 0 95px rgba(255, 46, 147, 0.52), inset 0 0 35px rgba(0, 240, 255, 0.35);
+    }
+
+    /* ================= TITLE SCREEN ================= */
+    #title-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 42px 56px;
+      background: linear-gradient(125deg, rgba(16, 6, 30, 0.78) 0%, rgba(28, 10, 42, 0.35) 52%, rgba(255, 92, 141, 0.18) 100%);
+      backdrop-filter: blur(2px);
+      transition: opacity 0.65s ease, visibility 0.65s ease;
+    }
+    #title-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .title-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .rockstar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--vice-gold);
+    }
+    .quality-pill {
+      display: flex;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 5px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+    .quality-btn {
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      border: none;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .quality-btn.active {
+      background: linear-gradient(90deg, var(--vice-pink), var(--vice-orange));
+      color: #fff;
+    }
+
+    .title-hero {
+      max-width: 680px;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+    .gta-logo-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    .gta-series-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 74px;
+      line-height: 0.9;
+      letter-spacing: 3px;
+      color: #fff;
+      text-shadow: 0 6px 26px rgba(0,0,0,0.85), 3px 3px 0 #000;
+    }
+    .gta-vi-numeral {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 138px;
+      line-height: 0.82;
+      background: linear-gradient(180deg, #ffe066 0%, #ff7b54 38%, #ff2e93 74%, #7b2cbf 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 6px 0 #14051e) drop-shadow(0 0 28px rgba(255, 46, 147, 0.6));
+      display: inline-block;
+      margin-left: 12px;
+      vertical-align: top;
+    }
+    .vice-script {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 40px;
+      color: var(--vice-cyan);
+      text-shadow: 0 0 18px rgba(0, 240, 255, 0.8), 2px 3px 0 #120422;
+      transform: rotate(-4deg);
+      margin-top: -18px;
+      margin-left: 8px;
+    }
+    .title-desc {
+      margin-top: 18px;
+      font-size: 15px;
+      line-height: 1.65;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      max-width: 560px;
+    }
+
+    .title-actions {
+      margin-top: 28px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    #start-game-btn {
+      padding: 16px 42px;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #fff;
+      background: linear-gradient(95deg, #ff2e93 0%, #ff7b54 100%);
+      border: 2px solid rgba(255,255,255,0.45);
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 10px 35px rgba(255, 46, 147, 0.55);
+      transition: transform 0.16s ease, box-shadow 0.16s ease;
+    }
+    #start-game-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 14px 42px rgba(255, 46, 147, 0.8);
+    }
+
+    .controls-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 10px;
+      background: rgba(8, 8, 18, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      padding: 14px 18px;
+      backdrop-filter: blur(10px);
+    }
+    .ctrl-item {
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .kbd {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      font-family: 'Rajdhani', monospace;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--vice-gold);
+      white-space: nowrap;
+    }
+
+    /* ================= IN-GAME HUD ================= */
+    #hud-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+    #hud-layer.hidden {
+      display: none;
+    }
+
+    /* Crosshair & Hitmarker */
+    #crosshair {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 26px;
+      height: 26px;
+      transition: transform 0.08s ease, opacity 0.15s ease;
+    }
+    .ch-dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 4px;
+      height: 4px;
+      background: #fff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 4px #000;
+    }
+    .ch-line {
+      position: absolute;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 0 3px rgba(0,0,0,0.9);
+    }
+    .ch-top { width: 2px; height: 7px; left: 12px; top: 0; }
+    .ch-bottom { width: 2px; height: 7px; left: 12px; bottom: 0; }
+    .ch-left { width: 7px; height: 2px; left: 0; top: 12px; }
+    .ch-right { width: 7px; height: 2px; right: 0; top: 12px; }
+
+    #hitmarker {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 22px;
+      height: 22px;
+      transform: translate(-50%, -50%) rotate(45deg) scale(0.7);
+      opacity: 0;
+      transition: opacity 0.08s ease, transform 0.08s ease;
+    }
+    #hitmarker.active {
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(45deg) scale(1);
+    }
+    #hitmarker.kill .hm-bar {
+      background: #ff2e55;
+      box-shadow: 0 0 8px #ff2e55;
+    }
+    .hm-bar {
+      position: absolute;
+      background: #fff;
+    }
+    .hm-h { width: 22px; height: 2px; top: 10px; left: 0; }
+    .hm-v { width: 2px; height: 22px; left: 10px; top: 0; }
+
+    /* Top Right: Wanted, Cash, Weapon, Character Badge */
+    .hud-top-right {
+      position: absolute;
+      top: 22px;
+      right: 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    #wanted-stars {
+      display: flex;
+      gap: 5px;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: 2px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.9));
+      min-height: 30px;
+    }
+    .star {
+      color: rgba(255, 255, 255, 0.18);
+      transition: color 0.15s, transform 0.15s;
+    }
+    .star.active {
+      color: #fff;
+      text-shadow: 0 0 12px rgba(255, 209, 102, 0.9);
+      transform: scale(1.08);
+    }
+    .star.cooldown {
+      animation: starBlink 0.55s infinite alternate;
+    }
+    @keyframes starBlink {
+      from { opacity: 1; color: #ffd166; }
+      to { opacity: 0.25; color: #999; }
+    }
+
+    #cash-display {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 38px;
+      letter-spacing: 1.5px;
+      color: #6ee778;
+      text-shadow: 2px 2px 0 #000, 0 0 16px rgba(110, 231, 120, 0.35);
+      line-height: 1;
+    }
+    #cash-delta {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: 0.25s;
+    }
+    #cash-delta.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hud-weapon-char {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--hud-bg);
+      border: 1px solid var(--hud-border);
+      padding: 7px 14px;
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+    }
+    #char-badge {
+      padding: 3px 9px;
+      border-radius: 5px;
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, var(--vice-pink), var(--vice-orange));
+      color: #fff;
+    }
+    #char-badge.jason {
+      background: linear-gradient(90deg, #2563eb, #06b6d4);
+    }
+    #weapon-hud-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+    }
+    #weapon-hud-ammo {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--vice-gold);
+    }
+    #world-clock {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.78);
+      background: rgba(0,0,0,0.5);
+      padding: 3px 10px;
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    /* Top Left: Mission Tracker & Prompts */
+    .hud-top-left {
+      position: absolute;
+      top: 22px;
+      left: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 370px;
+    }
+    #mission-box {
+      background: var(--hud-bg);
+      border-left: 4px solid var(--vice-pink);
+      border-top: 1px solid var(--hud-border);
+      border-right: 1px solid var(--hud-border);
+      border-bottom: 1px solid var(--hud-border);
+      padding: 11px 15px;
+      border-radius: 0 8px 8px 0;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    }
+    #mission-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--vice-pink);
+      margin-bottom: 4px;
+    }
+    #mission-obj {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.45;
+    }
+
+    #interact-prompt {
+      background: rgba(12, 14, 24, 0.88);
+      border: 1px solid rgba(255, 209, 102, 0.55);
+      color: #fff;
+      padding: 9px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      display: none;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+    #interact-prompt.visible {
+      display: block;
+    }
+
+    /* Live LeonidaGram Social Toast */
+    #social-toast {
+      background: rgba(16, 12, 28, 0.86);
+      border: 1px solid rgba(255, 46, 147, 0.45);
+      border-radius: 10px;
+      padding: 10px 13px;
+      font-size: 12px;
+      line-height: 1.45;
+      max-width: 340px;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: 0.35s ease;
+    }
+    #social-toast.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .social-handle {
+      color: var(--vice-cyan);
+      font-weight: 800;
+      margin-bottom: 2px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Bottom Left: GTA V/VI Rectangular Radar + Vital Bars */
+    .hud-bottom-left {
+      position: absolute;
+      bottom: 22px;
+      left: 26px;
+      width: 264px;
+    }
+    #radar-frame {
+      position: relative;
+      width: 264px;
+      height: 174px;
+      background: rgba(12, 18, 28, 0.9);
+      border: 2px solid rgba(255, 255, 255, 0.28);
+      border-radius: 6px 6px 0 0;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.65);
+    }
+    #radar-frame.police-alert {
+      animation: policeBorder 0.42s infinite alternate;
+    }
+    @keyframes policeBorder {
+      from { border-color: #ef4444; box-shadow: 0 0 22px rgba(239, 68, 68, 0.6); }
+      to { border-color: #3b82f6; box-shadow: 0 0 22px rgba(59, 130, 246, 0.6); }
+    }
+    #radar-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    #district-label {
+      position: absolute;
+      top: 6px;
+      left: 8px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: rgba(0,0,0,0.65);
+      color: rgba(255,255,255,0.88);
+    }
+
+    .vital-bars {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 3px;
+      height: 9px;
+      background: rgba(0,0,0,0.85);
+      padding: 2px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-top: none;
+      border-radius: 0 0 5px 5px;
+    }
+    .vital-track {
+      background: rgba(255,255,255,0.14);
+      overflow: hidden;
+      height: 100%;
+    }
+    #bar-health { width: 100%; height: 100%; background: var(--gta-green); transition: width 0.15s; }
+    #bar-armor { width: 100%; height: 100%; background: var(--gta-blue); transition: width 0.15s; }
+    #bar-special { width: 100%; height: 100%; background: var(--vice-pink); transition: width 0.15s; }
+
+    .quick-keys-strip {
+      margin-top: 6px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.72);
+      text-shadow: 0 1px 3px #000;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Bottom Right: Speedometer & Vehicle Name & Radio */
+    .hud-bottom-right {
+      position: absolute;
+      bottom: 22px;
+      right: 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    #vehicle-popup {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 28px;
+      color: var(--vice-cyan);
+      text-shadow: 0 0 16px rgba(0, 240, 255, 0.65), 2px 2px 0 #000;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: 0.35s;
+    }
+    #vehicle-popup.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #speedo-panel {
+      display: none;
+      align-items: baseline;
+      gap: 10px;
+      background: var(--hud-bg);
+      border: 1px solid var(--hud-border);
+      padding: 10px 18px;
+      border-radius: 10px;
+      backdrop-filter: blur(8px);
+    }
+    #speedo-panel.visible {
+      display: flex;
+    }
+    #speed-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      line-height: 0.9;
+      color: #fff;
+      min-width: 68px;
+      text-align: right;
+    }
+    .speed-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .speed-unit {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--vice-pink);
+      letter-spacing: 1px;
+    }
+    #gear-indicator {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--vice-gold);
+    }
+    #radio-badge {
+      display: none;
+      align-items: center;
+      gap: 7px;
+      background: rgba(16, 10, 28, 0.8);
+      border: 1px solid rgba(255, 46, 147, 0.45);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffd6ec;
+    }
+    #radio-badge.visible {
+      display: inline-flex;
+    }
+
+    /* Bottom Center Subtitles */
+    #subtitle-bar {
+      position: absolute;
+      bottom: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 660px;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.45;
+      color: #fff;
+      text-shadow: 0 2px 6px #000, 0 0 12px rgba(0,0,0,0.95);
+      background: rgba(0,0,0,0.52);
+      padding: 7px 18px;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    #subtitle-bar.visible {
+      opacity: 1;
+    }
+
+    /* ================= WEAPON WHEEL (Hold Q) ================= */
+    #weapon-wheel-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(12, 8, 24, 0.55) 0%, rgba(5, 4, 12, 0.78) 100%);
+      backdrop-filter: blur(4px);
+    }
+    #weapon-wheel-overlay.visible {
+      display: flex;
+    }
+    .wheel-container {
+      position: relative;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 46, 147, 0.45);
+      background: rgba(10, 12, 22, 0.72);
+      box-shadow: 0 0 60px rgba(255, 46, 147, 0.3);
+    }
+    .wheel-slot {
+      position: absolute;
+      width: 112px;
+      height: 76px;
+      margin-left: -56px;
+      margin-top: -38px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: 0.15s;
+    }
+    .wheel-slot:hover, .wheel-slot.selected {
+      background: linear-gradient(135deg, rgba(255, 46, 147, 0.85), rgba(255, 140, 66, 0.85));
+      border-color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 0 24px rgba(255, 46, 147, 0.7);
+    }
+    .wheel-slot-name { font-size: 13px; font-weight: 800; }
+    .wheel-slot-ammo { font-size: 11px; color: var(--vice-gold); font-family: 'Rajdhani', sans-serif; font-weight: 700; }
+    .wheel-center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      width: 150px;
+    }
+    .wheel-center-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--vice-cyan);
+      letter-spacing: 1px;
+    }
+    .wheel-center-desc {
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* ================= LEONIDA iFRUIT SMARTPHONE (P / Up) ================= */
+    #phone-panel {
+      position: fixed;
+      right: 32px;
+      bottom: -540px;
+      width: 300px;
+      height: 510px;
+      z-index: 40;
+      background: linear-gradient(165deg, #171329 0%, #0b0914 100%);
+      border: 4px solid #2e294e;
+      border-radius: 34px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.85), 0 0 30px rgba(255, 46, 147, 0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      pointer-events: auto;
+      transition: bottom 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #phone-panel.open {
+      bottom: 24px;
+    }
+    .phone-DynamicIsland {
+      width: 92px;
+      height: 18px;
+      background: #000;
+      border-radius: 999px;
+      margin: 10px auto 6px;
+    }
+    .phone-header {
+      padding: 6px 18px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--vice-cyan);
+    }
+    .phone-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .phone-section-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.55);
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+    .phone-btn {
+      width: 100%;
+      text-align: left;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.13);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: 0.15s;
+    }
+    .phone-btn:hover {
+      background: linear-gradient(90deg, rgba(255,46,147,0.45), rgba(255,140,66,0.35));
+      border-color: var(--vice-pink);
+    }
+    .phone-btn span.price {
+      color: #6ee778;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px;
+    }
+    .phone-close-hint {
+      text-align: center;
+      padding: 8px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* ================= AMMU-NATION MODAL ================= */
+    #shop-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 45;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(6, 5, 14, 0.76);
+      backdrop-filter: blur(6px);
+      pointer-events: auto;
+    }
+    #shop-modal.open {
+      display: flex;
+    }
+    .shop-card {
+      width: 520px;
+      max-width: 92vw;
+      background: linear-gradient(155deg, #1a1428, #0d0b16);
+      border: 2px solid var(--vice-orange);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.85);
+    }
+    .shop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .shop-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      color: var(--vice-orange);
+      letter-spacing: 2px;
+    }
+    .shop-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .shop-item-btn {
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      cursor: pointer;
+      text-align: left;
+      transition: 0.16s;
+    }
+    .shop-item-btn:hover {
+      border-color: var(--vice-gold);
+      background: rgba(255, 140, 66, 0.22);
+    }
+
+    /* ================= BIG BANNERS (WASTED / BUSTED / MISSION PASSED) ================= */
+    #big-banner {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      background: radial-gradient(circle, rgba(0,0,0,0.58) 0%, rgba(0,0,0,0.82) 100%);
+    }
+    #big-banner.visible {
+      opacity: 1;
+    }
+    #banner-main {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 108px;
+      letter-spacing: 6px;
+      text-shadow: 0 8px 34px #000;
+      transform: scale(0.85);
+      transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+    #big-banner.visible #banner-main {
+      transform: scale(1);
+    }
+    #banner-sub {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 6px;
+      text-shadow: 0 3px 12px #000;
+    }
+
+    /* Pointer lock pause hint */
+    #pointer-hint {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 25;
+      background: rgba(0,0,0,0.68);
+      border: 1px solid rgba(255,255,255,0.22);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--vice-gold);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    #pointer-hint.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game-canvas"></canvas>
+  <div id="screen-fx"></div>
+
+  <!-- TITLE SCREEN -->
+  <div id="title-screen">
+    <div class="title-top-bar">
+      <div class="rockstar-badge">★ LEONIDA STATE // VICE CITY OPEN WORLD 3D</div>
+      <div class="quality-pill">
+        <button class="quality-btn" data-quality="medium">标准画质</button>
+        <button class="quality-btn active" data-quality="ultra">次世代极高画质 (BLOOM + 动态海浪)</button>
+      </div>
+    </div>
+
+    <div class="title-hero">
+      <div class="gta-logo-wrap">
+        <span class="gta-series-text">GRAND THEFT<br>AUTO</span>
+        <span class="gta-vi-numeral">VI</span>
+        <div class="vice-script">Vice City · Leonida</div>
+      </div>
+      <p class="title-desc">
+        欢迎来到雷奥奈达州<strong>罪恶城 (Vice City)</strong>。无缝切换双主角 <strong>露西娅 (Lucia)</strong> 与 <strong>杰森 (Jason)</strong>，漫步霓虹装饰艺术海滨大道，抢夺超跑、敞篷跑车、快艇与警用武装直升机，体验便利店劫案、豪车劫持与雷奥奈达国家银行惊天大劫案！
+      </p>
+      <div class="title-actions">
+        <button id="start-game-btn">进入罪恶城 ENTER VICE CITY</button>
+      </div>
+    </div>
+
+    <div class="controls-preview">
+      <div class="ctrl-item"><span class="kbd">WASD</span> 移动 / 驾驶 / 开船</div>
+      <div class="ctrl-item"><span class="kbd">鼠标左键/右键</span> 射击 / 肩射瞄准</div>
+      <div class="ctrl-item"><span class="kbd">F</span> 抢车 / 上下车 / 登船登机</div>
+      <div class="ctrl-item"><span class="kbd">TAB</span> 天空镜头切换 露西娅⇄杰森</div>
+      <div class="ctrl-item"><span class="kbd">长按 Q / 1-6</span> 慢动作武器轮盘</div>
+      <div class="ctrl-item"><span class="kbd">空格</span> 跳跃 / 漂移手刹 / 直升机升空</div>
+      <div class="ctrl-item"><span class="kbd">SHIFT</span> 冲刺 / 超跑氮气加速</div>
+      <div class="ctrl-item"><span class="kbd">CAPSLOCK / V</span> 双主角子弹时间特技</div>
+      <div class="ctrl-item"><span class="kbd">R</span> 切换罪恶城电台音乐</div>
+      <div class="ctrl-item"><span class="kbd">P / ↑</span> 打开 iFruit 手机(任务/秘籍/天气)</div>
+      <div class="ctrl-item"><span class="kbd">G</span> 呼叫搭档协同作战/副驾射击</div>
+      <div class="ctrl-item"><span class="kbd">E</span> 商店交互 / 警笛喇叭</div>
+    </div>
+  </div>
+
+  <!-- POINTER HINT -->
+  <div id="pointer-hint">点击画面锁定第三人称视角 · 按 ESC 释放鼠标 · 按 P 打开手机菜单</div>
+
+  <!-- IN-GAME HUD -->
+  <div id="hud-layer" class="hidden">
+    <div id="crosshair">
+      <div class="ch-dot"></div>
+      <div class="ch-line ch-top"></div>
+      <div class="ch-line ch-bottom"></div>
+      <div class="ch-line ch-left"></div>
+      <div class="ch-line ch-right"></div>
+    </div>
+    <div id="hitmarker">
+      <div class="hm-bar hm-h"></div>
+      <div class="hm-bar hm-v"></div>
+    </div>
+
+    <!-- Top Left -->
+    <div class="hud-top-left">
+      <div id="mission-box">
+        <div id="mission-title">主线任务 · LEONIDA STORY</div>
+        <div id="mission-obj">前往华盛顿大道 LTD 便利店光柱点开始「欢迎来到雷奥奈达」</div>
+      </div>
+      <div id="interact-prompt"></div>
+      <div id="social-toast">
+        <div class="social-handle"><span id="social-user">@ViceBeachGator</span><span>LIVE 🔥</span></div>
+        <div id="social-text">罪恶城海滩今天的晚霞绝了！#ViceCity #Leonida</div>
+      </div>
+    </div>
+
+    <!-- Top Right -->
+    <div class="hud-top-right">
+      <div id="wanted-stars">
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+      </div>
+      <div id="cash-display">$2,500</div>
+      <div id="cash-delta">+$500</div>
+      <div class="hud-weapon-char">
+        <span id="char-badge">LUCIA 露西娅</span>
+        <span id="weapon-hud-name">战斗手枪</span>
+        <span id="weapon-hud-ammo">15 / 180</span>
+      </div>
+      <div id="world-clock">18:15 · OCEAN DRIVE</div>
+    </div>
+
+    <!-- Bottom Left Radar -->
+    <div class="hud-bottom-left">
+      <div id="radar-frame">
+        <canvas id="radar-canvas" width="264" height="174"></canvas>
+        <div id="district-label">OCEAN DRIVE 海滨大道</div>
+      </div>
+      <div class="vital-bars">
+        <div class="vital-track"><div id="bar-health"></div></div>
+        <div class="vital-track"><div id="bar-armor"></div></div>
+        <div class="vital-track"><div id="bar-special"></div></div>
+      </div>
+      <div class="quick-keys-strip">
+        <span><b>[TAB]</b> 切换主角</span>
+        <span><b>[Q]</b> 武器轮</span>
+        <span><b>[P]</b> 手机</span>
+        <span><b>[F]</b> 抢车</span>
+        <span><b>[G]</b> 召集搭档</span>
+      </div>
+    </div>
+
+    <!-- Bottom Right Vehicle HUD -->
+    <div class="hud-bottom-right">
+      <div id="vehicle-popup">Grotti Cheetah Vice</div>
+      <div id="radio-badge">🎵 FLASH Synth FM 86</div>
+      <div id="speedo-panel">
+        <div id="speed-value">0</div>
+        <div class="speed-meta">
+          <span class="speed-unit">MPH</span>
+          <span id="gear-indicator">GEAR 1</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="subtitle-bar"></div>
+  </div>
+
+  <!-- WEAPON WHEEL -->
+  <div id="weapon-wheel-overlay">
+    <div class="wheel-container" id="wheel-slots-host">
+      <div class="wheel-center">
+        <div class="wheel-center-title" id="wheel-sel-title">战斗手枪</div>
+        <div class="wheel-center-desc" id="wheel-sel-desc">点击或用数字键 1-6 选择武器</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SMARTPHONE -->
+  <div id="phone-panel">
+    <div class="phone-DynamicIsland"></div>
+    <div class="phone-header">
+      <span>📱 iFruit OS · LEONIDA 5G</span>
+      <span id="phone-time">18:15</span>
+    </div>
+    <div class="phone-body">
+      <div class="phone-section-label">剧情与抢劫合约</div>
+      <button class="phone-btn" data-action="gps-mission"><span>📍 导航至当前主线任务点</span><span>GPS</span></button>
+      <button class="phone-btn" data-action="start-race"><span>🏁 街头竞速：海洋大道霓虹狂飙</span><span class="price">+$25,000</span></button>
+      <button class="phone-btn" data-action="gps-bank"><span>🏦 导航：雷奥奈达国家银行</span><span>劫案</span></button>
+      <button class="phone-btn" data-action="gps-paynspray"><span>🎨 导航：Pay 'n' Spray 改色消星</span><span class="price">$500</span></button>
+      <button class="phone-btn" data-action="gps-gunshop"><span>🔫 导航：Ammu-Nation 武器店</span><span>军火</span></button>
+      <button class="phone-btn" data-action="gps-heli"><span>🚁 导航：海湾直升机停机坪</span><span>飞行</span></button>
+      <button class="phone-btn" data-action="gps-boat"><span>🚤 导航：罪恶湾快艇码头</span><span>海上</span></button>
+
+      <div class="phone-section-label">VIP 联络人服务</div>
+      <button class="phone-btn" data-action="spawn-supercar"><span>🏎️ 技师空投：猎豹超跑 Cheetah</span><span class="price">免费</span></button>
+      <button class="phone-btn" data-action="spawn-heli"><span>🚁 技师空投：罪恶城武装直升机</span><span class="price">$1,000</span></button>
+      <button class="phone-btn" data-action="bribe-cops"><span>🕵️ 黑客消星：贿赂 VCPD 警局</span><span class="price">$1,500</span></button>
+      <button class="phone-btn" data-action="full-arsenal"><span>💣 军火商补给：全武器+满防弹衣</span><span class="price">$800</span></button>
+
+      <div class="phone-section-label">天气与时间控制 · 秘籍</div>
+      <button class="phone-btn" data-action="weather-sunset"><span>🌅 罪恶城黄金粉紫晚霞 (经典)</span><span>18:20</span></button>
+      <button class="phone-btn" data-action="weather-night"><span>🌃 海洋大道霓虹之夜</span><span>23:00</span></button>
+      <button class="phone-btn" data-action="weather-day"><span>☀️ 迈阿密热带晴空正午</span><span>12:30</span></button>
+      <button class="phone-btn" data-action="weather-rain"><span>⛈️ 热带暴雨 (湿滑霓虹倒影)</span><span>20:30</span></button>
+      <button class="phone-btn" data-action="cheat-money"><span>💵 秘籍：HESOYAM (+$50,000 & 满血)</span><span>CHEAT</span></button>
+      <button class="phone-btn" data-action="cheat-wanted"><span>🚓 秘籍：五星全城特警通缉挑战</span><span>★★★★★</span></button>
+    </div>
+    <div class="phone-close-hint">按 [P] 或 [↓] 收起手机</div>
+  </div>
+
+  <!-- AMMU-NATION SHOP MODAL -->
+  <div id="shop-modal">
+    <div class="shop-card">
+      <div class="shop-header">
+        <div class="shop-title">AMMU-NATION · 罪恶城军火店</div>
+        <button class="phone-btn" style="width:auto;padding:6px 14px;" id="close-shop-btn">关闭 [ESC/E]</button>
+      </div>
+      <div class="shop-grid" id="shop-items-grid"></div>
+    </div>
+  </div>
+
+  <!-- WASTED / BUSTED / MISSION PASSED BANNER -->
+  <div id="big-banner">
+    <div id="banner-main">MISSION PASSED</div>
+    <div id="banner-sub">RESPECT + · +$25,000</div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

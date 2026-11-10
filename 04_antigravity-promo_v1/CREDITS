@@ -1,0 +1,20 @@
+《反重力 · ANTIGRAVITY》 — Credits & Third-Party Asset Licences
+
+Picture & Animation
+- All interfaces, icons, geometric emblems, layouts, 2.5D perspective projections, and light-sweep shaders are original works drawn procedurally in code (engine.js, film.js). No stock imagery, third-party logos, or OS chrome is used.
+
+Fonts (SIL Open Font License 1.1, self-hosted in fonts/)
+- Inter — Rasmus Andersson (https://github.com/rsms/inter) · SIL OFL 1.1
+- Inter Tight — Rasmus Andersson (https://fonts.google.com/specimen/Inter+Tight) · SIL OFL 1.1
+- JetBrains Mono — The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono) · SIL OFL 1.1
+- Noto Sans SC — Google LLC / Adobe (https://fonts.google.com/noto/specimen/Noto+Sans+SC) · SIL OFL 1.1
+
+Music (Original Composition, music/score.py)
+- Samples (CC0 1.0 Universal): Versilian Community Sample Library (VCSL) by Versilian Studios / Sam Gossner (https://github.com/sgossner/VCSL) — marimba, vibraphone, bowed vibraphone, glockenspiel, hand chimes, shaker, woodblock.
+- Harmonic sub-bass synthesised procedurally in NumPy.
+
+Voice-Over
+- Microsoft Edge Neural Text-to-Speech (edge-tts, voice: zh-CN-YunxiNeural). Verify Microsoft's service terms before commercial distribution.
+
+Sound Design & Ambience
+- All foley and room ambience synthesised procedurally in NumPy / SciPy (mix.py, core/audio/sfx.py).

@@ -1,0 +1,79 @@
+[
+  {
+    "id": "l01",
+    "text": "Every Indian could stand inside one city.",
+    "voice": "am_michael",
+    "speed": 1.08
+  },
+  {
+    "id": "l02",
+    "text": "Over one point four billion people, packed two to a square meter, the safe limit at a concert,",
+    "asr": "Over 1.4 billion people packed two to a square meter the safe limit at a concert",
+    "voice": "am_michael",
+    "speed": 1.12
+  },
+  {
+    "id": "l03",
+    "text": "fill a square just twenty seven kilometers wide.",
+    "asr": "fill a square just 27 kilometers wide",
+    "voice": "am_michael",
+    "speed": 1.08
+  },
+  {
+    "id": "l04",
+    "text": "Pour it into Delhi, and it fills only half the city.",
+    "voice": "am_michael",
+    "speed": 1.08
+  },
+  {
+    "id": "l05",
+    "text": "The rest of India? Empty.",
+    "voice": "am_michael",
+    "speed": 1.04
+  },
+  {
+    "id": "l06",
+    "text": "Mumbai, Kolkata, Chennai, not a soul.",
+    "voice": "am_michael",
+    "speed": 1.06
+  },
+  {
+    "id": "l07",
+    "text": "Now bring everyone on Earth, eight point two billion.",
+    "asr": "Now bring everyone on Earth 8.2 billion",
+    "voice": "am_michael",
+    "speed": 1.08
+  },
+  {
+    "id": "l08",
+    "text": "The square grows to sixty four kilometers.",
+    "asr": "The square grows to 64 kilometers",
+    "voice": "am_michael",
+    "speed": 1.08
+  },
+  {
+    "id": "l09",
+    "text": "Too big for Delhi, so fly it east, into Sikkim,",
+    "voice": "am_michael",
+    "speed": 1.02,
+    "asr": "Too big for Delhi so fly it east in the Sikkim"
+  },
+  {
+    "id": "l10",
+    "text": "India's least populous state.",
+    "voice": "am_michael",
+    "speed": 1.06
+  },
+  {
+    "id": "l11",
+    "text": "It fits, with room to spare.",
+    "voice": "am_michael",
+    "speed": 1.06
+  },
+  {
+    "id": "l12",
+    "text": "So next time someone says India is too crowded, tell them.",
+    "voice": "am_michael",
+    "speed": 1.08
+  }
+]

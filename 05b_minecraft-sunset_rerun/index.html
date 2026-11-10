@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minecraft · 永恒日落 Eternal Sunset</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #141024;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      color: #fff6ea;
+    }
+
+    #game-container {
+      position: fixed;
+      inset: 0;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Top-left compact Flight & Altitude Status Pill */
+    #top-hud {
+      position: fixed;
+      top: 16px;
+      left: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .glass-pill {
+      background: rgba(20, 14, 32, 0.46);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 196, 128, 0.24);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 13px;
+      letter-spacing: 0.3px;
+      color: rgba(255, 244, 228, 0.94);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .badge-dot.glide {
+      background: #ff9d3b;
+      box-shadow: 0 0 10px #ff9d3b;
+    }
+    .badge-dot.walk {
+      background: #7be082;
+      box-shadow: 0 0 8px #7be082;
+    }
+
+    kbd {
+      background: rgba(255, 220, 175, 0.16);
+      border: 1px solid rgba(255, 210, 155, 0.32);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 11.5px;
+      font-family: inherit;
+      color: #ffd89b;
+      margin: 0 2px;
+    }
+
+    /* Top-right minimal shortcut reminder during active play */
+    #controls-hint {
+      position: fixed;
+      top: 16px;
+      right: 18px;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    #controls-hint.visible {
+      opacity: 0.88;
+    }
+
+    /* Classic crisp Minecraft Crosshair */
+    #crosshair {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 18px;
+      height: 18px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 12;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      mix-blend-mode: difference;
+    }
+    #crosshair.visible {
+      opacity: 0.92;
+    }
+    #crosshair::before,
+    #crosshair::after {
+      content: '';
+      position: absolute;
+      background: rgba(255, 248, 236, 0.95);
+      border-radius: 1px;
+    }
+    #crosshair::before {
+      top: 8px;
+      left: 0;
+      width: 18px;
+      height: 2px;
+    }
+    #crosshair::after {
+      top: 0;
+      left: 8px;
+      width: 2px;
+      height: 18px;
+    }
+
+    /* Non-intrusive lower-third floating prompt so the Sunset Vista is 100% unobstructed on Frame 1! */
+    #intro-overlay {
+      position: fixed;
+      left: 50%;
+      bottom: 92px;
+      transform: translateX(-50%);
+      z-index: 15;
+      text-align: center;
+      pointer-events: none;
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+    #intro-overlay.hidden {
+      opacity: 0;
+      transform: translateX(-50%) translateY(10px);
+    }
+
+    .intro-card {
+      background: linear-gradient(180deg, rgba(24, 15, 36, 0.42) 0%, rgba(16, 11, 26, 0.62) 100%);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 188, 112, 0.32);
+      border-radius: 16px;
+      padding: 12px 26px 13px;
+      box-shadow: 0 12px 38px rgba(0, 0, 0, 0.35), 0 0 28px rgba(255, 138, 42, 0.12);
+    }
+
+    .intro-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 3.5px;
+      color: #ffd394;
+      text-shadow: 0 2px 12px rgba(255, 128, 24, 0.55);
+      margin-bottom: 5px;
+    }
+
+    .intro-cta {
+      font-size: 13.5px;
+      color: rgba(255, 246, 234, 0.96);
+      margin-bottom: 6px;
+    }
+
+    .intro-keys {
+      font-size: 12px;
+      color: rgba(255, 226, 196, 0.78);
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Selected Block Name Toast above Hotbar */
+    #block-label {
+      position: fixed;
+      left: 50%;
+      bottom: 78px;
+      transform: translateX(-50%);
+      font-size: 13.5px;
+      font-weight: 500;
+      letter-spacing: 0.8px;
+      color: #ffe8c4;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      z-index: 12;
+    }
+    #block-label.show {
+      opacity: 1;
+    }
+
+    /* Classic 9-Slot Minecraft Hotbar */
+    #hotbar {
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 4px;
+      padding: 5px;
+      background: rgba(18, 13, 28, 0.62);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(255, 198, 132, 0.28);
+      border-radius: 10px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+      z-index: 14;
+    }
+
+    .hotbar-slot {
+      width: 48px;
+      height: 48px;
+      position: relative;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 220, 180, 0.16);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.1s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+
+    .hotbar-slot.active {
+      border-color: #ffb65c;
+      background: rgba(255, 172, 75, 0.18);
+      box-shadow: 0 0 14px rgba(255, 158, 56, 0.42), inset 0 0 8px rgba(255, 200, 120, 0.22);
+      transform: translateY(-2px) scale(1.05);
+    }
+
+    .hotbar-slot img {
+      width: 36px;
+      height: 36px;
+      image-rendering: pixelated;
+      pointer-events: none;
+    }
+
+    .slot-num {
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      font-size: 10px;
+      color: rgba(255, 232, 204, 0.65);
+      pointer-events: none;
+    }
+
+    /* E-Key Creative Block Inventory Modal */
+    #inventory-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(12, 8, 22, 0.58);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+    }
+    #inventory-modal.open {
+      display: flex;
+    }
+
+    .inv-panel {
+      background: rgba(26, 19, 39, 0.92);
+      border: 1.5px solid rgba(255, 190, 118, 0.38);
+      border-radius: 16px;
+      padding: 20px 24px;
+      width: min(560px, 92vw);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+    }
+
+    .inv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 200, 140, 0.16);
+    }
+
+    .inv-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffd394;
+      letter-spacing: 1px;
+    }
+
+    .inv-header span {
+      font-size: 12px;
+      color: rgba(255, 230, 200, 0.68);
+    }
+
+    #inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .inv-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 170, 0.16);
+      border-radius: 8px;
+      padding: 8px 4px;
+      color: #fff3e2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease, transform 0.1s ease;
+    }
+    .inv-item:hover {
+      background: rgba(255, 168, 72, 0.2);
+      border-color: #ffb457;
+      transform: translateY(-1px);
+    }
+    .inv-item img {
+      width: 38px;
+      height: 38px;
+      image-rendering: pixelated;
+    }
+    .inv-item span {
+      font-size: 11.5px;
+      color: rgba(255, 236, 212, 0.9);
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container"></div>
+
+  <div id="top-hud">
+    <div id="mode-badge" class="glass-pill"></div>
+    <div id="altitude-readout" class="glass-pill">海拔 +54m</div>
+  </div>
+
+  <div id="controls-hint" class="glass-pill">
+    <span><kbd>左键</kbd>破坏 <kbd>右键</kbd>放置 <kbd>中键</kbd>拾取 · <kbd>E</kbd>方块库 · <kbd>R</kbd>重回云端 · <kbd>M</kbd>静音</span>
+  </div>
+
+  <div id="crosshair"></div>
+
+  <div id="intro-overlay">
+    <div class="intro-card">
+      <div class="intro-title">ETERNAL SUNSET · 永恒日落</div>
+      <div class="intro-cta">点击画面进入第一人称滑翔 · 俯瞰海岸缓缓降落</div>
+      <div class="intro-keys">
+        <span><kbd>WASD</kbd> 滑翔/移动</span>
+        <span><kbd>左键</kbd>破坏 <kbd>右键</kbd>放置</span>
+        <span><kbd>双击空格</kbd> / <kbd>F</kbd> 随时起飞</span>
+        <span><kbd>1-9</kbd> / <kbd>滚轮</kbd> 切换方块</span>
+        <span><kbd>E</kbd> 完整物品库</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="block-label"></div>
+  <div id="hotbar"></div>
+
+  <div id="inventory-modal">
+    <div class="inv-panel">
+      <div class="inv-header">
+        <h2>创造方块物品库</h2>
+        <span>点击方块放入当前快捷栏槽位 · 按 <kbd>E</kbd> 或 <kbd>ESC</kbd> 关闭</span>
+      </div>
+      <div id="inventory-grid"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

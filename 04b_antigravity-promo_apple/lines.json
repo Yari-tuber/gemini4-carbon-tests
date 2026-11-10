@@ -1,0 +1,55 @@
+[
+  {
+    "id": "L1",
+    "text": "认识 Google Antigravity，为智能体时代重构的开发平台。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "rate": "+4%",
+    "pitch": "+0Hz"
+  },
+  {
+    "id": "L2",
+    "text": "只需一句自然语言，你的意图即刻化为全局行动。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "rate": "+4%",
+    "pitch": "+0Hz"
+  },
+  {
+    "id": "L3",
+    "text": "在 Antigravity IDE 中，Tab 键预判下一处脉络，让编码行云流水。",
+    "asr": "在 Anti Gravity IDE 中，Tab 建议判下一处脉络，让编码行于流水。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "rate": "+4%",
+    "pitch": "+0Hz"
+  },
+  {
+    "id": "L4",
+    "text": "多路子智能体跨工作区并行探索，定时任务在后台全天值守。",
+    "asr": "多路子智能体跨工作区并行探索，定时任务在后台全天职守。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "rate": "+4%",
+    "pitch": "+0Hz"
+  },
+  {
+    "id": "L5",
+    "text": "从架构计划到走查报告，更有浏览器智能体亲自启动页面、实机验证。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "rate": "+4%",
+    "pitch": "+0Hz"
+  },
+  {
+    "id": "L6",
+    "text": "从命令行工具、Python SDK，到开放的插件市场与 MCP 生态。",
+    "asr": "从命令行工具、拍放 SDK，到开放的插件市场与 MCP 生态。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "rate": "+4%",
+    "pitch": "+0Hz"
+  },
+  {
+    "id": "L7",
+    "text": "Google Antigravity。当工程脱离引力，让创造自由升空。",
+    "asr": "Google Anti-Gravity。当工程脱离引力，让创造自由升空。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "rate": "+2%",
+    "pitch": "+0Hz"
+  }
+]

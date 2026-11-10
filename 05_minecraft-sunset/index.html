@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minecraft · 永恒日落 (Eternal Sunset Shaderpack Edition)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #100b1a;
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: #fff6ea;
+    }
+
+    #game-canvas-container {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* HUD Layer */
+    #hud {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity 0.35s ease;
+    }
+
+    body.cinema-mode #hud {
+      opacity: 0;
+    }
+
+    /* Crosshair & Subtle Gliding Horizon Wings */
+    #crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      transform: translate(-50%, -50%);
+      opacity: 0.88;
+    }
+    #crosshair::before,
+    #crosshair::after {
+      content: '';
+      position: absolute;
+      background: rgba(255, 244, 224, 0.92);
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+    }
+    #crosshair::before {
+      top: 9px;
+      left: 2px;
+      width: 16px;
+      height: 2px;
+    }
+    #crosshair::after {
+      top: 2px;
+      left: 9px;
+      width: 2px;
+      height: 16px;
+    }
+
+    /* Top-left Controls & Telemetry Panel */
+    #top-left-panel {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 336px;
+    }
+
+    .glass-card {
+      background: linear-gradient(135deg, rgba(18, 11, 28, 0.66), rgba(38, 19, 34, 0.50));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 186, 110, 0.26);
+      border-radius: 12px;
+      padding: 11px 14px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.42);
+    }
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      color: #ffd28c;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      white-space: nowrap;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 8px rgba(255, 120, 30, 0.45);
+    }
+
+    .mode-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+      background: linear-gradient(90deg, #ff7b29, #ffaa3b);
+      color: #1c0f18;
+      box-shadow: 0 0 14px rgba(255, 140, 40, 0.55);
+    }
+
+    .mode-pill.walking {
+      background: linear-gradient(90deg, #68b85e, #9ad66c);
+      box-shadow: 0 0 12px rgba(110, 190, 90, 0.45);
+    }
+
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 6px;
+      padding-top: 7px;
+      border-top: 1px solid rgba(255, 200, 140, 0.15);
+      font-size: 11.5px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      color: rgba(255, 224, 195, 0.62);
+      font-size: 10.5px;
+    }
+
+    .stat-value {
+      font-weight: 700;
+      color: #ffe5bd;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Sunset Odyssey Quest & Skills Card */
+    .quest-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #ffd685;
+      margin-bottom: 7px;
+    }
+    .score-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 168, 52, 0.22);
+      border: 1px solid rgba(255, 190, 90, 0.48);
+      padding: 2px 10px;
+      border-radius: 999px;
+      color: #fff0c2;
+      font-variant-numeric: tabular-nums;
+      box-shadow: 0 0 12px rgba(255, 145, 30, 0.3);
+    }
+    .combo-tag {
+      font-size: 11px;
+      color: #ff9e44;
+      font-weight: 800;
+      display: none;
+    }
+    .combo-tag.active {
+      display: inline;
+    }
+    .quest-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 8px;
+    }
+    .quest-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 196, 130, 0.2);
+      border-radius: 8px;
+      padding: 5px 9px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+    }
+    .quest-val {
+      font-weight: 700;
+      color: #ffdf9e;
+      font-variant-numeric: tabular-nums;
+    }
+    .skill-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      pointer-events: auto;
+    }
+    .skill-pill {
+      background: rgba(255, 172, 84, 0.13);
+      border: 1px solid rgba(255, 188, 108, 0.34);
+      border-radius: 8px;
+      padding: 5px 6px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #ffe4b8;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      white-space: nowrap;
+    }
+    .skill-pill:hover {
+      background: rgba(255, 158, 60, 0.32);
+      border-color: #ffc270;
+      transform: translateY(-1px);
+    }
+    .skill-pill.active {
+      background: linear-gradient(90deg, rgba(255, 136, 36, 0.55), rgba(255, 184, 64, 0.55));
+      border-color: #ffe08c;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(255, 156, 45, 0.55);
+    }
+
+    .controls-list {
+      font-size: 11.5px;
+      line-height: 1.68;
+      color: rgba(255, 236, 216, 0.86);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .controls-list.collapsed {
+      display: none;
+    }
+
+    .key-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      margin-right: 3px;
+      border-radius: 5px;
+      background: rgba(255, 192, 120, 0.18);
+      border: 1px solid rgba(255, 192, 120, 0.36);
+      color: #ffd28a;
+      font-size: 10.5px;
+      font-weight: 600;
+    }
+
+    /* Top-right Quick Actions & Shaderpack Panel */
+    #top-right-panel {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .top-btn-row {
+      display: flex;
+      gap: 7px;
+    }
+
+    .hud-btn {
+      background: rgba(24, 14, 34, 0.68);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 186, 110, 0.30);
+      color: #ffe2b8;
+      padding: 6px 11px;
+      border-radius: 9px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .hud-btn:hover {
+      background: rgba(255, 140, 50, 0.32);
+      border-color: #ffb866;
+      transform: translateY(-1px);
+    }
+
+    #shader-panel {
+      width: 265px;
+      display: none;
+      flex-direction: column;
+      gap: 9px;
+    }
+    #shader-panel.open {
+      display: flex;
+    }
+    .shader-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 11.5px;
+    }
+    .shader-row-header {
+      display: flex;
+      justify-content: space-between;
+      color: #ffdfb2;
+    }
+    .shader-row input[type="range"] {
+      width: 100%;
+      accent-color: #ff942e;
+      cursor: pointer;
+    }
+
+    /* Mode Transition & Status Toast */
+    #mode-toast {
+      position: absolute;
+      top: 72px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, rgba(26, 14, 34, 0.84), rgba(54, 24, 38, 0.84));
+      border: 1px solid rgba(255, 182, 102, 0.45);
+      padding: 7px 20px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffdfa8;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+    }
+    #mode-toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(4px);
+    }
+
+    /* Non-intrusive Click-to-Lock Banner above Hotbar */
+    #click-prompt {
+      position: absolute;
+      bottom: 108px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, rgba(22, 12, 30, 0.74), rgba(56, 24, 34, 0.74));
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 178, 92, 0.52);
+      border-radius: 999px;
+      padding: 8px 22px;
+      font-size: 13px;
+      color: #ffe6be;
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.5), 0 0 22px rgba(255, 136, 34, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+      animation: pulsePrompt 2.4s infinite ease-in-out;
+      transition: opacity 0.3s ease;
+    }
+    #click-prompt.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff942e;
+      box-shadow: 0 0 10px #ff942e;
+    }
+
+    @keyframes pulsePrompt {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.025); }
+    }
+
+    /* Bottom Hotbar & Active Block Label */
+    #bottom-hud {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      pointer-events: auto;
+    }
+
+    #active-block-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffe4b5;
+      background: rgba(18, 11, 26, 0.68);
+      padding: 3px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 188, 112, 0.26);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    #hotbar {
+      display: flex;
+      gap: 6px;
+      padding: 6px;
+      background: rgba(18, 11, 26, 0.76);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255, 184, 108, 0.34);
+      border-radius: 12px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55);
+    }
+
+    .hotbar-slot {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(255, 210, 160, 0.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+    .hotbar-slot:hover {
+      background: rgba(255, 180, 100, 0.14);
+    }
+    .hotbar-slot.active {
+      background: rgba(255, 158, 64, 0.24);
+      border-color: #ffb85c;
+      box-shadow: 0 0 14px rgba(255, 154, 56, 0.5), inset 0 0 8px rgba(255, 190, 110, 0.3);
+      transform: translateY(-3px) scale(1.05);
+    }
+    .hotbar-slot img {
+      width: 36px;
+      height: 36px;
+      image-rendering: pixelated;
+    }
+    .slot-key {
+      position: absolute;
+      top: 3px;
+      left: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255, 224, 185, 0.72);
+    }
+
+    /* Creative Block Inventory Modal (E key) */
+    #inventory-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(12, 7, 20, 0.62);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    #inventory-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .inventory-box {
+      background: linear-gradient(145deg, rgba(28, 16, 40, 0.94), rgba(44, 22, 38, 0.94));
+      border: 1.5px solid rgba(255, 184, 108, 0.45);
+      border-radius: 16px;
+      padding: 22px 26px;
+      width: min(540px, 92vw);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+    }
+    .inventory-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 190, 120, 0.22);
+    }
+    .inventory-header h2 {
+      font-size: 16.5px;
+      color: #ffd28e;
+    }
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .inv-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 6px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 200, 140, 0.18);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .inv-item:hover {
+      background: rgba(255, 156, 64, 0.24);
+      border-color: #ffb85c;
+      transform: translateY(-2px);
+    }
+    .inv-item img {
+      width: 42px;
+      height: 42px;
+      image-rendering: pixelated;
+    }
+    .inv-item span {
+      font-size: 11.5px;
+      color: #ffe6c4;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-canvas-container"></div>
+
+  <div id="hud">
+    <div id="crosshair"></div>
+
+    <div id="top-left-panel">
+      <div class="glass-card">
+        <div class="brand-title">
+          <span>🌅 MINECRAFT · 永恒日落</span>
+          <span id="mode-badge" class="mode-pill">🪽 高空滑翔</span>
+        </div>
+        <div class="telemetry-grid">
+          <div class="stat-item">
+            <span class="stat-label">海拔高度</span>
+            <span id="stat-alt" class="stat-value">42.0 m</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">巡航速度</span>
+            <span id="stat-speed" class="stat-value">11.5 m/s</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">坐标 (X, Z)</span>
+            <span id="stat-pos" class="stat-value">-2, 34</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <div class="quest-header">
+          <span>🏆 落日巡礼 · 探索与特技</span>
+          <span class="score-pill">
+            <span>✦ 星辉</span>
+            <span id="stat-score">0</span>
+            <span id="stat-combo" class="combo-tag">x1</span>
+          </span>
+        </div>
+        <div class="quest-grid">
+          <div class="quest-box">
+            <span>⭕ 御风星环</span>
+            <span id="stat-rings" class="quest-val">0 / 12</span>
+          </div>
+          <div class="quest-box">
+            <span>🔥 远古祭坛</span>
+            <span id="stat-altars" class="quest-val">0 / 5</span>
+          </div>
+        </div>
+        <div class="skill-bar">
+          <div id="skill-grapple" class="skill-pill" title="向准星指向的山崖、树木或星环发射飞索高速突进 (Q)">🪝 飞索 (Q)</div>
+          <div id="skill-skywalk" class="skill-pill" title="开启后在空中步行时脚下自动铺设手持方块 (V)">🌉 踏空桥 (V)</div>
+          <div id="skill-blueprint" class="skill-pill" title="在准星处一键生成落日凉亭/篝火营地/弹射跳台 (B)">🏰 造景 (B)</div>
+        </div>
+      </div>
+
+      <div id="controls-card" class="glass-card controls-list">
+        <div><span class="key-tag">WASD</span>移动 / 滑翔姿态 &nbsp;<span class="key-tag">鼠标</span>自由视角</div>
+        <div><span class="key-tag">F</span>或<span class="key-tag">双击空格</span>起飞/推进 &nbsp;<span class="key-tag">Q</span>飞索抓钩突进</div>
+        <div><span class="key-tag">V</span>踏空自动筑桥 &nbsp;<span class="key-tag">B</span>一键建造凉亭/营地/跳台</div>
+        <div><span class="key-tag">左键</span>破坏方块 &nbsp;<span class="key-tag">右键</span>放置 &nbsp;<span class="key-tag">1-9/E</span>物品与背包</div>
+        <div><span class="key-tag">R</span>重返高空 &nbsp;<span class="key-tag">G</span>光影调参 &nbsp;<span class="key-tag">H</span>折叠 &nbsp;<span class="key-tag">C</span>纯净壁纸</div>
+      </div>
+    </div>
+
+    <div id="top-right-panel">
+      <div class="top-btn-row">
+        <button id="btn-shader" class="hud-btn" title="实时调节光影包参数 (G)">✨ 光影调参 (G)</button>
+        <button id="btn-respawn" class="hud-btn" title="重返高空滑翔俯瞰点 (R)">🪽 重返高空 (R)</button>
+        <button id="btn-takeoff" class="hud-btn" title="立即起飞或推进爬升 (F)">🚀 随时起飞 (F)</button>
+        <button id="btn-inventory" class="hud-btn" title="打开建筑方块背包 (E)">🎒 方块库 (E)</button>
+        <button id="btn-audio" class="hud-btn" title="切换海浪与滑翔风声 (M)">🔊 环境音</button>
+      </div>
+
+      <div id="shader-panel" class="glass-card">
+        <div class="shader-row">
+          <div class="shader-row-header"><span>☀️ 夕阳悬海高度</span><span id="val-sun">4.2°</span></div>
+          <input id="slider-sun" type="range" min="2.2" max="14.0" step="0.2" value="4.2" />
+        </div>
+        <div class="shader-row">
+          <div class="shader-row-header"><span>☁️ 3D 体积晚霞云</span><span id="val-cloud">65%</span></div>
+          <input id="slider-cloud" type="range" min="0" max="1.0" step="0.05" value="0.65" />
+        </div>
+        <div class="shader-row">
+          <div class="shader-row-header"><span>✨ 丁达尔体积光束</span><span id="val-godray">100%</span></div>
+          <input id="slider-godray" type="range" min="0" max="2.0" step="0.1" value="1.0" />
+        </div>
+        <div class="shader-row">
+          <div class="shader-row-header"><span>🌊 海面日光路强度</span><span id="val-sunroad">115%</span></div>
+          <input id="slider-sunroad" type="range" min="0.4" max="2.0" step="0.05" value="1.15" />
+        </div>
+        <div class="shader-row">
+          <div class="shader-row-header"><span>🌫️ 山谷海湾薄雾</span><span id="val-mist">100%</span></div>
+          <input id="slider-mist" type="range" min="0" max="2.0" step="0.1" value="1.0" />
+        </div>
+      </div>
+    </div>
+
+    <div id="mode-toast">已进入高空滑翔模式 · 俯瞰落日海岸</div>
+
+    <div id="click-prompt">
+      <span class="pulse-dot"></span>
+      <span>点击画面锁定准星自由翱翔 · 落地自动切步行 · 按 <b>F</b> 随时重新起飞</span>
+    </div>
+
+    <div id="bottom-hud">
+      <div id="active-block-label">橡木木板 (Oak Planks)</div>
+      <div id="hotbar"></div>
+    </div>
+  </div>
+
+  <!-- Creative Block Inventory Modal -->
+  <div id="inventory-modal">
+    <div class="inventory-box">
+      <div class="inventory-header">
+        <h2>🧱 落日海岸创造背包 (点击替换当前手持方块)</h2>
+        <button id="btn-close-inv" class="hud-btn">关闭 (E / Esc)</button>
+      </div>
+      <div id="inventory-grid" class="inventory-grid"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

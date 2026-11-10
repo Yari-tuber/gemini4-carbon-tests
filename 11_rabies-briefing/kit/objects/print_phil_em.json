@@ -1,0 +1,21 @@
+{
+  "id": "print_phil_em",
+  "w": 1636,
+  "h": 2121,
+  "anchors": {},
+  "print": true,
+  "prep": {
+    "src": "sources\\raw\\em_bullet.jpg",
+    "id": "print_phil_em",
+    "crop": "60,60,1775,2330",
+    "w": 1500,
+    "border": 0.045,
+    "sat": 0.85
+  },
+  "credit": {
+    "title": "Rabies Virus EM PHIL 1876.JPG",
+    "author": "CDC / Dr. Fred Murphy (Public Health Image Library #1876)",
+    "licence": "Public Domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Rabies_Virus_EM_PHIL_1876.JPG"
+  }
+}

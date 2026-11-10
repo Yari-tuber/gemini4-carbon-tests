@@ -1,0 +1,21 @@
+{
+  "id": "print_negri",
+  "w": 1636,
+  "h": 1108,
+  "anchors": {},
+  "print": true,
+  "prep": {
+    "src": "sources\\raw\\negri_cdc.jpg",
+    "id": "print_negri",
+    "crop": "40,40,1760,1155",
+    "w": 1500,
+    "border": 0.045,
+    "sat": 0.84
+  },
+  "credit": {
+    "title": "Rabies encephalitis Negri bodies PHIL 3377 lores.jpg",
+    "author": "CDC / Dr. Daniel P. Perl (Public Health Image Library #3377)",
+    "licence": "Public Domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Rabies_encephalitis_Negri_bodies_PHIL_3377_lores.jpg"
+  }
+}

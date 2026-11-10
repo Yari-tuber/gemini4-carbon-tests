@@ -1,0 +1,192 @@
+{
+  "fps": 60,
+  "bpm": 120,
+  "beat": 0.5,
+  "bar": 2,
+  "bars": 30,
+  "dur": 60,
+  "shots": [
+    {
+      "id": "S1",
+      "t0": 0,
+      "t1": 6.5,
+      "theme": "light",
+      "name": "Porcelain Liftoff & Official Lockup"
+    },
+    {
+      "id": "S2",
+      "t0": 6.5,
+      "t1": 13.5,
+      "theme": "light",
+      "name": "Natural Language Intent Composer"
+    },
+    {
+      "id": "S3",
+      "t0": 13.5,
+      "t1": 21.5,
+      "theme": "light",
+      "name": "Antigravity IDE Live Tab Flow"
+    },
+    {
+      "id": "S4",
+      "t0": 21.5,
+      "t1": 29.5,
+      "theme": "light",
+      "name": "Agent Manager & Parallel Subagents"
+    },
+    {
+      "id": "TURN",
+      "t0": 29.5,
+      "t1": 30.5,
+      "theme": "turn",
+      "name": "1.0s Silence & Space Black Iris Flip"
+    },
+    {
+      "id": "S5",
+      "t0": 30.5,
+      "t1": 39,
+      "theme": "dark",
+      "name": "Verifiable Artifacts & Live Browser Agent"
+    },
+    {
+      "id": "S6",
+      "t0": 39,
+      "t1": 46.5,
+      "theme": "dark",
+      "name": "agy CLI, Python SDK & Marketplace"
+    },
+    {
+      "id": "S7",
+      "t0": 46.5,
+      "t1": 53.5,
+      "theme": "light",
+      "name": "Minimalist Apple 6-Card Bento"
+    },
+    {
+      "id": "S8",
+      "t0": 53.5,
+      "t1": 60,
+      "theme": "light",
+      "name": "Clean Gallery Finale Lockup"
+    }
+  ],
+  "cues": {
+    "logo_lock": 2,
+    "s2_cut": 6.5,
+    "prompt_send": 11.5,
+    "s3_cut": 13.5,
+    "tab_jump1": 16,
+    "tab_jump2": 18.5,
+    "s4_cut": 21.5,
+    "sub_spawn1": 22.5,
+    "sub_spawn2": 23,
+    "sub_spawn3": 23.5,
+    "cron_toggle": 26,
+    "silence_in": 29.5,
+    "pro_drop": 30.5,
+    "browser_in": 34,
+    "browser_click": 36,
+    "s6_cut": 39,
+    "sdk_card_in": 40.5,
+    "mkt_card_in": 41.5,
+    "bento_cut": 46.5,
+    "bento_1": 46.75,
+    "bento_2": 47,
+    "bento_3": 47.25,
+    "bento_4": 47.5,
+    "bento_5": 47.75,
+    "bento_6": 48,
+    "finale_open": 53.5,
+    "finale_glint": 55
+  },
+  "silences": [
+    [
+      29.5,
+      30.5
+    ]
+  ],
+  "voices": [
+    {
+      "id": "L1",
+      "t0": 0.85,
+      "dur": 4.679,
+      "toast0": 0.8,
+      "toast1": 6.3,
+      "text": "认识 Google Antigravity，为智能体时代重构的开发平台。"
+    },
+    {
+      "id": "L2",
+      "t0": 7,
+      "dur": 3.936,
+      "toast0": 6.9,
+      "toast1": 13.1,
+      "text": "只需一句自然语言，你的意图即刻化为全局行动。"
+    },
+    {
+      "id": "L3",
+      "t0": 14,
+      "dur": 5.768,
+      "toast0": 13.9,
+      "toast1": 20.9,
+      "text": "在 Antigravity IDE 中，Tab 键预判下一处脉络，让编码行云流水。"
+    },
+    {
+      "id": "L4",
+      "t0": 22,
+      "dur": 5.627,
+      "toast0": 21.9,
+      "toast1": 28.9,
+      "text": "多路子智能体跨工作区并行探索，定时任务在后台全天值守。"
+    },
+    {
+      "id": "L5",
+      "t0": 31,
+      "dur": 6.342,
+      "toast0": 30.9,
+      "toast1": 38.5,
+      "text": "从架构计划到走查报告，更有浏览器智能体亲自启动页面、实机验证。"
+    },
+    {
+      "id": "L6",
+      "t0": 39.4,
+      "dur": 5.674,
+      "toast0": 39.3,
+      "toast1": 46.1,
+      "text": "从命令行工具、Python SDK，到开放的插件市场与 MCP 生态。"
+    },
+    {
+      "id": "L7",
+      "t0": 47.1,
+      "dur": 5.078,
+      "toast0": 47,
+      "toast1": 53.2,
+      "text": "Google Antigravity。当工程脱离引力，让创造自由升空。"
+    }
+  ],
+  "bento": [
+    {
+      "title": "多智能体协同",
+      "asset": "subagents"
+    },
+    {
+      "title": "预测式编码",
+      "asset": "ide_editor"
+    },
+    {
+      "title": "浏览器自检",
+      "asset": "browser"
+    },
+    {
+      "title": "可审阅制品",
+      "asset": "ide_artifacts"
+    },
+    {
+      "title": "终端与 SDK",
+      "asset": "cli"
+    },
+    {
+      "title": "开放插件市场",
+      "asset": "marketplace"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "em_niaid",
+  "w": 2398,
+  "h": 2473,
+  "anchors": {},
+  "print": true,
+  "prep": {
+    "src": "sources\\raw\\em_niaid.jpg",
+    "id": "em_niaid",
+    "crop": "920,240,3280,2680",
+    "w": 2200,
+    "border": 0.045,
+    "sat": 0.9
+  },
+  "credit": {
+    "title": "Rabies Virus 09282024.jpg (Colorized TEM of rabies virus particles)",
+    "author": "NIAID / Visualspecialist",
+    "licence": "CC0 1.0 Public Domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Rabies_Virus_09282024.jpg"
+  }
+}

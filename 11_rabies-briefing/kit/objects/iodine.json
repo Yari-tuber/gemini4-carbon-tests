@@ -1,0 +1,47 @@
+{
+  "id": "iodine",
+  "w": 910,
+  "h": 2200,
+  "trim": [
+    583,
+    147,
+    2615,
+    5057
+  ],
+  "anchors": {
+    "neck": [
+      0.5,
+      0.08
+    ]
+  },
+  "credit": {
+    "title": "Antique Amber Medicine Bottle (42378014251).jpg",
+    "author": "Cindy Shebley (Wikimedia Commons)",
+    "licence": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Antique_Amber_Medicine_Bottle_(42378014251).jpg"
+  },
+  "prep": {
+    "raw": "sources\\raw\\amber_bottle.jpg",
+    "id": "iodine",
+    "rotate": 0,
+    "crop": null,
+    "mask": null,
+    "mask_mul": null,
+    "mask_max": null,
+    "thin_region": null,
+    "thin_color": null,
+    "radial": null,
+    "patch": [],
+    "poly": null,
+    "cut": [],
+    "keep_largest": true,
+    "min_island": 0.002,
+    "erode": 1,
+    "sat": 0.88,
+    "contrast": 1.06,
+    "warm": 0.015,
+    "gamma": 1.0,
+    "exposure": 0.0,
+    "max": 2200
+  }
+}

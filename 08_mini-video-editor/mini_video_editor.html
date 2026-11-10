@@ -1,0 +1,4499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NovaCut Pro — 迷你多轨道非线性视频剪辑器</title>
+<style>
+  :root {
+    --bg-root: #0b0d11;
+    --bg-panel: #13161d;
+    --bg-panel-alt: #181c25;
+    --bg-elevated: #202632;
+    --bg-hover: #283040;
+    --border-subtle: #252b38;
+    --border-strong: #343d4f;
+    --text-primary: #eef2f8;
+    --text-secondary: #9aa4b8;
+    --text-muted: #646f84;
+    --accent-cyan: #00e5cc;
+    --accent-blue: #3b82f6;
+    --accent-red: #ff3b5c;
+    --accent-amber: #f59e0b;
+    --track-v1: #2b59c3;
+    --track-v2: #7c3aed;
+    --track-t1: #d97706;
+    --track-a1: #0d9488;
+    --header-w: 184px;
+    --ruler-h: 30px;
+    --lane-h: 56px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  input, textarea, select {
+    user-select: text;
+    -webkit-user-select: text;
+    font-family: inherit;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-root);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 12px;
+  }
+
+  /* Custom Scrollbars */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0e1117;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2c3444;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3d485e;
+  }
+
+  /* App Shell */
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-root);
+  }
+
+  /* Top Header Bar */
+  .topbar {
+    height: 42px;
+    min-height: 42px;
+    background: #101319;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    gap: 12px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+
+  .brand-logo {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #00e5cc 0%, #3b82f6 55%, #8b5cf6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #090b10;
+    font-weight: 900;
+    font-size: 13px;
+    box-shadow: 0 0 12px rgba(0, 229, 204, 0.3);
+  }
+
+  .project-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 11px;
+  }
+
+  .badge {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .badge.accent {
+    color: var(--accent-cyan);
+    border-color: rgba(0, 229, 204, 0.3);
+    background: rgba(0, 229, 204, 0.08);
+  }
+
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn {
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: background 0.14s, border-color 0.14s, color 0.14s, transform 0.06s;
+    white-space: nowrap;
+  }
+
+  .btn:hover:not(:disabled) {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+  }
+
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #00d4bd, #00a3ff);
+    border-color: transparent;
+    color: #061018;
+    font-weight: 700;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1bf0d9, #29b2ff);
+    border-color: transparent;
+  }
+
+  .btn-danger {
+    color: #ff6b84;
+    border-color: rgba(255, 59, 92, 0.28);
+  }
+
+  .btn-danger:hover:not(:disabled) {
+    background: rgba(255, 59, 92, 0.15);
+    border-color: rgba(255, 59, 92, 0.55);
+  }
+
+  .btn-active {
+    background: rgba(0, 229, 204, 0.14);
+    border-color: rgba(0, 229, 204, 0.55);
+    color: var(--accent-cyan);
+  }
+
+  .btn-icon {
+    width: 28px;
+    padding: 0;
+  }
+
+  /* Upper Workspace (3 Columns) */
+  .upper-workspace {
+    flex: 1 1 54%;
+    min-height: 290px;
+    display: grid;
+    grid-template-columns: 330px 1fr 308px;
+    gap: 4px;
+    padding: 4px 4px 2px 4px;
+    overflow: hidden;
+  }
+
+  .panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    height: 34px;
+    min-height: 34px;
+    padding: 0 12px;
+    background: var(--bg-panel-alt);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-primary);
+  }
+
+  /* Left Panel: Media Library */
+  .filter-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: #11141b;
+  }
+
+  .filter-tab {
+    flex: 1;
+    padding: 4px 0;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: all 0.14s;
+  }
+
+  .filter-tab:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .filter-tab.active {
+    background: var(--bg-elevated);
+    color: var(--accent-cyan);
+    border-color: rgba(0, 229, 204, 0.35);
+    font-weight: 600;
+  }
+
+  .library-tip {
+    padding: 5px 10px;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    background: #0f1218;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .asset-grid {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 7px 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: max-content;
+    gap: 7px;
+    align-content: start;
+  }
+
+  .asset-card {
+    background: var(--bg-panel-alt);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: grab;
+    transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .asset-card:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    transform: translateY(-1px);
+  }
+
+  .asset-card:active {
+    cursor: grabbing;
+  }
+
+  .asset-thumb-wrap {
+    position: relative;
+    width: 100%;
+    height: 56px;
+    min-height: 56px;
+    flex-shrink: 0;
+    background: #090b10;
+    overflow: hidden;
+  }
+
+  .asset-thumb-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .asset-type-pill {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #fff;
+    backdrop-filter: blur(4px);
+  }
+
+  .asset-dur-pill {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 10px;
+    background: rgba(0, 0, 0, 0.72);
+    color: #dbe4f3;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .asset-add-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    border: none;
+    background: var(--accent-cyan);
+    color: #061314;
+    font-weight: 900;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.92;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.12s, opacity 0.12s;
+  }
+
+  .asset-add-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  .asset-meta {
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .asset-name {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .asset-desc {
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Center Panel: Preview Monitor */
+  .monitor-panel {
+    background: #0d1016;
+  }
+
+  .monitor-stage-wrap {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    gap: 10px;
+    position: relative;
+    background: radial-gradient(circle at center, #151924 0%, #0a0c10 100%);
+  }
+
+  .canvas-viewport {
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 16 / 9;
+    height: 100%;
+    width: auto;
+    background: #040507;
+    border: 1px solid #272e3d;
+    border-radius: 4px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.65);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #previewCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    cursor: crosshair;
+  }
+
+  /* Fullscreen styling */
+  .monitor-stage-wrap:fullscreen {
+    background: #000;
+    padding: 20px;
+  }
+  .monitor-stage-wrap:fullscreen .canvas-viewport {
+    height: 92vh;
+    border-color: #222;
+  }
+
+  /* Stereo Audio VU Meter */
+  .vu-meter {
+    width: 24px;
+    height: 86%;
+    max-height: 260px;
+    background: #0b0e13;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 4px 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .vu-bars {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    gap: 3px;
+    padding: 0 1px;
+  }
+
+  .vu-col {
+    flex: 1;
+    background: #151922;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .vu-fill {
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to top, #10b981 0%, #10b981 65%, #f59e0b 86%, #ef4444 100%);
+    transition: height 0.04s linear;
+  }
+
+  .vu-label {
+    font-size: 8.5px;
+    color: var(--text-muted);
+    font-family: "Consolas", "SFMono-Regular", monospace;
+    letter-spacing: 1px;
+  }
+
+  /* Monitor Transport Bar */
+  .transport-bar {
+    height: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    background: var(--bg-panel-alt);
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .timecode-box {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-family: "JetBrains Mono", "Consolas", "SFMono-Regular", monospace;
+    background: #0a0c10;
+    border: 1px solid var(--border-subtle);
+    padding: 4px 9px;
+    border-radius: 5px;
+  }
+
+  .tc-current {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    letter-spacing: 0.6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tc-total {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .transport-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .play-btn {
+    width: 38px;
+    height: 30px;
+    border-radius: 6px;
+    background: var(--accent-cyan);
+    color: #071214;
+    border: none;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.08s, filter 0.14s;
+  }
+
+  .play-btn:hover {
+    filter: brightness(1.1);
+  }
+
+  .play-btn.playing {
+    background: var(--accent-red);
+    color: #fff;
+  }
+
+  /* Right Panel: Inspector */
+  .inspector-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .insp-section {
+    background: var(--bg-panel-alt);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 9px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .insp-sec-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .insp-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .insp-label {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    min-width: 62px;
+  }
+
+  .insp-control {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .insp-val {
+    min-width: 42px;
+    text-align: right;
+    font-family: "Consolas", monospace;
+    font-size: 11px;
+    color: var(--accent-cyan);
+    font-variant-numeric: tabular-nums;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: #2b3344;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    border: 2px solid #0b0e14;
+    box-shadow: 0 0 6px rgba(0, 229, 204, 0.5);
+    cursor: pointer;
+  }
+
+  .insp-text-input {
+    width: 100%;
+    background: #0e1117;
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    color: var(--text-primary);
+    padding: 6px 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    resize: vertical;
+    min-height: 44px;
+  }
+
+  .insp-text-input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+  }
+
+  .color-swatches {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .color-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+
+  .color-swatch:hover {
+    transform: scale(1.15);
+  }
+
+  input[type="color"] {
+    width: 26px;
+    height: 22px;
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .empty-inspector {
+    padding: 14px 10px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 11.5px;
+    line-height: 1.65;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px dashed var(--border-subtle);
+    border-radius: 6px;
+  }
+
+  .shortcut-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    font-size: 10.5px;
+    color: var(--text-secondary);
+  }
+
+  .kbd {
+    display: inline-block;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: #0d1016;
+    border: 1px solid var(--border-strong);
+    font-family: "Consolas", monospace;
+    font-size: 10px;
+    color: var(--text-primary);
+  }
+
+  /* Lower Workspace: Multi-Track NLE Timeline */
+  .timeline-workspace {
+    flex: 0 0 44%;
+    min-height: 255px;
+    max-height: 50vh;
+    margin: 2px 4px 4px 4px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .timeline-toolbar {
+    height: 36px;
+    min-height: 36px;
+    padding: 0 10px;
+    background: var(--bg-panel-alt);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .tl-tools-left, .tl-tools-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tl-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--border-subtle);
+    margin: 0 2px;
+  }
+
+  .status-pill {
+    font-size: 11px;
+    color: var(--text-secondary);
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #0e1117;
+    border: 1px solid var(--border-subtle);
+    max-width: 340px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Timeline Split Grid: Track Headers + Scrollable Lanes */
+  .timeline-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .track-headers {
+    width: var(--header-w);
+    min-width: var(--header-w);
+    background: #12151c;
+    border-right: 1px solid var(--border-strong);
+    display: flex;
+    flex-direction: column;
+    z-index: 20;
+  }
+
+  .ruler-corner {
+    height: var(--ruler-h);
+    min-height: var(--ruler-h);
+    border-bottom: 1px solid var(--border-subtle);
+    background: #151922;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .track-header-list {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .track-header {
+    height: var(--lane-h);
+    min-height: var(--lane-h);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0 8px 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #131720;
+    position: relative;
+  }
+
+  .track-header::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+  }
+
+  .track-header[data-track="V2"]::before { background: var(--track-v2); }
+  .track-header[data-track="V1"]::before { background: var(--track-v1); }
+  .track-header[data-track="T1"]::before { background: var(--track-t1); }
+  .track-header[data-track="A1"]::before { background: var(--track-a1); }
+
+  .th-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .th-title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 700;
+    font-size: 11.5px;
+  }
+
+  .th-code {
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-family: "Consolas", monospace;
+    color: #fff;
+  }
+
+  .th-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .th-btns {
+    display: flex;
+    gap: 3px;
+  }
+
+  .th-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .th-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  .th-btn.off {
+    background: rgba(255, 59, 92, 0.16);
+    color: #ff6b84;
+    border-color: rgba(255, 59, 92, 0.35);
+  }
+
+  /* Scrollable Timeline Stage */
+  .timeline-scroll {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: auto;
+    position: relative;
+    background: #0d1016;
+  }
+
+  .timeline-stage {
+    position: relative;
+    min-width: 100%;
+    height: calc(var(--ruler-h) + var(--lane-h) * 4);
+  }
+
+  .ruler-wrap {
+    position: sticky;
+    top: 0;
+    height: var(--ruler-h);
+    background: #151922;
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 12;
+    cursor: pointer;
+  }
+
+  #rulerCanvas {
+    display: block;
+    height: 100%;
+  }
+
+  .lanes-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .track-lane {
+    position: relative;
+    height: var(--lane-h);
+    border-bottom: 1px solid #1c212c;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+    background-size: 80px 100%;
+    transition: background-color 0.12s;
+  }
+
+  .track-lane.drag-over {
+    background-color: rgba(0, 229, 204, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(0, 229, 204, 0.4);
+  }
+
+  .track-lane.locked-lane {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.015),
+      rgba(255, 255, 255, 0.015) 8px,
+      transparent 8px,
+      transparent 16px
+    );
+  }
+
+  /* Timeline Clip Block */
+  .tl-clip {
+    position: absolute;
+    top: 5px;
+    height: calc(var(--lane-h) - 10px);
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: grab;
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: box-shadow 0.1s;
+    z-index: 4;
+  }
+
+  .tl-clip:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+
+  .tl-clip.selected {
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 2px var(--accent-cyan), 0 4px 14px rgba(0, 0, 0, 0.65);
+    z-index: 8;
+  }
+
+  .tl-clip.dragging {
+    opacity: 0.88;
+    cursor: grabbing;
+    z-index: 10;
+  }
+
+  .tl-clip.type-video-v1 {
+    background: linear-gradient(180deg, #2b59c3 0%, #1d3c87 100%);
+  }
+
+  .tl-clip.type-video-v2 {
+    background: linear-gradient(180deg, #7c3aed 0%, #5221a6 100%);
+  }
+
+  .tl-clip.type-text {
+    background: linear-gradient(180deg, #d97706 0%, #924b05 100%);
+  }
+
+  .tl-clip.type-audio {
+    background: linear-gradient(180deg, #0f766e 0%, #0a4945 100%);
+  }
+
+  .clip-header {
+    padding: 3px 10px 2px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.24);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .clip-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .clip-dur {
+    font-size: 9.5px;
+    font-family: "Consolas", monospace;
+    opacity: 0.82;
+    flex-shrink: 0;
+  }
+
+  .clip-body-canvas {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: calc(100% - 18px);
+    pointer-events: none;
+    opacity: 0.88;
+  }
+
+  .clip-text-preview {
+    padding: 2px 10px 4px 10px;
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+  }
+
+  /* Trim Handles */
+  .trim-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 9px;
+    cursor: ew-resize;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.18);
+    transition: background 0.12s;
+  }
+
+  .trim-handle::after {
+    content: "";
+    width: 2px;
+    height: 16px;
+    border-radius: 1px;
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  .trim-handle:hover,
+  .tl-clip.selected .trim-handle {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .tl-clip.selected .trim-handle::after {
+    background: #fff;
+  }
+
+  .trim-left {
+    left: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .trim-right {
+    right: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  /* Drop Preview Ghost */
+  .drop-ghost {
+    position: absolute;
+    top: 5px;
+    height: calc(var(--lane-h) - 10px);
+    border-radius: 5px;
+    border: 2px dashed var(--accent-cyan);
+    background: rgba(0, 229, 204, 0.16);
+    pointer-events: none;
+    z-index: 9;
+    display: none;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 11px;
+    color: var(--accent-cyan);
+    font-weight: 600;
+  }
+
+  /* Magnetic Snap Alignment Line */
+  .snap-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1.5px;
+    background: var(--accent-amber);
+    box-shadow: 0 0 8px var(--accent-amber);
+    pointer-events: none;
+    z-index: 16;
+    display: none;
+  }
+
+  .snap-badge {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    background: var(--accent-amber);
+    color: #111;
+    font-family: "Consolas", monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  /* Red Playhead */
+  .playhead {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent-red);
+    box-shadow: 0 0 8px rgba(255, 59, 92, 0.75);
+    z-index: 18;
+    pointer-events: none;
+    transform: translateX(-1px);
+  }
+
+  .playhead-head {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 15px;
+    height: 18px;
+    background: var(--accent-red);
+    clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%);
+    cursor: ew-resize;
+    pointer-events: auto;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  .playhead-head::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <!-- Top Header -->
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div class="brand">
+        <div class="brand-logo">N</div>
+        <span>NovaCut Pro</span>
+      </div>
+      <div class="project-meta">
+        <span class="badge accent">1280×720 HD</span>
+        <span class="badge">30.00 FPS</span>
+        <span class="badge" id="clipCountBadge">8 个轨道片段</span>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <button class="btn" id="btnUndo" title="撤销 (Ctrl+Z)" disabled>↶ 撤销</button>
+      <button class="btn" id="btnRedo" title="重做 (Ctrl+Y)" disabled>↷ 重做</button>
+      <div class="tl-divider"></div>
+      <button class="btn" id="btnResetDemo" title="恢复内置演示多轨工程">↺ 恢复示例工程</button>
+      <button class="btn btn-danger" id="btnClearAll" title="清空时间轴所有片段">清空轨道</button>
+      <button class="btn btn-primary" id="btnExport" title="实时录制导出 WebM 视频文件">⤓ 导出合成短片</button>
+    </div>
+  </header>
+
+  <!-- Upper 3-Column Workspace -->
+  <section class="upper-workspace">
+    <!-- 1. Left: Built-in Procedural Media Library -->
+    <aside class="panel">
+      <div class="panel-header">
+        <div class="panel-title">✦ 内置程序化素材库</div>
+        <span class="badge" id="assetCountLabel">8 项实时资产</span>
+      </div>
+      <div class="filter-tabs" id="libraryTabs">
+        <button class="filter-tab active" data-filter="all">全部 (8)</button>
+        <button class="filter-tab" data-filter="video">动态视觉 (3)</button>
+        <button class="filter-tab" data-filter="text">文字标题 (2)</button>
+        <button class="filter-tab" data-filter="audio">合成音效 (3)</button>
+      </div>
+      <div class="library-tip">
+        <span>支持拖拽至下方轨道，或点「+」插入指针处</span>
+      </div>
+      <div class="asset-grid" id="assetGrid"></div>
+    </aside>
+
+    <!-- 2. Center: Real-time Composite Preview Monitor -->
+    <main class="panel monitor-panel">
+      <div class="panel-header">
+        <div class="panel-title">◉ 实时多轨合成监视器 (Program)</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button class="btn btn-active" id="btnWaveOverlay" style="height:24px;padding:0 8px;font-size:10.5px;" title="在画面底部叠加实时动态音频波形">〰 动态音频波形</button>
+          <button class="btn btn-active" id="btnSafeGuides" style="height:24px;padding:0 8px;font-size:10.5px;" title="显示选中图层的变换线框（可直接在画面拖拽位置）">⊞ 图层线框</button>
+        </div>
+      </div>
+
+      <div class="monitor-stage-wrap" id="monitorStageWrap">
+        <div class="canvas-viewport" id="canvasViewport">
+          <canvas id="previewCanvas" width="1280" height="720"></canvas>
+        </div>
+        <!-- Real-time Stereo VU Meter -->
+        <div class="vu-meter" title="实时合成音频电平表 (dBFS)">
+          <span class="vu-label">dB</span>
+          <div class="vu-bars">
+            <div class="vu-col"><div class="vu-fill" id="vuLeft"></div></div>
+            <div class="vu-col"><div class="vu-fill" id="vuRight"></div></div>
+          </div>
+          <span class="vu-label">LR</span>
+        </div>
+      </div>
+
+      <div class="transport-bar">
+        <div class="timecode-box" title="当前精确时间码 (时:分:秒:帧 @ 30fps)">
+          <span class="tc-current" id="tcCurrent">00:00:00:00</span>
+          <span class="tc-total" id="tcTotal">/ 00:00:12:00</span>
+        </div>
+
+        <div class="transport-controls">
+          <button class="btn btn-icon" id="btnSkipStart" title="跳至开头 (Home)">⏮</button>
+          <button class="btn btn-icon" id="btnPrevFrame" title="上一帧 (←)">⏪</button>
+          <button class="play-btn" id="btnPlayPause" title="播放 / 暂停 (Space)">▶</button>
+          <button class="btn btn-icon" id="btnNextFrame" title="下一帧 (→)">⏩</button>
+          <button class="btn btn-icon btn-active" id="btnLoop" title="循环播放">🔁</button>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button class="btn" id="btnFullscreen" title="全屏预览监视器">⛶ 全屏</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 3. Right: Real-time Property Inspector -->
+    <aside class="panel">
+      <div class="panel-header">
+        <div class="panel-title">⚙ 属性检查器 (Inspector)</div>
+        <span class="badge" id="inspectorBadge">未选中</span>
+      </div>
+      <div class="inspector-body">
+        <!-- Dynamic Clip Properties Container -->
+        <div id="inspectorClipContent"></div>
+
+        <!-- Keyboard Shortcuts Reference -->
+        <div class="insp-section">
+          <div class="insp-sec-title"><span>剪辑微操快捷键</span></div>
+          <div class="shortcut-list">
+            <div><span class="kbd">Space</span> 播放 / 暂停</div>
+            <div><span class="kbd">S</span> 指针处分割</div>
+            <div><span class="kbd">Del</span> 删除选中</div>
+            <div><span class="kbd">← / →</span> 逐帧步进</div>
+            <div><span class="kbd">Ctrl+Z</span> 撤销操作</div>
+            <div><span class="kbd">Alt</span> 临时禁用磁吸</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Docked Inspector Footer: Always-visible Timeline Zoom In/Out -->
+      <div style="padding:8px 12px;background:var(--bg-panel-alt);border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:5px;">
+        <div class="insp-sec-title">
+          <span>时间轴整体缩放 (Zoom)</span>
+          <span id="zoomLabelInspector" style="color:var(--accent-cyan);font-family:Consolas,monospace;">82 px/s</span>
+        </div>
+        <div class="insp-row">
+          <div class="insp-control">
+            <button class="btn btn-icon" id="btnZoomOutInsp" style="width:22px;height:22px;" title="缩小时间轴">−</button>
+            <input type="range" id="zoomSliderInsp" min="25" max="240" step="1" value="82" />
+            <button class="btn btn-icon" id="btnZoomInInsp" style="width:22px;height:22px;" title="放大时间轴">+</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- Lower Multi-Track Non-Linear Timeline -->
+  <section class="timeline-workspace">
+    <div class="timeline-toolbar">
+      <div class="tl-tools-left">
+        <button class="btn" id="btnSplit" title="在红色播放指针处将选中片段一分为二 (快捷键: S)">✂ 分割 (Split) [S]</button>
+        <button class="btn" id="btnDuplicate" title="复制选中片段到后方 (Ctrl+D)">⧉ 复制片段</button>
+        <button class="btn btn-danger" id="btnDelete" title="删除选中片段 (快捷键: Delete / Backspace)">🗑 删除 [Del]</button>
+        <div class="tl-divider"></div>
+        <button class="btn btn-active" id="btnSnapToggle" title="拖拽与裁剪时自动磁吸对齐指针与相邻片段边缘">🧲 边缘磁吸: 开启</button>
+        <span class="status-pill" id="statusToast">已就绪 · 点击或拖拽素材上轨，拖动红针实时逐帧刷画面</span>
+      </div>
+
+      <div class="tl-tools-right">
+        <span style="color:var(--text-secondary);font-size:11px;">时间轴缩放</span>
+        <button class="btn btn-icon" id="btnZoomOutTl" style="width:24px;height:24px;">−</button>
+        <input type="range" id="zoomSliderTl" min="25" max="240" step="1" value="80" style="width:110px;" />
+        <button class="btn btn-icon" id="btnZoomInTl" style="width:24px;height:24px;">+</button>
+        <button class="btn" id="btnZoomFit" style="height:24px;padding:0 8px;font-size:11px;">适应总长</button>
+      </div>
+    </div>
+
+    <div class="timeline-body">
+      <!-- Fixed Left Track Headers -->
+      <div class="track-headers" id="trackHeaders">
+        <div class="ruler-corner">
+          <span>轨道列表</span>
+          <span style="font-family:Consolas,monospace;color:var(--accent-cyan);">30fps</span>
+        </div>
+        <div class="track-header-list" id="trackHeaderList">
+          <div class="track-header" data-track="V2">
+            <div class="th-info">
+              <div class="th-title">
+                <span class="th-code" style="background:var(--track-v2);">V2</span>
+                <span>画中画/特效轨</span>
+              </div>
+              <span class="th-sub">上层叠加合成</span>
+            </div>
+            <div class="th-btns">
+              <button class="th-btn" data-action="vis" data-track="V2" title="显示 / 隐藏轨道">👁</button>
+              <button class="th-btn" data-action="lock" data-track="V2" title="锁定 / 解锁轨道">🔓</button>
+            </div>
+          </div>
+
+          <div class="track-header" data-track="V1">
+            <div class="th-info">
+              <div class="th-title">
+                <span class="th-code" style="background:var(--track-v1);">V1</span>
+                <span>主视频轨道</span>
+              </div>
+              <span class="th-sub">底画面渲染轨</span>
+            </div>
+            <div class="th-btns">
+              <button class="th-btn" data-action="vis" data-track="V1" title="显示 / 隐藏轨道">👁</button>
+              <button class="th-btn" data-action="lock" data-track="V1" title="锁定 / 解锁轨道">🔓</button>
+            </div>
+          </div>
+
+          <div class="track-header" data-track="T1">
+            <div class="th-info">
+              <div class="th-title">
+                <span class="th-code" style="background:var(--track-t1);">T1</span>
+                <span>字幕标题轨</span>
+              </div>
+              <span class="th-sub">实时矢量文字</span>
+            </div>
+            <div class="th-btns">
+              <button class="th-btn" data-action="vis" data-track="T1" title="显示 / 隐藏轨道">👁</button>
+              <button class="th-btn" data-action="lock" data-track="T1" title="锁定 / 解锁轨道">🔓</button>
+            </div>
+          </div>
+
+          <div class="track-header" data-track="A1">
+            <div class="th-info">
+              <div class="th-title">
+                <span class="th-code" style="background:var(--track-a1);">A1</span>
+                <span>音频波形轨</span>
+              </div>
+              <span class="th-sub">WebAudio 合成</span>
+            </div>
+            <div class="th-btns">
+              <button class="th-btn" data-action="vis" data-track="A1" title="静音 / 开启音频">🔊</button>
+              <button class="th-btn" data-action="lock" data-track="A1" title="锁定 / 解锁轨道">🔓</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Scrollable Ruler + Lanes -->
+      <div class="timeline-scroll" id="timelineScroll">
+        <div class="timeline-stage" id="timelineStage">
+          <div class="ruler-wrap" id="rulerWrap">
+            <canvas id="rulerCanvas"></canvas>
+          </div>
+
+          <div class="lanes-container" id="lanesContainer">
+            <div class="track-lane" id="lane-V2" data-track="V2"></div>
+            <div class="track-lane" id="lane-V1" data-track="V1"></div>
+            <div class="track-lane" id="lane-T1" data-track="T1"></div>
+            <div class="track-lane" id="lane-A1" data-track="A1"></div>
+            <div class="drop-ghost" id="dropGhost">+ 放置至此</div>
+          </div>
+
+          <!-- Magnetic Snap Indicator -->
+          <div class="snap-line" id="snapLine">
+            <div class="snap-badge" id="snapBadge">00:00</div>
+          </div>
+
+          <!-- Red Playhead -->
+          <div class="playhead" id="playhead">
+            <div class="playhead-head" id="playheadHead" title="拖动红色播放指针实时逐帧预览"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  // =========================================================================
+  // 1. CONSTANTS & STUDIO STATE
+  // =========================================================================
+  const FPS = 30;
+  const FRAME_STEP = 1 / FPS;
+  const COMP_W = 1280;
+  const COMP_H = 720;
+  const TL_PAD_LEFT = 14;
+  const MIN_CLIP_DUR = 0.2;
+  const AUDIO_SR = 44100;
+  const AUDIO_BUF_SECONDS = 16; // 16s loopable high-res PCM per procedural audio asset
+
+  const ASSETS = [
+    {
+      id: 'vid_cyber',
+      type: 'video',
+      name: '赛博网格穿梭',
+      desc: '3D 霓虹透视地平线与复古烈日',
+      defaultDuration: 5.0,
+      color: '#00f0ff',
+      badgeText: 'VIDEO',
+      badgeBg: '#2563eb'
+    },
+    {
+      id: 'vid_aurora',
+      type: 'video',
+      name: '流体极光',
+      desc: '多层正弦北极光幕与峡湾倒影',
+      defaultDuration: 5.0,
+      color: '#00ffa3',
+      badgeText: 'VIDEO',
+      badgeBg: '#7c3aed'
+    },
+    {
+      id: 'vid_countdown',
+      type: 'video',
+      name: '复古倒计时',
+      desc: 'SMPTE 35mm 胶片雷达扫描片头',
+      defaultDuration: 5.0,
+      color: '#f5d08a',
+      badgeText: 'VIDEO',
+      badgeBg: '#b45309'
+    },
+    {
+      id: 'txt_neon',
+      type: 'text',
+      name: '霓虹赛博标题',
+      desc: '发光描边大字标题模板',
+      defaultDuration: 4.0,
+      text: 'CYBERPUNK // 视觉纪元',
+      fontSize: 58,
+      color: '#00f0ff',
+      bgOpacity: 0.0,
+      stylePreset: 'neon',
+      posX: 0,
+      posY: -175,
+      badgeText: 'TITLE',
+      badgeBg: '#d97706'
+    },
+    {
+      id: 'txt_cinema',
+      type: 'text',
+      name: '电影感底部字幕',
+      desc: '半透明磨砂底栏对白字幕',
+      defaultDuration: 4.0,
+      text: '每一帧画面皆由实时多轨引擎合成渲染',
+      fontSize: 34,
+      color: '#ffd866',
+      bgOpacity: 0.68,
+      stylePreset: 'cinema',
+      posX: 0,
+      posY: 255,
+      badgeText: 'SUBTITLE',
+      badgeBg: '#ea580c'
+    },
+    {
+      id: 'aud_synth',
+      type: 'audio',
+      name: '赛博合成器律动',
+      desc: '120BPM 电子底鼓 + 琶音贝斯',
+      defaultDuration: 6.0,
+      color: '#14b8a6',
+      badgeText: 'AUDIO',
+      badgeBg: '#0d9488'
+    },
+    {
+      id: 'aud_aurora',
+      type: 'audio',
+      name: '空灵极光环境音',
+      desc: '温暖合唱铺底 Pad + 水晶风铃',
+      defaultDuration: 6.0,
+      color: '#38bdf8',
+      badgeText: 'AUDIO',
+      badgeBg: '#0284c7'
+    },
+    {
+      id: 'aud_beep',
+      type: 'audio',
+      name: '胶片倒计时滴答',
+      desc: '1kHz 同步蜂鸣 + 放映机齿轮声',
+      defaultDuration: 3.0,
+      color: '#fbbf24',
+      badgeText: 'SFX',
+      badgeBg: '#ca8a04'
+    }
+  ];
+
+  const ASSET_MAP = Object.fromEntries(ASSETS.map(a => [a.id, a]));
+
+  const state = {
+    clips: [],
+    selectedClipId: null,
+    currentTime: 0,
+    isPlaying: false,
+    loopPlayback: true,
+    pxPerSec: 82,
+    snapEnabled: true,
+    showWaveOverlay: true,
+    showSafeGuides: true,
+    libraryFilter: 'all',
+    tracks: {
+      V2: { visible: true, locked: false },
+      V1: { visible: true, locked: false },
+      T1: { visible: true, locked: false },
+      A1: { visible: true, locked: false } // visible = unmuted for A1
+    },
+    undoStack: [],
+    redoStack: [],
+    nextClipUid: 100
+  };
+
+  // =========================================================================
+  // 2. COLOR & MATH HELPERS
+  // =========================================================================
+  function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
+  }
+
+  function hexToRgb(hex) {
+    const clean = (hex || '#00e5cc').replace('#', '');
+    const full = clean.length === 3
+      ? clean.split('').map(c => c + c).join('')
+      : clean.padEnd(6, '0').slice(0, 6);
+    const num = parseInt(full, 16);
+    return {
+      r: (num >> 16) & 255,
+      g: (num >> 8) & 255,
+      b: num & 255
+    };
+  }
+
+  function rgbaStr(rgb, a) {
+    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${clamp(a, 0, 1).toFixed(3)})`;
+  }
+
+  function hash01(n) {
+    const x = Math.sin(n * 127.1 + 311.7) * 43758.5453123;
+    return x - Math.floor(x);
+  }
+
+  function formatTimecode(sec) {
+    const s = Math.max(0, sec);
+    const totalFrames = Math.floor(s * FPS + 1e-4);
+    const ff = totalFrames % FPS;
+    const totalSec = Math.floor(totalFrames / FPS);
+    const ss = totalSec % 60;
+    const mm = Math.floor(totalSec / 60) % 60;
+    const hh = Math.floor(totalSec / 3600);
+    return (
+      String(hh).padStart(2, '0') + ':' +
+      String(mm).padStart(2, '0') + ':' +
+      String(ss).padStart(2, '0') + ':' +
+      String(ff).padStart(2, '0')
+    );
+  }
+
+  function formatRulerTime(sec, showFrames) {
+    const s = Math.max(0, sec);
+    const mm = Math.floor(s / 60);
+    const ss = Math.floor(s % 60);
+    if (!showFrames) {
+      return String(mm).padStart(2, '0') + ':' + String(ss).padStart(2, '0');
+    }
+    const ff = Math.round((s - Math.floor(s)) * FPS) % FPS;
+    return (
+      String(mm).padStart(2, '0') + ':' +
+      String(ss).padStart(2, '0') + ':' +
+      String(ff).padStart(2, '0')
+    );
+  }
+
+  function getTimelineContentEnd() {
+    let maxEnd = 10;
+    for (const c of state.clips) {
+      if (c.start + c.duration > maxEnd) maxEnd = c.start + c.duration;
+    }
+    return maxEnd;
+  }
+
+  function getProjectEnd() {
+    let maxEnd = 0;
+    for (const c of state.clips) {
+      if (c.start + c.duration > maxEnd) maxEnd = c.start + c.duration;
+    }
+    return maxEnd > 0.05 ? maxEnd : 10.0;
+  }
+
+  // =========================================================================
+  // 3. PROCEDURAL VISUAL ENGINES (DETERMINISTIC REAL-TIME CANVAS RENDERERS)
+  // =========================================================================
+  function renderCyberGrid(ctx, w, h, t, clip) {
+    const accent = hexToRgb(clip.color || '#00f0ff');
+    const horizonY = h * 0.52;
+
+    // Sky gradient
+    const skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY);
+    skyGrad.addColorStop(0, '#060312');
+    skyGrad.addColorStop(0.55, '#1b0933');
+    skyGrad.addColorStop(1, rgbaStr({ r: Math.min(255, accent.r * 0.45 + 110), g: 18, b: 115 }, 1));
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, 0, w, horizonY + 2);
+
+    // Deterministic twinkling stars
+    for (let i = 0; i < 65; i++) {
+      const sx = hash01(i * 3.1) * w;
+      const sy = hash01(i * 7.7) * horizonY * 0.85;
+      const twinkle = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * (2.2 + hash01(i) * 3) + i));
+      const r = 0.8 + hash01(i * 11.3) * 1.6;
+      ctx.fillStyle = `rgba(255,255,255,${twinkle.toFixed(2)})`;
+      ctx.fillRect(sx, sy, r, r);
+    }
+
+    // Retro Synthwave Sliced Sun
+    const sunR = h * 0.22;
+    const sunX = w * 0.5;
+    const sunY = horizonY - sunR * 0.38;
+
+    ctx.save();
+    const glowGrad = ctx.createRadialGradient(sunX, sunY, sunR * 0.2, sunX, sunY, sunR * 1.75);
+    glowGrad.addColorStop(0, 'rgba(255, 70, 160, 0.55)');
+    glowGrad.addColorStop(0.5, rgbaStr(accent, 0.22));
+    glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glowGrad;
+    ctx.fillRect(0, 0, w, horizonY);
+
+    ctx.beginPath();
+    ctx.arc(sunX, sunY, sunR, 0, Math.PI * 2);
+    ctx.clip();
+
+    const sunFill = ctx.createLinearGradient(0, sunY - sunR, 0, sunY + sunR);
+    sunFill.addColorStop(0, '#fff05a');
+    sunFill.addColorStop(0.5, '#ff5e7e');
+    sunFill.addColorStop(1, '#c81dff');
+    ctx.fillStyle = sunFill;
+    ctx.fillRect(sunX - sunR, sunY - sunR, sunR * 2, sunR * 2);
+
+    // Moving scanline cutouts on lower half of sun
+    ctx.fillStyle = '#19082e';
+    const bandScroll = (t * 18) % 18;
+    for (let y = sunY - sunR * 0.05 + bandScroll; y < sunY + sunR; y += 18) {
+      const norm = (y - sunY) / sunR;
+      const sliceH = clamp(norm * 8.5, 1.5, 9);
+      ctx.fillRect(sunX - sunR, y, sunR * 2, sliceH);
+    }
+    ctx.restore();
+
+    // Wireframe Horizon Mountains
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, horizonY);
+    for (let x = 0; x <= w; x += w / 28) {
+      const distCenter = Math.abs(x - w * 0.5) / (w * 0.5);
+      const valley = Math.pow(distCenter, 1.45);
+      const peak = (Math.sin(x * 0.018 + 1.2) * 0.5 + 0.5) * 68 + (Math.cos(x * 0.043) * 0.5 + 0.5) * 32;
+      ctx.lineTo(x, horizonY - peak * valley);
+    }
+    ctx.lineTo(w, horizonY);
+    ctx.closePath();
+    ctx.fillStyle = '#0c061a';
+    ctx.fill();
+    ctx.lineWidth = 1.6;
+    ctx.strokeStyle = rgbaStr(accent, 0.7);
+    ctx.stroke();
+    ctx.restore();
+
+    // Ground plane
+    const groundGrad = ctx.createLinearGradient(0, horizonY, 0, h);
+    groundGrad.addColorStop(0, '#160729');
+    groundGrad.addColorStop(0.35, '#090414');
+    groundGrad.addColorStop(1, '#030208');
+    ctx.fillStyle = groundGrad;
+    ctx.fillRect(0, horizonY, w, h - horizonY);
+
+    // 3D Perspective Grid Lines
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, horizonY, w, h - horizonY);
+    ctx.clip();
+
+    // Radial perspective longitudinal lines
+    ctx.strokeStyle = rgbaStr(accent, 0.62);
+    ctx.lineWidth = 1.5;
+    const numCols = 22;
+    for (let i = -numCols; i <= numCols; i++) {
+      ctx.beginPath();
+      ctx.moveTo(w * 0.5 + i * (w * 0.012), horizonY);
+      ctx.lineTo(w * 0.5 + i * (w * 0.14), h);
+      ctx.stroke();
+    }
+
+    // Scrolling horizontal Z lines (true 1/z perspective spacing)
+    const speed = 2.6;
+    const phase = (t * speed) % 1;
+    const zCount = 18;
+    for (let i = 0; i < zCount; i++) {
+      const z = (i + 1 - phase) / zCount; // approaches 0 near camera? Wait: 1/z!
+      const p = Math.pow(1 - z, 2.35);
+      const y = horizonY + p * (h - horizonY);
+      const alpha = clamp(0.15 + p * 0.85, 0, 1);
+      ctx.strokeStyle = rgbaStr(accent, alpha);
+      ctx.lineWidth = 1 + p * 2.2;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+
+    // Speed light streaks flying toward viewer
+    for (let i = 0; i < 14; i++) {
+      const prog = ((t * (0.9 + hash01(i * 5.1) * 0.8) + hash01(i * 9.3)) % 1);
+      const side = (i % 2 === 0 ? 1 : -1) * (0.18 + hash01(i * 2.7) * 0.75);
+      const p1 = Math.pow(prog, 2.4);
+      const p2 = Math.pow(Math.min(1, prog + 0.09), 2.4);
+      const x1 = w * 0.5 + side * w * (0.04 + p1 * 0.6);
+      const y1 = horizonY + p1 * (h - horizonY);
+      const x2 = w * 0.5 + side * w * (0.04 + p2 * 0.6);
+      const y2 = horizonY + p2 * (h - horizonY);
+      ctx.strokeStyle = `rgba(255, 90, 210, ${(prog * 0.85).toFixed(2)})`;
+      ctx.lineWidth = 1.5 + prog * 2.5;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // Horizon neon bloom bar
+    const bloom = ctx.createLinearGradient(0, horizonY - 14, 0, horizonY + 18);
+    bloom.addColorStop(0, 'rgba(0,0,0,0)');
+    bloom.addColorStop(0.5, rgbaStr(accent, 0.85));
+    bloom.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = bloom;
+    ctx.fillRect(0, horizonY - 14, w, 32);
+  }
+
+  function renderFluidAurora(ctx, w, h, t, clip) {
+    const accent = hexToRgb(clip.color || '#00ffa3');
+    const waterY = h * 0.73;
+
+    // Arctic night sky
+    const sky = ctx.createLinearGradient(0, 0, 0, waterY);
+    sky.addColorStop(0, '#02050d');
+    sky.addColorStop(0.55, '#061326');
+    sky.addColorStop(1, '#0a2236');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, w, h);
+
+    // Stars
+    for (let i = 0; i < 75; i++) {
+      const sx = hash01(i * 4.3 + 1) * w;
+      const sy = hash01(i * 8.9 + 2) * waterY * 0.82;
+      const a = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(t * 2.5 + i * 1.7));
+      ctx.fillStyle = `rgba(225,242,255,${a.toFixed(2)})`;
+      ctx.fillRect(sx, sy, 1.5, 1.5);
+    }
+
+    // Additive Volumetric Aurora Ribbons
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const ribbons = [
+      { rgb: accent, baseY: h * 0.34, amp: 52, freq: 0.0045, spd: 0.9, height: 185, alpha: 0.44 },
+      { rgb: { r: 30, g: 210, b: 255 }, baseY: h * 0.28, amp: 44, freq: 0.0062, spd: -0.7, height: 165, alpha: 0.34 },
+      { rgb: { r: 155, g: 75, b: 255 }, baseY: h * 0.23, amp: 38, freq: 0.0052, spd: 1.15, height: 150, alpha: 0.28 }
+    ];
+
+    const stepX = Math.max(8, Math.round(w / 96));
+    for (const rb of ribbons) {
+      for (let x = 0; x < w; x += stepX) {
+        const wave =
+          Math.sin(x * rb.freq + t * rb.spd) * rb.amp +
+          Math.cos(x * rb.freq * 1.9 - t * rb.spd * 1.3) * (rb.amp * 0.45);
+        const curtainBottom = rb.baseY + wave + rb.height * 0.55;
+        const curtainTop = curtainBottom - rb.height * (0.75 + 0.25 * Math.sin(x * 0.01 + t));
+        const shimmer = 0.65 + 0.35 * Math.sin(x * 0.028 - t * 2.4);
+
+        const g = ctx.createLinearGradient(0, curtainTop, 0, curtainBottom);
+        g.addColorStop(0, 'rgba(0,0,0,0)');
+        g.addColorStop(0.55, rgbaStr(rb.rgb, rb.alpha * shimmer * 0.55));
+        g.addColorStop(0.88, rgbaStr(rb.rgb, rb.alpha * shimmer));
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(x, curtainTop, stepX + 1, curtainBottom - curtainTop);
+      }
+    }
+    ctx.restore();
+
+    // Fjord Silhouette Mountains
+    ctx.beginPath();
+    ctx.moveTo(0, waterY);
+    for (let x = 0; x <= w; x += w / 40) {
+      const m =
+        Math.sin(x * 0.0055 + 0.4) * 42 +
+        Math.sin(x * 0.015 + 2.1) * 22 +
+        Math.cos(x * 0.033) * 9 +
+        58;
+      ctx.lineTo(x, waterY - Math.max(8, m));
+    }
+    ctx.lineTo(w, waterY);
+    ctx.closePath();
+    ctx.fillStyle = '#040a14';
+    ctx.fill();
+
+    // Fjord Water + Shimmering Reflection
+    const waterGrad = ctx.createLinearGradient(0, waterY, 0, h);
+    waterGrad.addColorStop(0, '#061523');
+    waterGrad.addColorStop(1, '#02060c');
+    ctx.fillStyle = waterGrad;
+    ctx.fillRect(0, waterY, w, h - waterY);
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let y = waterY + 3; y < h; y += 5) {
+      const depth = (y - waterY) / (h - waterY);
+      const rippleX = Math.sin(y * 0.22 - t * 4.2) * (18 * depth);
+      const bandW = w * (0.55 - depth * 0.18);
+      const cx = w * 0.5 + Math.sin(t * 0.6 + depth * 3) * 65 + rippleX;
+      const rg = ctx.createLinearGradient(cx - bandW, 0, cx + bandW, 0);
+      rg.addColorStop(0, 'rgba(0,0,0,0)');
+      rg.addColorStop(0.35, rgbaStr(accent, (1 - depth * 0.65) * 0.18));
+      rg.addColorStop(0.65, 'rgba(56, 189, 248, 0.14)');
+      rg.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = rg;
+      ctx.fillRect(cx - bandW, y, bandW * 2, 2.5);
+    }
+
+    // Floating luminous ice particles
+    for (let i = 0; i < 28; i++) {
+      const px = ((hash01(i * 6.7) * w + t * (14 + (i % 5) * 6)) % w);
+      const py = ((hash01(i * 3.9) * h - t * (10 + (i % 4) * 5)) % h + h) % h;
+      const pr = 1.2 + (i % 3) * 0.9;
+      ctx.fillStyle = rgbaStr(accent, 0.45);
+      ctx.beginPath();
+      ctx.arc(px, py, pr, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function renderVintageCountdown(ctx, w, h, t, clip) {
+    const tint = hexToRgb(clip.color || '#f5d08a');
+    const frameIdx = Math.floor(t * 24);
+    const flicker = 0.92 + 0.08 * hash01(frameIdx * 1.37);
+
+    // Aged celluloid background
+    const bgR = Math.round(tint.r * 0.78 * flicker);
+    const bgG = Math.round(tint.g * 0.72 * flicker);
+    const bgB = Math.round(tint.b * 0.58 * flicker);
+    ctx.fillStyle = `rgb(${bgR}, ${bgG}, ${bgB})`;
+    ctx.fillRect(0, 0, w, h);
+
+    const cx = w * 0.5;
+    const cy = h * 0.5;
+    const rOuter = Math.min(w, h) * 0.37;
+    const rInner = rOuter * 0.82;
+    const sweepAngle = -Math.PI / 2 + (t % 1.0) * Math.PI * 2;
+
+    // Radar exposed wedge sweep
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, rOuter, -Math.PI / 2, sweepAngle, false);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(20, 16, 12, 0.22)';
+    ctx.fill();
+    ctx.restore();
+
+    // Crosshairs & SMPTE Calibration Rings
+    ctx.strokeStyle = 'rgba(22, 18, 14, 0.82)';
+    ctx.lineWidth = Math.max(2, h * 0.004);
+    ctx.beginPath();
+    ctx.moveTo(0, cy);
+    ctx.lineTo(w, cy);
+    ctx.moveTo(cx, 0);
+    ctx.lineTo(cx, h);
+    ctx.stroke();
+
+    ctx.lineWidth = Math.max(3, h * 0.006);
+    ctx.beginPath();
+    ctx.arc(cx, cy, rOuter, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.lineWidth = Math.max(2, h * 0.0035);
+    ctx.strokeStyle = 'rgba(245, 240, 230, 0.75)';
+    ctx.beginPath();
+    ctx.arc(cx, cy, rInner, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Rotating sweep arm
+    ctx.strokeStyle = 'rgba(18, 14, 10, 0.92)';
+    ctx.lineWidth = Math.max(3.5, h * 0.0065);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(sweepAngle) * rOuter, cy + Math.sin(sweepAngle) * rOuter);
+    ctx.stroke();
+
+    // Countdown Number (5 -> 4 -> 3 -> 2 -> 1 loop)
+    const digit = 5 - (Math.floor(Math.max(0, t)) % 5);
+    ctx.fillStyle = 'rgba(18, 14, 10, 0.92)';
+    ctx.font = `800 ${Math.round(h * 0.42)}px "Segoe UI", "Arial Black", sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(digit), cx, cy + h * 0.018);
+
+    // Technical SMPTE Film Markings
+    ctx.font = `700 ${Math.round(h * 0.026)}px "Consolas", monospace`;
+    ctx.fillStyle = 'rgba(25, 20, 14, 0.72)';
+    ctx.fillText('SMPTE UNIVERSAL LEADER // 35MM ACADEMY', cx, h * 0.08);
+    ctx.fillText(`REEL 01 · FRAME ${String(frameIdx).padStart(4, '0')}`, cx, h * 0.93);
+
+    // Film Sprocket Holes (left & right strips)
+    const stripW = w * 0.048;
+    ctx.fillStyle = 'rgba(14, 11, 9, 0.88)';
+    ctx.fillRect(0, 0, stripW, h);
+    ctx.fillRect(w - stripW, 0, stripW, h);
+
+    const holeH = h * 0.065;
+    const holeW = stripW * 0.52;
+    const holeStep = h * 0.125;
+    const holeScroll = (t * 280) % holeStep;
+    ctx.fillStyle = `rgba(${bgR}, ${bgG}, ${bgB}, 0.92)`;
+    for (let y = -holeStep + holeScroll; y < h + holeStep; y += holeStep) {
+      ctx.beginPath();
+      ctx.roundRect(stripW * 0.24, y, holeW, holeH, 4);
+      ctx.roundRect(w - stripW * 0.76, y, holeW, holeH, 4);
+      ctx.fill();
+    }
+
+    // Film Vertical Scratches & Dust Specks
+    for (let s = 0; s < 3; s++) {
+      if (hash01(frameIdx * 3.1 + s) > 0.35) {
+        const sx = stripW + hash01(Math.floor(t * 6) + s * 17) * (w - stripW * 2);
+        ctx.strokeStyle = s === 0 ? 'rgba(255,250,235,0.32)' : 'rgba(20,15,10,0.35)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(sx, 0);
+        ctx.lineTo(sx + (hash01(frameIdx + s) - 0.5) * 6, h);
+        ctx.stroke();
+      }
+    }
+
+    // Heavy Projector Vignette
+    const vig = ctx.createRadialGradient(cx, cy, h * 0.28, cx, cy, w * 0.65);
+    vig.addColorStop(0, 'rgba(0,0,0,0)');
+    vig.addColorStop(0.75, 'rgba(12,8,4,0.28)');
+    vig.addColorStop(1, 'rgba(5,3,2,0.82)');
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  function renderProceduralVideoToCtx(ctx, w, h, assetId, localTime, clip) {
+    if (assetId === 'vid_cyber') {
+      renderCyberGrid(ctx, w, h, localTime, clip);
+    } else if (assetId === 'vid_aurora') {
+      renderFluidAurora(ctx, w, h, localTime, clip);
+    } else {
+      renderVintageCountdown(ctx, w, h, localTime, clip);
+    }
+  }
+
+  // =========================================================================
+  // 4. PROCEDURAL WEB AUDIO SYNTHESIS + HIGH-RES WAVEFORM ENGINE
+  // =========================================================================
+  const audioPCMStore = {};    // assetId -> Float32Array (mono 44.1kHz, 16s)
+  const audioPeakStore = {};   // assetId -> Float32Array (200 peaks/sec for crisp timeline waveforms)
+  const audioBufferStore = {}; // assetId -> AudioBuffer (populated once AudioContext initializes)
+
+  function synthesizeAllProceduralAudio() {
+    const len = AUDIO_SR * AUDIO_BUF_SECONDS;
+
+    // 1) aud_synth: 120 BPM Synthwave Kick + Driving Bass + Shimmer Arp
+    {
+      const pcm = new Float32Array(len);
+      const bassFreqs = [55.0, 43.65, 65.41, 49.0]; // A1, F1, C2, G1 (each 2 seconds = 1 bar)
+      const arpChords = [
+        [220.0, 261.63, 329.63, 392.0, 493.88, 392.0, 329.63, 261.63], // Am9
+        [174.61, 220.0, 261.63, 329.63, 392.0, 329.63, 261.63, 220.0], // Fmaj7
+        [261.63, 329.63, 392.0, 493.88, 587.33, 493.88, 392.0, 329.63], // Cmaj9
+        [196.0, 246.94, 293.66, 392.0, 440.0, 392.0, 293.66, 246.94]   // G6
+      ];
+      let bassPhase = 0;
+      let arpPhase = 0;
+      for (let i = 0; i < len; i++) {
+        const t = i / AUDIO_SR;
+        const barIdx = Math.floor(t / 2.0) % 4;
+        const beatPos = (t % 0.5) / 0.5; // 120 BPM quarter note = 0.5s
+        const step16 = Math.floor((t % 1.0) * 8) % 8;
+        const stepPos = (t * 8) % 1;
+
+        // Kick drum (pitch drop 155Hz -> 44Hz)
+        const kickEnv = Math.exp(-beatPos * 9.5);
+        const kickPhase = 2 * Math.PI * (44 * (beatPos * 0.5) + (110 / 12) * (1 - Math.exp(-beatPos * 12)));
+        const kick = Math.sin(kickPhase) * kickEnv * 0.58;
+
+        // Off-beat crisp hi-hat
+        const hatPos = ((t + 0.25) % 0.5) / 0.5;
+        const hatEnv = Math.exp(-hatPos * 26);
+        const noise = (hash01(i * 0.73) * 2 - 1);
+        const hat = noise * hatEnv * 0.14;
+
+        // Saw-ish warm bass (8th notes)
+        const fBass = bassFreqs[barIdx];
+        bassPhase += (fBass / AUDIO_SR);
+        if (bassPhase > 1) bassPhase -= 1;
+        const eighthEnv = Math.exp(-((t % 0.25) / 0.25) * 3.2);
+        const saw = (bassPhase * 2 - 1) * 0.5 + Math.sin(bassPhase * Math.PI * 2) * 0.5;
+        const bass = saw * eighthEnv * 0.28;
+
+        // Synth arpeggio (16th notes)
+        const fArp = arpChords[barIdx][step16];
+        arpPhase += (fArp / AUDIO_SR);
+        if (arpPhase > 1) arpPhase -= 1;
+        const arpEnv = Math.exp(-stepPos * 4.2) * (1 - Math.exp(-stepPos * 80));
+        const arp = (Math.sin(arpPhase * Math.PI * 2) + 0.4 * Math.sin(arpPhase * Math.PI * 4)) * arpEnv * 0.18;
+
+        pcm[i] = Math.tanh((kick + hat + bass + arp) * 1.15) * 0.88;
+      }
+      audioPCMStore.aud_synth = pcm;
+    }
+
+    // 2) aud_aurora: Ethereal Ambient Pad + Crystalline Bell Chimes
+    {
+      const pcm = new Float32Array(len);
+      const padNotes1 = [130.81, 196.00, 246.94, 293.66, 329.63]; // Cmaj9
+      const padNotes2 = [174.61, 220.00, 261.63, 329.63, 392.00]; // Fmaj9
+      const chimeFreqs = [523.25, 659.25, 783.99, 987.77, 1174.66, 1046.5];
+      for (let i = 0; i < len; i++) {
+        const t = i / AUDIO_SR;
+        const cross = 0.5 - 0.5 * Math.cos((t / 8.0) * Math.PI * 2);
+        let pad1 = 0, pad2 = 0;
+        for (let k = 0; k < 5; k++) {
+          const detune = 1 + (k - 2) * 0.0022;
+          pad1 += Math.sin(2 * Math.PI * padNotes1[k] * detune * t);
+          pad2 += Math.sin(2 * Math.PI * padNotes2[k] * detune * t);
+        }
+        const lfo = 0.72 + 0.28 * Math.sin(t * 1.4);
+        const pad = ((1 - cross) * pad1 + cross * pad2) * 0.11 * lfo;
+
+        // Crystalline chime every 1.0s
+        const cIdx = Math.floor(t / 1.0);
+        const cLocal = t % 1.0;
+        const cf = chimeFreqs[cIdx % chimeFreqs.length];
+        const cEnv = Math.exp(-cLocal * 4.5) * (1 - Math.exp(-cLocal * 120));
+        const chime = (Math.sin(2 * Math.PI * cf * cLocal) + 0.3 * Math.sin(2 * Math.PI * cf * 2.01 * cLocal)) * cEnv * 0.22;
+
+        // Loop boundary smooth crossfade envelope
+        const edgeFade = Math.min(1, t / 0.15, (AUDIO_BUF_SECONDS - t) / 0.15);
+        pcm[i] = clamp((pad + chime) * edgeFade, -0.95, 0.95);
+      }
+      audioPCMStore.aud_aurora = pcm;
+    }
+
+    // 3) aud_beep: 1kHz SMPTE Leader Sync Beep + 24fps Mechanical Projector Clicks
+    {
+      const pcm = new Float32Array(len);
+      for (let i = 0; i < len; i++) {
+        const t = i / AUDIO_SR;
+        const secLocal = t % 1.0;
+        // 85ms 1000Hz crisp leader beep at the start of every second
+        let beep = 0;
+        if (secLocal < 0.085) {
+          const env = Math.sin((secLocal / 0.085) * Math.PI);
+          beep = Math.sin(2 * Math.PI * 1000 * secLocal) * env * 0.68;
+        }
+        // 24fps mechanical sprocket tick
+        const frameLocal = t % (1 / 24);
+        const clickEnv = Math.exp(-frameLocal * 360);
+        const click = (hash01(i * 1.13) * 2 - 1) * clickEnv * 0.16;
+        // Subtle celluloid analog hiss
+        const hiss = (hash01(i * 0.37) * 2 - 1) * 0.015;
+        pcm[i] = clamp(beep + click + hiss, -0.95, 0.95);
+      }
+      audioPCMStore.aud_beep = pcm;
+    }
+
+    // Precompute high-res waveform peaks (200 buckets per second)
+    const bucketsPerSec = 200;
+    const samplesPerBucket = Math.floor(AUDIO_SR / bucketsPerSec);
+    for (const id of Object.keys(audioPCMStore)) {
+      const pcm = audioPCMStore[id];
+      const numBuckets = Math.floor(pcm.length / samplesPerBucket);
+      const peaks = new Float32Array(numBuckets);
+      for (let b = 0; b < numBuckets; b++) {
+        let maxAbs = 0;
+        const start = b * samplesPerBucket;
+        for (let j = 0; j < samplesPerBucket; j += 2) {
+          const v = Math.abs(pcm[start + j]);
+          if (v > maxAbs) maxAbs = v;
+        }
+        peaks[b] = maxAbs;
+      }
+      audioPeakStore[id] = peaks;
+    }
+  }
+  // =========================================================================
+  // 5. WEB AUDIO CONTEXT, REAL-TIME SCHEDULER & SCRUB GRAIN ENGINE
+  // =========================================================================
+  let audioCtx = null;
+  let masterGain = null;
+  let exportDestNode = null;
+  let activeAudioSources = [];
+  let lastScrubGrainMs = 0;
+
+  function ensureAudioContext() {
+    if (!audioCtx) {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return null;
+      audioCtx = new Ctx({ sampleRate: AUDIO_SR });
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.92;
+      masterGain.connect(audioCtx.destination);
+
+      // Populate AudioBuffers from precomputed Float32Arrays
+      for (const id of Object.keys(audioPCMStore)) {
+        const pcm = audioPCMStore[id];
+        const buf = audioCtx.createBuffer(1, pcm.length, AUDIO_SR);
+        buf.copyToChannel(pcm, 0);
+        audioBufferStore[id] = buf;
+      }
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    return audioCtx;
+  }
+
+  function stopAllScheduledAudio() {
+    for (const item of activeAudioSources) {
+      try {
+        item.src.stop();
+        item.src.disconnect();
+        item.gain.disconnect();
+      } catch (_) {}
+    }
+    activeAudioSources = [];
+  }
+
+  function computeClipFadeGain(clip, clipRelTime) {
+    const fi = clamp(clip.fadeIn || 0, 0, clip.duration * 0.5);
+    const fo = clamp(clip.fadeOut || 0, 0, clip.duration * 0.5);
+    let g = clip.volume ?? 1.0;
+    if (fi > 0.01 && clipRelTime < fi) {
+      g *= clamp(clipRelTime / fi, 0, 1);
+    }
+    if (fo > 0.01 && clipRelTime > clip.duration - fo) {
+      g *= clamp((clip.duration - clipRelTime) / fo, 0, 1);
+    }
+    return Math.max(0, g);
+  }
+
+  function syncAudioPlayback() {
+    stopAllScheduledAudio();
+    if (!state.isPlaying) return;
+    if (!state.tracks.A1.visible) return;
+    const ctx = ensureAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const tlNow = state.currentTime;
+    const projEnd = getProjectEnd();
+
+    for (const clip of state.clips) {
+      if (clip.track !== 'A1') continue;
+      const clipEnd = clip.start + clip.duration;
+      if (clipEnd <= tlNow + 0.005 || clip.start >= projEnd) continue;
+
+      const buf = audioBufferStore[clip.assetId];
+      if (!buf) continue;
+
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.loop = true;
+
+      const gainNode = ctx.createGain();
+      const baseVol = clamp(clip.volume ?? 1.0, 0, 2.0);
+      const fi = clamp(clip.fadeIn || 0, 0, clip.duration * 0.5);
+      const fo = clamp(clip.fadeOut || 0, 0, clip.duration * 0.5);
+
+      const startDelay = Math.max(0, clip.start - tlNow);
+      const playedAlready = Math.max(0, tlNow - clip.start);
+      const remainDur = Math.max(0.01, clip.duration - playedAlready);
+      const bufOffset = ((clip.offset + playedAlready) % AUDIO_BUF_SECONDS + AUDIO_BUF_SECONDS) % AUDIO_BUF_SECONDS;
+
+      const audioStart = now + startDelay;
+      const audioEnd = audioStart + remainDur;
+
+      // Schedule volume + fade-in / fade-out automation accurately
+      gainNode.gain.setValueAtTime(baseVol, audioStart);
+      if (fi > 0.01 && playedAlready < fi) {
+        const initRatio = playedAlready / fi;
+        gainNode.gain.setValueAtTime(baseVol * initRatio, audioStart);
+        gainNode.gain.linearRampToValueAtTime(baseVol, audioStart + (fi - playedAlready));
+      }
+      if (fo > 0.01) {
+        const fadeOutStartRel = clip.duration - fo;
+        if (playedAlready < fadeOutStartRel) {
+          gainNode.gain.setValueAtTime(baseVol, audioStart + (fadeOutStartRel - playedAlready));
+          gainNode.gain.linearRampToValueAtTime(0.0001, audioEnd);
+        } else {
+          const remRatio = clamp((clip.duration - playedAlready) / fo, 0, 1);
+          gainNode.gain.setValueAtTime(baseVol * remRatio, audioStart);
+          gainNode.gain.linearRampToValueAtTime(0.0001, audioEnd);
+        }
+      }
+
+      src.connect(gainNode);
+      gainNode.connect(masterGain);
+      if (exportDestNode) {
+        gainNode.connect(exportDestNode);
+      }
+
+      src.start(audioStart, bufOffset, remainDur);
+      activeAudioSources.push({ src, gain: gainNode, clipId: clip.id });
+    }
+  }
+
+  // Short windowed audio grain when scrubbing playhead manually
+  function triggerScrubAudioGrain(tlTime) {
+    if (!state.tracks.A1.visible) return;
+    const nowMs = performance.now();
+    if (nowMs - lastScrubGrainMs < 55) return;
+    lastScrubGrainMs = nowMs;
+
+    const activeA1 = state.clips.filter(
+      c => c.track === 'A1' && tlTime >= c.start && tlTime < c.start + c.duration
+    );
+    if (!activeA1.length) return;
+
+    const ctx = ensureAudioContext();
+    if (!ctx || ctx.state !== 'running') return;
+
+    const now = ctx.currentTime;
+    const grainDur = 0.055;
+    for (const clip of activeA1) {
+      const buf = audioBufferStore[clip.assetId];
+      if (!buf) continue;
+      const rel = tlTime - clip.start;
+      const offset = ((clip.offset + rel) % AUDIO_BUF_SECONDS + AUDIO_BUF_SECONDS) % AUDIO_BUF_SECONDS;
+      const vol = computeClipFadeGain(clip, rel) * 0.45;
+      if (vol <= 0.005) continue;
+
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.loop = true;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.001, now);
+      g.gain.linearRampToValueAtTime(vol, now + grainDur * 0.35);
+      g.gain.linearRampToValueAtTime(0.001, now + grainDur);
+      src.connect(g);
+      g.connect(masterGain);
+      src.start(now, offset, grainDur);
+    }
+  }
+
+  // Sample rolling 64-bar acoustic peak waveform window (±0.32s) & stereo RMS at timestamp `tlTime`
+  const waveSliceBuf = new Float32Array(64);
+  function sampleCompositeAudioAt(tlTime) {
+    waveSliceBuf.fill(0);
+    if (!state.tracks.A1.visible) {
+      return { wave: waveSliceBuf, levelL: 0, levelR: 0, hasActiveClip: false };
+    }
+    const activeClips = state.clips.filter(
+      c => c.track === 'A1' && tlTime >= c.start && tlTime < c.start + c.duration
+    );
+    if (!activeClips.length) {
+      return { wave: waveSliceBuf, levelL: 0, levelR: 0, hasActiveClip: false };
+    }
+
+    const bucketsPerSec = 200;
+    for (const clip of activeClips) {
+      const peaks = audioPeakStore[clip.assetId];
+      if (!peaks) continue;
+      for (let i = 0; i < 64; i++) {
+        const dt = (i - 32) * 0.01; // -0.32s to +0.31s rolling window
+        const sampleT = tlTime + dt;
+        if (sampleT < clip.start || sampleT >= clip.start + clip.duration) continue;
+        const rel = sampleT - clip.start;
+        const gain = computeClipFadeGain(clip, rel);
+        const srcSec = ((clip.offset + rel) % AUDIO_BUF_SECONDS + AUDIO_BUF_SECONDS) % AUDIO_BUF_SECONDS;
+        const bIdx = Math.floor(srcSec * bucketsPerSec) % peaks.length;
+        waveSliceBuf[i] += peaks[bIdx] * gain;
+      }
+    }
+
+    let centerEnergyL = 0, centerEnergyR = 0;
+    for (let i = 26; i < 38; i++) {
+      const v = clamp(waveSliceBuf[i], 0, 1.3);
+      if (i < 32) centerEnergyL += v;
+      else centerEnergyR += v;
+    }
+    const rmsL = clamp((centerEnergyL / 6) * 1.35, 0, 1);
+    const rmsR = clamp((centerEnergyR / 6) * 1.32, 0, 1);
+    return { wave: waveSliceBuf, levelL: rmsL, levelR: rmsR, hasActiveClip: true };
+  }
+
+  // =========================================================================
+  // 6. COMPOSITE PREVIEW MONITOR RENDERER (V1 + V2 PiP + T1 SUBTITLE + WAVEFORM)
+  // =========================================================================
+  const previewCanvas = document.getElementById('previewCanvas');
+  const previewCtx = previewCanvas.getContext('2d');
+  const layerCanvas = document.createElement('canvas');
+  layerCanvas.width = COMP_W;
+  layerCanvas.height = COMP_H;
+  const layerCtx = layerCanvas.getContext('2d');
+
+  const vuLeftEl = document.getElementById('vuLeft');
+  const vuRightEl = document.getElementById('vuRight');
+  const tcCurrentEl = document.getElementById('tcCurrent');
+  const tcTotalEl = document.getElementById('tcTotal');
+
+  function getActiveClipsOnTrack(trackId, t) {
+    const matches = state.clips.filter(
+      c => c.track === trackId && t >= c.start && t < c.start + c.duration - 1e-5
+    );
+    // Selected clip or later-added clip renders on top if two overlap on same track
+    matches.sort((a, b) => {
+      if (a.id === state.selectedClipId) return 1;
+      if (b.id === state.selectedClipId) return -1;
+      return a.start - b.start;
+    });
+    return matches;
+  }
+
+  function drawVideoClipLayer(ctx, clip, tlTime, isPiPTrack) {
+    const localTime = Math.max(0, clip.offset + (tlTime - clip.start));
+    layerCtx.clearRect(0, 0, COMP_W, COMP_H);
+    renderProceduralVideoToCtx(layerCtx, COMP_W, COMP_H, clip.assetId, localTime, clip);
+
+    const scale = clamp(clip.scale ?? 1.0, 0.05, 4.0);
+    const opacity = clamp(clip.opacity ?? 1.0, 0, 1);
+    const posX = clip.posX || 0;
+    const posY = clip.posY || 0;
+    const drawW = COMP_W * scale;
+    const drawH = COMP_H * scale;
+    const cx = COMP_W * 0.5 + posX;
+    const cy = COMP_H * 0.5 + posY;
+    const left = cx - drawW * 0.5;
+    const top = cy - drawH * 0.5;
+
+    ctx.save();
+    ctx.globalAlpha = opacity;
+
+    // Subtle cinema drop-shadow & crisp border when scaled down on V2 (Picture-in-Picture)
+    if (isPiPTrack && scale < 0.96) {
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.72)';
+      ctx.shadowBlur = 24;
+      ctx.shadowOffsetY = 8;
+    }
+
+    ctx.drawImage(layerCanvas, left, top, drawW, drawH);
+
+    if (isPiPTrack && scale < 0.96) {
+      ctx.shadowColor = 'transparent';
+      ctx.strokeStyle = rgbaStr(hexToRgb(clip.color || '#ffffff'), 0.75);
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(left, top, drawW, drawH);
+    }
+    ctx.restore();
+
+    clip._lastBounds = { x: left, y: top, w: drawW, h: drawH, cx, cy };
+  }
+
+  function drawSubtitleClipLayer(ctx, clip) {
+    const text = (clip.text ?? '').toString();
+    if (!text.trim()) return;
+
+    const fontSize = clamp(clip.fontSize || 42, 14, 160);
+    const scale = clamp(clip.scale ?? 1.0, 0.1, 3.5);
+    const opacity = clamp(clip.opacity ?? 1.0, 0, 1);
+    const posX = clip.posX || 0;
+    const posY = clip.posY || 0;
+    const color = clip.color || '#ffffff';
+    const rgb = hexToRgb(color);
+    const lines = text.split('\n');
+
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    const cx = COMP_W * 0.5 + posX;
+    const cy = COMP_H * 0.5 + posY;
+    ctx.translate(cx, cy);
+    ctx.scale(scale, scale);
+
+    const fontWeight = clip.stylePreset === 'neon' ? '800' : '700';
+    ctx.font = `${fontWeight} ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const lineHeight = fontSize * 1.28;
+    let maxLineW = 80;
+    for (const ln of lines) {
+      const m = ctx.measureText(ln).width;
+      if (m > maxLineW) maxLineW = m;
+    }
+    const totalH = lines.length * lineHeight;
+
+    // Optional backdrop pill (Cinema Subtitle preset or custom bgOpacity)
+    const bgOp = clip.bgOpacity ?? (clip.stylePreset === 'cinema' ? 0.65 : 0);
+    if (bgOp > 0.02) {
+      const padX = fontSize * 0.68;
+      const padY = fontSize * 0.34;
+      ctx.fillStyle = `rgba(8, 11, 18, ${clamp(bgOp, 0, 0.95)})`;
+      ctx.strokeStyle = rgbaStr(rgb, 0.35);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(
+        -maxLineW * 0.5 - padX,
+        -totalH * 0.5 - padY,
+        maxLineW + padX * 2,
+        totalH + padY * 2,
+        10
+      );
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // Neon Glow / Crisp Stroke + Fill
+    for (let i = 0; i < lines.length; i++) {
+      const ly = (i - (lines.length - 1) * 0.5) * lineHeight;
+      if (clip.stylePreset === 'neon') {
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 22;
+        ctx.lineWidth = Math.max(3, fontSize * 0.11);
+        ctx.strokeStyle = 'rgba(10, 12, 24, 0.9)';
+        ctx.strokeText(lines[i], 0, ly);
+      } else {
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetY = 2;
+        ctx.lineWidth = Math.max(2.5, fontSize * 0.08);
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+        ctx.strokeText(lines[i], 0, ly);
+      }
+      ctx.fillStyle = color;
+      ctx.fillText(lines[i], 0, ly);
+    }
+    ctx.restore();
+
+    const bw = (maxLineW + fontSize * 1.2) * scale;
+    const bh = (totalH + fontSize * 0.7) * scale;
+    clip._lastBounds = { x: cx - bw * 0.5, y: cy - bh * 0.5, w: bw, h: bh, cx, cy };
+  }
+
+  function drawDynamicAudioWaveformHUD(ctx, audioSample) {
+    if (!state.showWaveOverlay || !audioSample.hasActiveClip) return;
+    const wave = audioSample.wave;
+    const barCount = 64;
+    const hudW = 420;
+    const hudH = 44;
+    const x0 = COMP_W - hudW - 24;
+    const y0 = COMP_H - hudH - 20;
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(8, 12, 20, 0.62)';
+    ctx.strokeStyle = 'rgba(0, 229, 204, 0.32)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(x0, y0, hudW, hudH, 8);
+    ctx.fill();
+    ctx.stroke();
+
+    // Label
+    ctx.fillStyle = 'rgba(0, 229, 204, 0.9)';
+    ctx.font = '700 11px "Consolas", monospace';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('A1 LIVE WAVE', x0 + 10, y0 + hudH * 0.5);
+
+    // Dynamic Oscilloscope + Mirrored Spectrum Bars
+    const waveStartX = x0 + 102;
+    const waveW = hudW - 114;
+    const midY = y0 + hudH * 0.5;
+    const step = waveW / barCount;
+
+    for (let i = 0; i < barCount; i++) {
+      const amp = clamp(wave[i] * 1.15, 0.06, 1.0);
+      const bh = amp * (hudH * 0.78);
+      const bx = waveStartX + i * step;
+      if (i === 32) {
+        ctx.fillStyle = '#ff3b5c';
+      } else if (i < 32) {
+        ctx.fillStyle = 'rgba(0, 229, 204, 0.92)';
+      } else {
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.55)';
+      }
+      ctx.fillRect(bx, midY - bh * 0.5, Math.max(2, step - 1.6), bh);
+    }
+    ctx.restore();
+  }
+
+  function renderCompositeMonitor(hideEditorGizmos = false) {
+    const t = state.currentTime;
+
+    // Clear base black frame
+    previewCtx.fillStyle = '#05070b';
+    previewCtx.fillRect(0, 0, COMP_W, COMP_H);
+
+    // Clear stale bounds
+    for (const c of state.clips) c._lastBounds = null;
+
+    let renderedAnyVisual = false;
+
+    // 1. V1 Main Video Track
+    if (state.tracks.V1.visible) {
+      const v1Clips = getActiveClipsOnTrack('V1', t);
+      for (const clip of v1Clips) {
+        drawVideoClipLayer(previewCtx, clip, t, false);
+        renderedAnyVisual = true;
+      }
+    }
+
+    // 2. V2 Picture-in-Picture / Overlay Track
+    if (state.tracks.V2.visible) {
+      const v2Clips = getActiveClipsOnTrack('V2', t);
+      for (const clip of v2Clips) {
+        drawVideoClipLayer(previewCtx, clip, t, true);
+        renderedAnyVisual = true;
+      }
+    }
+
+    // 3. T1 Subtitle / Title Track
+    if (state.tracks.T1.visible) {
+      const t1Clips = getActiveClipsOnTrack('T1', t);
+      for (const clip of t1Clips) {
+        drawSubtitleClipLayer(previewCtx, clip);
+        renderedAnyVisual = true;
+      }
+    }
+
+    // Empty frame subtle studio watermark if no visual clip at current playhead
+    if (!renderedAnyVisual && !hideEditorGizmos) {
+      previewCtx.save();
+      previewCtx.fillStyle = '#2c3547';
+      previewCtx.font = '600 22px -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif';
+      previewCtx.textAlign = 'center';
+      previewCtx.textBaseline = 'middle';
+      previewCtx.fillText('当前时间点无视觉片段 (黑场)', COMP_W * 0.5, COMP_H * 0.48);
+      previewCtx.font = '14px "Consolas", monospace';
+      previewCtx.fillStyle = '#475569';
+      previewCtx.fillText(formatTimecode(t), COMP_W * 0.5, COMP_H * 0.54);
+      previewCtx.restore();
+    }
+
+    // 4. A1 Real-time Dynamic Audio Waveform Overlay + VU Meter
+    const audioSample = sampleCompositeAudioAt(t);
+    drawDynamicAudioWaveformHUD(previewCtx, audioSample);
+
+    const vuPctL = (state.isPlaying || isScrubbingPlayhead) ? Math.round(audioSample.levelL * 100) : Math.round(audioSample.levelL * 38);
+    const vuPctR = (state.isPlaying || isScrubbingPlayhead) ? Math.round(audioSample.levelR * 100) : Math.round(audioSample.levelR * 38);
+    vuLeftEl.style.height = `${clamp(vuPctL, 0, 100)}%`;
+    vuRightEl.style.height = `${clamp(vuPctR, 0, 100)}%`;
+
+    // 5. Interactive Transform Gizmo for Selected Visual/Subtitle Clip
+    if (!hideEditorGizmos && state.showSafeGuides && state.selectedClipId) {
+      const sel = state.clips.find(c => c.id === state.selectedClipId);
+      if (sel && sel._lastBounds && !state.tracks[sel.track]?.locked) {
+        const b = sel._lastBounds;
+        previewCtx.save();
+        previewCtx.strokeStyle = '#00e5cc';
+        previewCtx.lineWidth = 2;
+        previewCtx.setLineDash([7, 5]);
+        previewCtx.strokeRect(b.x, b.y, b.w, b.h);
+        previewCtx.setLineDash([]);
+
+        // Corner handles
+        const corners = [
+          [b.x, b.y],
+          [b.x + b.w, b.y],
+          [b.x, b.y + b.h],
+          [b.x + b.w, b.y + b.h]
+        ];
+        previewCtx.fillStyle = '#00e5cc';
+        for (const [hx, hy] of corners) {
+          previewCtx.fillRect(hx - 5, hy - 5, 10, 10);
+        }
+        previewCtx.restore();
+      }
+    }
+
+    // Update Timecode Readouts
+    tcCurrentEl.textContent = formatTimecode(t);
+    tcTotalEl.textContent = '/ ' + formatTimecode(getProjectEnd());
+  }
+
+  // =========================================================================
+  // 7. BUILT-IN PROCEDURAL MEDIA LIBRARY (LIVE THUMBNAILS + CLICK/DRAG ADD)
+  // =========================================================================
+  const assetGridEl = document.getElementById('assetGrid');
+  const thumbCanvasList = [];
+
+  function drawAssetThumbFrame(canvas, asset, tSec) {
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    if (asset.type === 'video') {
+      renderProceduralVideoToCtx(ctx, w, h, asset.id, tSec, { color: asset.color });
+    } else if (asset.type === 'text') {
+      const g = ctx.createLinearGradient(0, 0, w, h);
+      g.addColorStop(0, '#161b26');
+      g.addColorStop(1, '#0b0e15');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+      // Grid lines
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.5); ctx.lineTo(w, h * 0.5);
+      ctx.moveTo(w * 0.5, 0); ctx.lineTo(w * 0.5, h);
+      ctx.stroke();
+
+      ctx.save();
+      if (asset.stylePreset === 'neon') {
+        ctx.shadowColor = asset.color;
+        ctx.shadowBlur = 10;
+        ctx.fillStyle = asset.color;
+        ctx.font = '800 14px "Segoe UI", "PingFang SC", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('CYBER TITLE', w * 0.5, h * 0.46);
+      } else {
+        ctx.fillStyle = 'rgba(0,0,0,0.68)';
+        ctx.fillRect(16, h * 0.52, w - 32, 22);
+        ctx.fillStyle = asset.color;
+        ctx.font = '700 11.5px "PingFang SC", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('电影感底部字幕', w * 0.5, h * 0.52 + 11);
+      }
+      ctx.restore();
+    } else if (asset.type === 'audio') {
+      ctx.fillStyle = '#091318';
+      ctx.fillRect(0, 0, w, h);
+      const peaks = audioPeakStore[asset.id];
+      if (peaks) {
+        const rgb = hexToRgb(asset.color);
+        const bars = 46;
+        const step = w / bars;
+        const offsetBucket = Math.floor((tSec * 40) % 400);
+        for (let i = 0; i < bars; i++) {
+          const pk = peaks[(offsetBucket + i * 4) % peaks.length] || 0.1;
+          const bh = Math.max(3, pk * h * 0.78);
+          ctx.fillStyle = rgbaStr(rgb, 0.85);
+          ctx.fillRect(i * step + 1, (h - bh) * 0.5, Math.max(1.5, step - 1.5), bh);
+        }
+      }
+    }
+  }
+
+  function renderMediaLibrary() {
+    assetGridEl.innerHTML = '';
+    thumbCanvasList.length = 0;
+
+    const filtered = ASSETS.filter(a => state.libraryFilter === 'all' || a.type === state.libraryFilter);
+    for (const asset of filtered) {
+      const card = document.createElement('div');
+      card.className = 'asset-card';
+      card.draggable = true;
+      card.dataset.assetId = asset.id;
+
+      card.innerHTML = `
+        <div class="asset-thumb-wrap">
+          <canvas class="asset-thumb-canvas" width="220" height="110"></canvas>
+          <span class="asset-type-pill" style="background:${asset.badgeBg};">${asset.badgeText}</span>
+          <button class="asset-add-btn" title="点击直接添加到当前播放指针位置">+</button>
+          <span class="asset-dur-pill">${asset.defaultDuration.toFixed(1)}s</span>
+        </div>
+        <div class="asset-meta">
+          <div class="asset-name" title="${asset.name}">${asset.name}</div>
+          <div class="asset-desc" title="${asset.desc}">${asset.desc}</div>
+        </div>
+      `;
+
+      const canvas = card.querySelector('canvas');
+      thumbCanvasList.push({ canvas, asset });
+      drawAssetThumbFrame(canvas, asset, 1.2);
+
+      // Click [+] button or double-click card -> insert onto appropriate track at playhead
+      const addBtn = card.querySelector('.asset-add-btn');
+      addBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        insertAssetAtPlayhead(asset.id);
+      });
+      card.addEventListener('dblclick', () => {
+        insertAssetAtPlayhead(asset.id);
+      });
+
+      // Drag from Media Library to Timeline Tracks
+      card.addEventListener('dragstart', (e) => {
+        draggingLibraryAssetId = asset.id;
+        if (e.dataTransfer) {
+          e.dataTransfer.setData('text/plain', asset.id);
+          e.dataTransfer.effectAllowed = 'copy';
+        }
+        setStatus(`正在拖拽素材「${asset.name}」— 放置到兼容轨道即可入轨`);
+      });
+      card.addEventListener('dragend', () => {
+        draggingLibraryAssetId = null;
+        hideDropGhost();
+        hideSnapLine();
+      });
+
+      assetGridEl.appendChild(card);
+    }
+  }
+
+  // Live gentle animation for hovered asset card thumbnail (saves CPU while keeping bin alive!)
+  let hoveredAssetCardId = null;
+  assetGridEl.addEventListener('pointerover', (e) => {
+    const card = e.target.closest('.asset-card');
+    hoveredAssetCardId = card ? card.dataset.assetId : null;
+  });
+  assetGridEl.addEventListener('pointerleave', () => {
+    hoveredAssetCardId = null;
+  });
+  // =========================================================================
+  // 8. UNDO / REDO, CLIP FACTORY & MAGNETIC SNAPPING
+  // =========================================================================
+  const statusToastEl = document.getElementById('statusToast');
+  const btnUndoEl = document.getElementById('btnUndo');
+  const btnRedoEl = document.getElementById('btnRedo');
+  const clipCountBadgeEl = document.getElementById('clipCountBadge');
+
+  function setStatus(msg) {
+    statusToastEl.textContent = msg;
+  }
+
+  function cloneClipsState(clips) {
+    return clips.map(c => {
+      const copy = { ...c };
+      delete copy._lastBounds;
+      return copy;
+    });
+  }
+
+  function pushUndoSnapshot() {
+    state.undoStack.push({
+      clips: cloneClipsState(state.clips),
+      selectedClipId: state.selectedClipId
+    });
+    if (state.undoStack.length > 45) state.undoStack.shift();
+    state.redoStack.length = 0;
+    updateUndoRedoButtons();
+  }
+
+  function updateUndoRedoButtons() {
+    btnUndoEl.disabled = state.undoStack.length === 0;
+    btnRedoEl.disabled = state.redoStack.length === 0;
+    clipCountBadgeEl.textContent = `${state.clips.length} 个轨道片段`;
+  }
+
+  function performUndo() {
+    if (!state.undoStack.length) return;
+    state.redoStack.push({
+      clips: cloneClipsState(state.clips),
+      selectedClipId: state.selectedClipId
+    });
+    const prev = state.undoStack.pop();
+    state.clips = prev.clips;
+    state.selectedClipId = prev.selectedClipId;
+    updateUndoRedoButtons();
+    renderTimelineAll();
+    renderInspector();
+    renderCompositeMonitor();
+    if (state.isPlaying) syncAudioPlayback();
+    setStatus('已撤销上一步编辑操作');
+  }
+
+  function performRedo() {
+    if (!state.redoStack.length) return;
+    state.undoStack.push({
+      clips: cloneClipsState(state.clips),
+      selectedClipId: state.selectedClipId
+    });
+    const next = state.redoStack.pop();
+    state.clips = next.clips;
+    state.selectedClipId = next.selectedClipId;
+    updateUndoRedoButtons();
+    renderTimelineAll();
+    renderInspector();
+    renderCompositeMonitor();
+    if (state.isPlaying) syncAudioPlayback();
+    setStatus('已重做编辑操作');
+  }
+
+  function createClipFromAsset(assetId, trackId, startTime, overrides = {}) {
+    const asset = ASSET_MAP[assetId];
+    if (!asset) return null;
+    const id = 'clip_' + (++state.nextClipUid);
+    const isPiP = trackId === 'V2';
+    const base = {
+      id,
+      assetId,
+      track: trackId,
+      name: asset.name,
+      type: asset.type,
+      start: Math.max(0, startTime),
+      duration: asset.defaultDuration,
+      offset: 0,
+      opacity: 1.0,
+      scale: isPiP ? 0.38 : 1.0,
+      posX: isPiP ? 355 : (asset.posX || 0),
+      posY: isPiP ? -185 : (asset.posY || 0),
+      color: asset.color || '#00f0ff',
+      fontSize: asset.fontSize || 44,
+      text: asset.text || '',
+      bgOpacity: asset.bgOpacity ?? 0,
+      stylePreset: asset.stylePreset || 'neon',
+      volume: 1.0,
+      fadeIn: 0.12,
+      fadeOut: 0.2
+    };
+    return Object.assign(base, overrides);
+  }
+
+  function getCompatibleDefaultTrack(assetType, atTime) {
+    if (assetType === 'text') return 'T1';
+    if (assetType === 'audio') return 'A1';
+    // For video: if V1 already has a clip at playhead and V2 is free, offer V1 if unlocked or V2 PiP!
+    const v1Busy = state.clips.some(c => c.track === 'V1' && atTime >= c.start && atTime < c.start + c.duration - 0.05);
+    const v2Busy = state.clips.some(c => c.track === 'V2' && atTime >= c.start && atTime < c.start + c.duration - 0.05);
+    if (v1Busy && !v2Busy && !state.tracks.V2.locked) return 'V2';
+    return 'V1';
+  }
+
+  function isTrackCompatibleWithAsset(trackId, assetType) {
+    if (assetType === 'video') return trackId === 'V1' || trackId === 'V2';
+    if (assetType === 'text') return trackId === 'T1';
+    if (assetType === 'audio') return trackId === 'A1';
+    return false;
+  }
+
+  function insertAssetAtPlayhead(assetId, explicitTrack = null, explicitTime = null) {
+    const asset = ASSET_MAP[assetId];
+    if (!asset) return;
+    const insertTime = explicitTime !== null ? Math.max(0, explicitTime) : state.currentTime;
+    const targetTrack = explicitTrack || getCompatibleDefaultTrack(asset.type, insertTime);
+
+    if (state.tracks[targetTrack]?.locked) {
+      setStatus(`轨道 ${targetTrack} 已锁定，请先点击轨道头解锁后再添加素材`);
+      return;
+    }
+
+    pushUndoSnapshot();
+    const newClip = createClipFromAsset(assetId, targetTrack, insertTime);
+    state.clips.push(newClip);
+    state.selectedClipId = newClip.id;
+    updateUndoRedoButtons();
+    renderTimelineAll();
+    renderInspector();
+    renderCompositeMonitor();
+    if (state.isPlaying) syncAudioPlayback();
+    setStatus(`已将「${asset.name}」添加至 ${targetTrack} 轨道 (${formatRulerTime(insertTime, true)})`);
+  }
+
+  // =========================================================================
+  // 9. TIMELINE COORDINATES, RULER, WAVEFORMS & MAGNETIC SNAP
+  // =========================================================================
+  const timelineScrollEl = document.getElementById('timelineScroll');
+  const timelineStageEl = document.getElementById('timelineStage');
+  const rulerWrapEl = document.getElementById('rulerWrap');
+  const rulerCanvas = document.getElementById('rulerCanvas');
+  const rulerCtx = rulerCanvas.getContext('2d');
+  const playheadEl = document.getElementById('playhead');
+  const playheadHeadEl = document.getElementById('playheadHead');
+  const snapLineEl = document.getElementById('snapLine');
+  const snapBadgeEl = document.getElementById('snapBadge');
+  const dropGhostEl = document.getElementById('dropGhost');
+
+  const laneEls = {
+    V2: document.getElementById('lane-V2'),
+    V1: document.getElementById('lane-V1'),
+    T1: document.getElementById('lane-T1'),
+    A1: document.getElementById('lane-A1')
+  };
+
+  let draggingLibraryAssetId = null;
+  let isScrubbingPlayhead = false;
+
+  function timeToX(sec) {
+    return TL_PAD_LEFT + sec * state.pxPerSec;
+  }
+
+  function xToTime(xPx) {
+    return Math.max(0, (xPx - TL_PAD_LEFT) / state.pxPerSec);
+  }
+
+  function getTimelineTotalSpanSeconds() {
+    const viewW = timelineScrollEl.clientWidth || 900;
+    const minByView = (viewW + 120) / state.pxPerSec;
+    return Math.max(18, getTimelineContentEnd() + 8, minByView);
+  }
+
+  function showSnapLine(sec) {
+    const x = timeToX(sec);
+    snapLineEl.style.display = 'block';
+    snapLineEl.style.left = `${x}px`;
+    snapBadgeEl.textContent = formatRulerTime(sec, true);
+  }
+
+  function hideSnapLine() {
+    snapLineEl.style.display = 'none';
+  }
+
+  function hideDropGhost() {
+    dropGhostEl.style.display = 'none';
+    for (const k of Object.keys(laneEls)) {
+      laneEls[k].classList.remove('drag-over');
+    }
+  }
+
+  function findSnapTarget(candidateTime, excludeClipId = null, disableSnap = false) {
+    if (!state.snapEnabled || disableSnap) {
+      return { time: Math.max(0, candidateTime), snapped: false, snapPoint: null };
+    }
+    const thresholdSec = 10 / state.pxPerSec;
+    const points = [0, state.currentTime];
+    for (const c of state.clips) {
+      if (c.id === excludeClipId) continue;
+      points.push(c.start, c.start + c.duration);
+    }
+
+    let bestDist = thresholdSec;
+    let bestPoint = null;
+    for (const pt of points) {
+      const d = Math.abs(candidateTime - pt);
+      if (d <= bestDist) {
+        bestDist = d;
+        bestPoint = pt;
+      }
+    }
+
+    if (bestPoint !== null) {
+      return { time: Math.max(0, bestPoint), snapped: true, snapPoint: bestPoint };
+    }
+    return { time: Math.max(0, candidateTime), snapped: false, snapPoint: null };
+  }
+
+  function renderTimeRuler() {
+    const totalSec = getTimelineTotalSpanSeconds();
+    const stageWidth = Math.ceil(TL_PAD_LEFT + totalSec * state.pxPerSec + 60);
+    timelineStageEl.style.width = `${stageWidth}px`;
+
+    // Update grid background spacing on lanes
+    for (const k of Object.keys(laneEls)) {
+      laneEls[k].style.backgroundSize = `${state.pxPerSec}px 100%`;
+      laneEls[k].classList.toggle('locked-lane', state.tracks[k].locked);
+    }
+
+    const dpr = window.devicePixelRatio || 1;
+    const h = 30;
+    rulerCanvas.width = Math.min(stageWidth * dpr, 16000);
+    const effectiveDpr = rulerCanvas.width / stageWidth;
+    rulerCanvas.height = Math.round(h * effectiveDpr);
+    rulerCanvas.style.width = `${stageWidth}px`;
+    rulerCanvas.style.height = `${h}px`;
+
+    rulerCtx.setTransform(effectiveDpr, 0, 0, effectiveDpr, 0, 0);
+    rulerCtx.clearRect(0, 0, stageWidth, h);
+
+    // Choose adaptive major & minor tick intervals
+    let majorSec = 1;
+    let minorDiv = 5;
+    if (state.pxPerSec >= 150) { majorSec = 0.5; minorDiv = 5; }
+    else if (state.pxPerSec >= 70) { majorSec = 1; minorDiv = 5; }
+    else if (state.pxPerSec >= 40) { majorSec = 2; minorDiv = 4; }
+    else { majorSec = 5; minorDiv = 5; }
+
+    const minorSec = majorSec / minorDiv;
+    const showFrames = majorSec < 1;
+
+    rulerCtx.font = '600 10px "Consolas", "SFMono-Regular", monospace';
+    rulerCtx.textBaseline = 'top';
+
+    const maxSteps = Math.ceil(totalSec / minorSec);
+    for (let i = 0; i <= maxSteps; i++) {
+      const t = i * minorSec;
+      const x = Math.round(timeToX(t)) + 0.5;
+      const isMajor = (i % minorDiv === 0);
+
+      rulerCtx.beginPath();
+      if (isMajor) {
+        rulerCtx.strokeStyle = '#68758d';
+        rulerCtx.moveTo(x, h - 12);
+        rulerCtx.lineTo(x, h);
+        rulerCtx.stroke();
+
+        rulerCtx.fillStyle = '#aeb9ce';
+        rulerCtx.fillText(formatRulerTime(t, showFrames), x + 4, 4);
+      } else {
+        rulerCtx.strokeStyle = '#363f52';
+        const tickH = (i % (minorDiv / 2) === 0) ? 7 : 4.5;
+        rulerCtx.moveTo(x, h - tickH);
+        rulerCtx.lineTo(x, h);
+        rulerCtx.stroke();
+      }
+    }
+
+    // Highlight active project end marker
+    const endX = Math.round(timeToX(getProjectEnd())) + 0.5;
+    rulerCtx.strokeStyle = 'rgba(0, 229, 204, 0.45)';
+    rulerCtx.beginPath();
+    rulerCtx.moveTo(endX, 0);
+    rulerCtx.lineTo(endX, h);
+    rulerCtx.stroke();
+  }
+
+  function updatePlayheadDOM() {
+    const x = timeToX(state.currentTime);
+    playheadEl.style.left = `${x}px`;
+  }
+
+  function drawClipDecorCanvas(canvas, clip, widthPx) {
+    const h = 28;
+    const w = Math.max(12, Math.min(4096, Math.floor(widthPx)));
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, w, h);
+
+    if (clip.type === 'audio') {
+      const peaks = audioPeakStore[clip.assetId];
+      if (!peaks) return;
+      const bucketsPerSec = 200;
+      const barPx = 3;
+      const count = Math.floor(w / barPx);
+      const vol = clamp(clip.volume ?? 1.0, 0, 2.0);
+      const rgb = hexToRgb(clip.color || '#2dd4bf');
+
+      for (let i = 0; i < count; i++) {
+        const relTime = (i / Math.max(1, count)) * clip.duration;
+        const srcSec = ((clip.offset + relTime) % AUDIO_BUF_SECONDS + AUDIO_BUF_SECONDS) % AUDIO_BUF_SECONDS;
+        const bIdx = Math.floor(srcSec * bucketsPerSec) % peaks.length;
+        const envGain = computeClipFadeGain({ ...clip, volume: vol }, relTime);
+        const amp = clamp(peaks[bIdx] * envGain * 1.15, 0.04, 1.0);
+        const bh = amp * (h - 3);
+        ctx.fillStyle = rgbaStr(rgb, 0.9);
+        ctx.fillRect(i * barPx, h - bh - 1, 2, bh);
+      }
+
+      // Draw fade-in / fade-out curve overlay lines
+      const fi = clamp(clip.fadeIn || 0, 0, clip.duration * 0.5);
+      const fo = clamp(clip.fadeOut || 0, 0, clip.duration * 0.5);
+      if (fi > 0.02 || fo > 0.02) {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        const fiPx = (fi / clip.duration) * w;
+        const foPx = (fo / clip.duration) * w;
+        ctx.moveTo(0, h);
+        ctx.lineTo(fiPx, 2);
+        ctx.lineTo(w - foPx, 2);
+        ctx.lineTo(w, h);
+        ctx.stroke();
+      }
+    } else if (clip.type === 'video') {
+      const rgb = hexToRgb(clip.color || '#00f0ff');
+      // Subtle color accent strip + procedural rhythm bars
+      const grad = ctx.createLinearGradient(0, 0, w, 0);
+      grad.addColorStop(0, rgbaStr(rgb, 0.35));
+      grad.addColorStop(0.5, rgbaStr(rgb, 0.14));
+      grad.addColorStop(1, rgbaStr(rgb, 0.32));
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 4, w, h - 6);
+
+      ctx.strokeStyle = rgbaStr(rgb, 0.45);
+      ctx.lineWidth = 1;
+      for (let x = 16; x < w; x += 44) {
+        ctx.beginPath();
+        ctx.moveTo(x, 6);
+        ctx.lineTo(x, h - 3);
+        ctx.stroke();
+      }
+    }
+  }
+
+  function createOrUpdateClipElement(clip, existingEl = null) {
+    const el = existingEl || document.createElement('div');
+    const widthPx = Math.max(14, clip.duration * state.pxPerSec);
+    const leftPx = timeToX(clip.start);
+
+    let typeClass = 'type-video-v1';
+    if (clip.type === 'video' && clip.track === 'V2') typeClass = 'type-video-v2';
+    else if (clip.type === 'text') typeClass = 'type-text';
+    else if (clip.type === 'audio') typeClass = 'type-audio';
+
+    el.className = `tl-clip ${typeClass}${clip.id === state.selectedClipId ? ' selected' : ''}`;
+    el.dataset.clipId = clip.id;
+    el.style.left = `${leftPx}px`;
+    el.style.width = `${widthPx}px`;
+
+    if (!existingEl) {
+      el.innerHTML = `
+        <div class="trim-handle trim-left" data-trim="left" title="拖拽裁剪起始入点"></div>
+        <div class="clip-header">
+          <span class="clip-title"></span>
+          <span class="clip-dur"></span>
+        </div>
+        ${clip.type === 'text'
+          ? '<div class="clip-text-preview"></div>'
+          : '<canvas class="clip-body-canvas"></canvas>'}
+        <div class="trim-handle trim-right" data-trim="right" title="拖拽裁剪结束出点"></div>
+      `;
+      bindClipPointerInteractions(el);
+    }
+
+    const titleSpan = el.querySelector('.clip-title');
+    const durSpan = el.querySelector('.clip-dur');
+    titleSpan.textContent = clip.track === 'V2' ? `[PiP] ${clip.name}` : clip.name;
+    durSpan.textContent = `${clip.duration.toFixed(2)}s`;
+
+    if (clip.type === 'text') {
+      const tp = el.querySelector('.clip-text-preview');
+      if (tp) tp.textContent = `“${(clip.text || '').replace(/\n/g, ' ')}”`;
+    } else {
+      const cv = el.querySelector('.clip-body-canvas');
+      if (cv) drawClipDecorCanvas(cv, clip, widthPx);
+    }
+
+    return el;
+  }
+
+  function renderTimelineClips() {
+    for (const k of Object.keys(laneEls)) {
+      laneEls[k].innerHTML = '';
+    }
+    for (const clip of state.clips) {
+      const lane = laneEls[clip.track];
+      if (!lane) continue;
+      const el = createOrUpdateClipElement(clip);
+      lane.appendChild(el);
+    }
+  }
+
+  function renderTimelineAll() {
+    renderTimeRuler();
+    renderTimelineClips();
+    updatePlayheadDOM();
+  }
+
+  // =========================================================================
+  // 10. TIMELINE INTERACTIONS: SCRUB, MOVE, TRIM, DROP, SPLIT, DELETE
+  // =========================================================================
+  function seekPlayheadToClientX(clientX, withScrubAudio = false) {
+    const rect = timelineStageEl.getBoundingClientRect();
+    const localX = clientX - rect.left;
+    const rawTime = xToTime(localX);
+    state.currentTime = Math.max(0, rawTime);
+    updatePlayheadDOM();
+    renderCompositeMonitor();
+    if (withScrubAudio && !state.isPlaying) {
+      triggerScrubAudioGrain(state.currentTime);
+    }
+  }
+
+  function beginPlayheadScrub(e) {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    ensureAudioContext();
+
+    const wasPlaying = state.isPlaying;
+    if (wasPlaying) setPlayingState(false);
+
+    isScrubbingPlayhead = true;
+    seekPlayheadToClientX(e.clientX, true);
+
+    const onMove = (ev) => {
+      seekPlayheadToClientX(ev.clientX, true);
+    };
+    const onUp = () => {
+      isScrubbingPlayhead = false;
+      renderCompositeMonitor();
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  }
+
+  rulerWrapEl.addEventListener('pointerdown', beginPlayheadScrub);
+  playheadHeadEl.addEventListener('pointerdown', beginPlayheadScrub);
+
+  // Clicking empty track lane space: deselect clip & move playhead there
+  document.getElementById('lanesContainer').addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.tl-clip')) return;
+    if (e.button !== 0) return;
+    if (state.selectedClipId !== null) {
+      state.selectedClipId = null;
+      renderTimelineClips();
+      renderInspector();
+    }
+    beginPlayheadScrub(e);
+  });
+
+  // Drag & Drop from Media Library onto Track Lanes
+  const lanesContainerEl = document.getElementById('lanesContainer');
+  lanesContainerEl.addEventListener('dragover', (e) => {
+    const assetId = draggingLibraryAssetId || (e.dataTransfer && e.dataTransfer.getData('text/plain'));
+    const asset = ASSET_MAP[assetId];
+    if (!asset) return;
+    e.preventDefault();
+
+    const laneEl = e.target.closest('.track-lane');
+    let targetTrack = laneEl ? laneEl.dataset.track : getCompatibleDefaultTrack(asset.type, 0);
+    if (!isTrackCompatibleWithAsset(targetTrack, asset.type)) {
+      targetTrack = getCompatibleDefaultTrack(asset.type, 0);
+    }
+
+    for (const k of Object.keys(laneEls)) {
+      laneEls[k].classList.toggle('drag-over', k === targetTrack);
+    }
+
+    const stageRect = timelineStageEl.getBoundingClientRect();
+    const rawTime = xToTime(e.clientX - stageRect.left);
+    const snapRes = findSnapTarget(rawTime, null, e.altKey);
+
+    if (snapRes.snapped) showSnapLine(snapRes.snapPoint);
+    else hideSnapLine();
+
+    const trackOrder = ['V2', 'V1', 'T1', 'A1'];
+    const trackIdx = Math.max(0, trackOrder.indexOf(targetTrack));
+    dropGhostEl.style.display = 'flex';
+    dropGhostEl.style.top = `${trackIdx * 56 + 5}px`;
+    dropGhostEl.style.left = `${timeToX(snapRes.time)}px`;
+    dropGhostEl.style.width = `${Math.max(24, asset.defaultDuration * state.pxPerSec)}px`;
+    dropGhostEl.textContent = `+ ${asset.name} → ${targetTrack}`;
+  });
+
+  lanesContainerEl.addEventListener('dragleave', (e) => {
+    if (!lanesContainerEl.contains(e.relatedTarget)) {
+      hideDropGhost();
+      hideSnapLine();
+    }
+  });
+
+  lanesContainerEl.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const assetId = draggingLibraryAssetId || (e.dataTransfer && e.dataTransfer.getData('text/plain'));
+    const asset = ASSET_MAP[assetId];
+    hideDropGhost();
+    hideSnapLine();
+    if (!asset) return;
+
+    const laneEl = e.target.closest('.track-lane');
+    let targetTrack = laneEl ? laneEl.dataset.track : getCompatibleDefaultTrack(asset.type, 0);
+    if (!isTrackCompatibleWithAsset(targetTrack, asset.type)) {
+      targetTrack = getCompatibleDefaultTrack(asset.type, 0);
+    }
+
+    const stageRect = timelineStageEl.getBoundingClientRect();
+    const rawTime = xToTime(e.clientX - stageRect.left);
+    const snapRes = findSnapTarget(rawTime, null, e.altKey);
+
+    insertAssetAtPlayhead(assetId, targetTrack, snapRes.time);
+    draggingLibraryAssetId = null;
+  });
+
+  // Clip Move & Left/Right Edge Trim Micro-Interactions
+  function bindClipPointerInteractions(clipEl) {
+    clipEl.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      e.stopPropagation();
+      ensureAudioContext();
+
+      const clipId = clipEl.dataset.clipId;
+      const clip = state.clips.find(c => c.id === clipId);
+      if (!clip) return;
+
+      // Select clip immediately
+      if (state.selectedClipId !== clipId) {
+        state.selectedClipId = clipId;
+        for (const node of document.querySelectorAll('.tl-clip')) {
+          node.classList.toggle('selected', node.dataset.clipId === clipId);
+        }
+        renderInspector();
+        renderCompositeMonitor();
+      }
+
+      if (state.tracks[clip.track]?.locked) {
+        setStatus(`轨道 ${clip.track} 当前处于锁定状态，解锁后可移动或裁剪`);
+        return;
+      }
+
+      const trimSide = e.target.dataset.trim; // 'left' | 'right' | undefined
+      const mode = trimSide === 'left' ? 'trim-left' : (trimSide === 'right' ? 'trim-right' : 'move');
+
+      const startMouseX = e.clientX;
+      const origStart = clip.start;
+      const origDur = clip.duration;
+      const origOffset = clip.offset;
+      const origEnd = origStart + origDur;
+      const origTrack = clip.track;
+      let hasMutated = false;
+
+      clipEl.classList.add('dragging');
+
+      const onMove = (ev) => {
+        const dxPx = ev.clientX - startMouseX;
+        const dtSec = dxPx / state.pxPerSec;
+
+        if (!hasMutated && Math.abs(dxPx) > 2) {
+          pushUndoSnapshot();
+          hasMutated = true;
+        }
+        if (!hasMutated) return;
+
+        if (mode === 'move') {
+          let candidateStart = Math.max(0, origStart + dtSec);
+          const snapLeft = findSnapTarget(candidateStart, clip.id, ev.altKey);
+          const snapRight = findSnapTarget(candidateStart + origDur, clip.id, ev.altKey);
+
+          let snappedPoint = null;
+          if (snapLeft.snapped && snapRight.snapped) {
+            if (Math.abs(snapLeft.time - candidateStart) <= Math.abs(snapRight.time - (candidateStart + origDur))) {
+              candidateStart = snapLeft.time;
+              snappedPoint = snapLeft.snapPoint;
+            } else {
+              candidateStart = Math.max(0, snapRight.time - origDur);
+              snappedPoint = snapRight.snapPoint;
+            }
+          } else if (snapLeft.snapped) {
+            candidateStart = snapLeft.time;
+            snappedPoint = snapLeft.snapPoint;
+          } else if (snapRight.snapped) {
+            candidateStart = Math.max(0, snapRight.time - origDur);
+            snappedPoint = snapRight.snapPoint;
+          }
+
+          clip.start = candidateStart;
+
+          // Allow dragging video clips vertically between V1 and V2!
+          if (clip.type === 'video') {
+            const v2Rect = laneEls.V2.getBoundingClientRect();
+            const v1Rect = laneEls.V1.getBoundingClientRect();
+            let hoveredTrack = clip.track;
+            if (ev.clientY >= v2Rect.top && ev.clientY <= v2Rect.bottom && !state.tracks.V2.locked) {
+              hoveredTrack = 'V2';
+            } else if (ev.clientY >= v1Rect.top && ev.clientY <= v1Rect.bottom && !state.tracks.V1.locked) {
+              hoveredTrack = 'V1';
+            }
+            if (hoveredTrack !== clip.track) {
+              clip.track = hoveredTrack;
+              // Smart PiP auto-framing if moved from full-frame V1 to V2 (or vice versa)
+              if (hoveredTrack === 'V2' && Math.abs(clip.scale - 1.0) < 0.02 && clip.posX === 0 && clip.posY === 0) {
+                clip.scale = 0.38;
+                clip.posX = 355;
+                clip.posY = -185;
+              } else if (hoveredTrack === 'V1' && Math.abs(clip.scale - 0.38) < 0.02 && clip.posX === 355) {
+                clip.scale = 1.0;
+                clip.posX = 0;
+                clip.posY = 0;
+              }
+              laneEls[hoveredTrack].appendChild(clipEl);
+              renderInspector();
+            }
+          }
+
+          if (snappedPoint !== null) showSnapLine(snappedPoint);
+          else hideSnapLine();
+
+          createOrUpdateClipElement(clip, clipEl);
+          setStatus(`移动「${clip.name}」→ 起点 ${formatTimecode(clip.start)} (${clip.track})`);
+        } else if (mode === 'trim-left') {
+          let newStart = clamp(origStart + dtSec, 0, origEnd - MIN_CLIP_DUR);
+          const snapRes = findSnapTarget(newStart, clip.id, ev.altKey);
+          if (snapRes.snapped && snapRes.time <= origEnd - MIN_CLIP_DUR) {
+            newStart = snapRes.time;
+            showSnapLine(snapRes.snapPoint);
+          } else {
+            hideSnapLine();
+          }
+
+          const deltaStart = newStart - origStart;
+          clip.start = newStart;
+          clip.duration = Math.max(MIN_CLIP_DUR, origEnd - newStart);
+          clip.offset = Math.max(0, origOffset + deltaStart);
+
+          createOrUpdateClipElement(clip, clipEl);
+          setStatus(`裁剪左入点「${clip.name}」→ 起点 ${clip.start.toFixed(2)}s · 时长 ${clip.duration.toFixed(2)}s`);
+        } else if (mode === 'trim-right') {
+          let newEnd = Math.max(origStart + MIN_CLIP_DUR, origEnd + dtSec);
+          const snapRes = findSnapTarget(newEnd, clip.id, ev.altKey);
+          if (snapRes.snapped && snapRes.time >= origStart + MIN_CLIP_DUR) {
+            newEnd = snapRes.time;
+            showSnapLine(snapRes.snapPoint);
+          } else {
+            hideSnapLine();
+          }
+
+          clip.duration = Math.max(MIN_CLIP_DUR, newEnd - origStart);
+          createOrUpdateClipElement(clip, clipEl);
+          setStatus(`裁剪右出点「${clip.name}」→ 时长 ${clip.duration.toFixed(2)}s`);
+        }
+
+        renderCompositeMonitor();
+        syncInspectorTimingReadout(clip);
+        if (state.isPlaying) syncAudioPlayback();
+      };
+
+      const onUp = () => {
+        clipEl.classList.remove('dragging');
+        hideSnapLine();
+        if (hasMutated) {
+          renderTimeRuler();
+          renderInspector();
+          renderCompositeMonitor();
+          if (origTrack !== clip.track) {
+            setStatus(`已将「${clip.name}」移至 ${clip.track} 轨道`);
+          }
+        }
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+      };
+
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    });
+  }
+
+  // Split Selected Clip (or Clip Under Playhead) into Two at Playhead
+  function splitClipAtPlayhead() {
+    const t = state.currentTime;
+    let target = null;
+
+    if (state.selectedClipId) {
+      const sel = state.clips.find(c => c.id === state.selectedClipId);
+      if (sel) {
+        if (t > sel.start + MIN_CLIP_DUR && t < sel.start + sel.duration - MIN_CLIP_DUR) {
+          target = sel;
+        } else {
+          setStatus(`无法分割：请将红色播放指针移至选中片段「${sel.name}」内部 (${sel.start.toFixed(2)}s ~ ${(sel.start + sel.duration).toFixed(2)}s)`);
+          return;
+        }
+      }
+    } else {
+      // No clip selected -> find topmost unlocked clip strictly straddling playhead
+      const priority = ['V2', 'T1', 'V1', 'A1'];
+      for (const trk of priority) {
+        if (state.tracks[trk]?.locked) continue;
+        const found = state.clips.find(
+          c => c.track === trk && t > c.start + MIN_CLIP_DUR && t < c.start + c.duration - MIN_CLIP_DUR
+        );
+        if (found) {
+          target = found;
+          break;
+        }
+      }
+      if (!target) {
+        setStatus('请先选中要分割的片段，并将红色播放指针置于该片段中间位置');
+        return;
+      }
+    }
+
+    if (state.tracks[target.track]?.locked) {
+      setStatus(`轨道 ${target.track} 已锁定，无法分割片段`);
+      return;
+    }
+
+    pushUndoSnapshot();
+    const leftDur = t - target.start;
+    const rightDur = (target.start + target.duration) - t;
+
+    const rightClip = {
+      ...target,
+      id: 'clip_' + (++state.nextClipUid),
+      start: t,
+      duration: rightDur,
+      offset: target.offset + leftDur,
+      fadeIn: 0.02
+    };
+    delete rightClip._lastBounds;
+
+    target.duration = leftDur;
+    target.fadeOut = Math.min(target.fadeOut || 0, leftDur * 0.35);
+
+    const idx = state.clips.indexOf(target);
+    state.clips.splice(idx + 1, 0, rightClip);
+    state.selectedClipId = rightClip.id;
+
+    updateUndoRedoButtons();
+    renderTimelineAll();
+    renderInspector();
+    renderCompositeMonitor();
+    if (state.isPlaying) syncAudioPlayback();
+    setStatus(`✂ 已在 ${formatTimecode(t)} 处将「${target.name}」精准一分为二`);
+  }
+
+  function deleteSelectedClip() {
+    if (!state.selectedClipId) {
+      setStatus('当前未选中任何片段');
+      return;
+    }
+    const idx = state.clips.findIndex(c => c.id === state.selectedClipId);
+    if (idx === -1) return;
+    const clip = state.clips[idx];
+    if (state.tracks[clip.track]?.locked) {
+      setStatus(`轨道 ${clip.track} 已锁定，无法删除片段`);
+      return;
+    }
+
+    pushUndoSnapshot();
+    state.clips.splice(idx, 1);
+    state.selectedClipId = null;
+    updateUndoRedoButtons();
+    renderTimelineAll();
+    renderInspector();
+    renderCompositeMonitor();
+    if (state.isPlaying) syncAudioPlayback();
+    setStatus(`🗑 已删除片段「${clip.name}」(可按 Ctrl+Z 撤销)`);
+  }
+
+  function duplicateSelectedClip() {
+    if (!state.selectedClipId) {
+      setStatus('请先选中一个片段再执行复制');
+      return;
+    }
+    const clip = state.clips.find(c => c.id === state.selectedClipId);
+    if (!clip || state.tracks[clip.track]?.locked) return;
+
+    pushUndoSnapshot();
+    const copy = {
+      ...clip,
+      id: 'clip_' + (++state.nextClipUid),
+      start: clip.start + clip.duration
+    };
+    delete copy._lastBounds;
+    state.clips.push(copy);
+    state.selectedClipId = copy.id;
+    updateUndoRedoButtons();
+    renderTimelineAll();
+    renderInspector();
+    renderCompositeMonitor();
+    if (state.isPlaying) syncAudioPlayback();
+    setStatus(`⧉ 已复制片段「${clip.name}」至尾部`);
+  }
+  // =========================================================================
+  // 11. RIGHT PROPERTY INSPECTOR (REAL-TIME LIVE BINDINGS)
+  // =========================================================================
+  const inspectorClipContentEl = document.getElementById('inspectorClipContent');
+  const inspectorBadgeEl = document.getElementById('inspectorBadge');
+
+  const PRESET_SWATCHES = ['#00f0ff', '#ffd866', '#ffffff', '#ff3b7f', '#00ffa3', '#a855f7'];
+
+  function syncInspectorTimingReadout(clip) {
+    const el = document.getElementById('inspTimingText');
+    if (el && clip && clip.id === state.selectedClipId) {
+      el.textContent = `${clip.start.toFixed(2)}s ~ ${(clip.start + clip.duration).toFixed(2)}s (${clip.duration.toFixed(2)}s)`;
+    }
+  }
+
+  function updateSingleClipDOMOnTimeline(clip) {
+    const el = document.querySelector(`.tl-clip[data-clip-id="${clip.id}"]`);
+    if (el) createOrUpdateClipElement(clip, el);
+  }
+
+  function renderInspector() {
+    const clip = state.clips.find(c => c.id === state.selectedClipId);
+    if (!clip) {
+      inspectorBadgeEl.textContent = '未选中片段';
+      inspectorBadgeEl.className = 'badge';
+      inspectorClipContentEl.innerHTML = `
+        <div class="empty-inspector">
+          <div style="font-size:16px;margin-bottom:4px;">✦</div>
+          <div style="color:var(--text-primary);font-weight:600;margin-bottom:4px;">点击轨道片段或画面图层编辑属性</div>
+          <div>选中视频或字幕片段后，可在此实时调节<strong>字号、颜色、不透明度、缩放比例、画面坐标与音量包络</strong>，并在预览监视器立即生效。</div>
+        </div>
+      `;
+      return;
+    }
+
+    const locked = Boolean(state.tracks[clip.track]?.locked);
+    inspectorBadgeEl.textContent = `${clip.track} · ${clip.type.toUpperCase()}`;
+    inspectorBadgeEl.className = 'badge accent';
+
+    const swatchesHtml = PRESET_SWATCHES.map(
+      hex => `<span class="color-swatch" data-hex="${hex}" style="background:${hex};" title="${hex}"></span>`
+    ).join('');
+
+    let specificHtml = '';
+
+    if (clip.type === 'text') {
+      specificHtml = `
+        <div class="insp-section">
+          <div class="insp-sec-title">
+            <span>字幕内容与排版</span>
+            <div style="display:flex;gap:4px;">
+              <button class="btn ${clip.stylePreset === 'neon' ? 'btn-active' : ''}" data-preset="neon" style="height:20px;padding:0 6px;font-size:10px;">霓虹发光</button>
+              <button class="btn ${clip.stylePreset === 'cinema' ? 'btn-active' : ''}" data-preset="cinema" style="height:20px;padding:0 6px;font-size:10px;">电影底栏</button>
+            </div>
+          </div>
+          <textarea class="insp-text-input" id="inspTextInput" rows="2" placeholder="输入自定义字幕文本..." ${locked ? 'disabled' : ''}></textarea>
+
+          <div class="insp-row">
+            <span class="insp-label">字号大小</span>
+            <div class="insp-control">
+              <input type="range" id="inspFontSize" min="16" max="120" step="1" value="${Math.round(clip.fontSize || 42)}" ${locked ? 'disabled' : ''} />
+              <span class="insp-val" id="valFontSize">${Math.round(clip.fontSize || 42)}px</span>
+            </div>
+          </div>
+
+          <div class="insp-row">
+            <span class="insp-label">文字颜色</span>
+            <div class="insp-control" style="justify-content:space-between;">
+              <input type="color" id="inspColor" value="${clip.color || '#ffffff'}" ${locked ? 'disabled' : ''} />
+              <div class="color-swatches">${swatchesHtml}</div>
+            </div>
+          </div>
+
+          <div class="insp-row">
+            <span class="insp-label">底栏暗度</span>
+            <div class="insp-control">
+              <input type="range" id="inspBgOpacity" min="0" max="95" step="1" value="${Math.round((clip.bgOpacity ?? 0) * 100)}" ${locked ? 'disabled' : ''} />
+              <span class="insp-val" id="valBgOpacity">${Math.round((clip.bgOpacity ?? 0) * 100)}%</span>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (clip.type === 'video') {
+      specificHtml = `
+        <div class="insp-section">
+          <div class="insp-sec-title">
+            <span>视觉色彩与画中画预设</span>
+          </div>
+          <div class="insp-row">
+            <span class="insp-label">主色调</span>
+            <div class="insp-control" style="justify-content:space-between;">
+              <input type="color" id="inspColor" value="${clip.color || '#00f0ff'}" ${locked ? 'disabled' : ''} />
+              <div class="color-swatches">${swatchesHtml}</div>
+            </div>
+          </div>
+          <div class="insp-row">
+            <span class="insp-label">快速构图</span>
+            <div class="insp-control" style="gap:4px;">
+              <button class="btn" data-layout="pip-tr" style="flex:1;height:23px;padding:0 4px;font-size:10.5px;" ${locked ? 'disabled' : ''}>右上画中画</button>
+              <button class="btn" data-layout="full" style="flex:1;height:23px;padding:0 4px;font-size:10.5px;" ${locked ? 'disabled' : ''}>100% 铺满</button>
+              <button class="btn" data-layout="zoom" style="flex:1;height:23px;padding:0 4px;font-size:10.5px;" ${locked ? 'disabled' : ''}>135% 特写</button>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (clip.type === 'audio') {
+      specificHtml = `
+        <div class="insp-section">
+          <div class="insp-sec-title"><span>音频增益与淡入淡出</span></div>
+          <div class="insp-row">
+            <span class="insp-label">音量增益</span>
+            <div class="insp-control">
+              <input type="range" id="inspVolume" min="0" max="150" step="1" value="${Math.round((clip.volume ?? 1) * 100)}" ${locked ? 'disabled' : ''} />
+              <span class="insp-val" id="valVolume">${Math.round((clip.volume ?? 1) * 100)}%</span>
+            </div>
+          </div>
+          <div class="insp-row">
+            <span class="insp-label">淡入时长</span>
+            <div class="insp-control">
+              <input type="range" id="inspFadeIn" min="0" max="2.5" step="0.05" value="${(clip.fadeIn || 0).toFixed(2)}" ${locked ? 'disabled' : ''} />
+              <span class="insp-val" id="valFadeIn">${(clip.fadeIn || 0).toFixed(2)}s</span>
+            </div>
+          </div>
+          <div class="insp-row">
+            <span class="insp-label">淡出时长</span>
+            <div class="insp-control">
+              <input type="range" id="inspFadeOut" min="0" max="2.5" step="0.05" value="${(clip.fadeOut || 0).toFixed(2)}" ${locked ? 'disabled' : ''} />
+              <span class="insp-val" id="valFadeOut">${(clip.fadeOut || 0).toFixed(2)}s</span>
+            </div>
+          </div>
+          <div class="insp-row">
+            <span class="insp-label">波形颜色</span>
+            <div class="insp-control" style="justify-content:space-between;">
+              <input type="color" id="inspColor" value="${clip.color || '#14b8a6'}" ${locked ? 'disabled' : ''} />
+              <div class="color-swatches">${swatchesHtml}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    const transformHtml = (clip.type === 'video' || clip.type === 'text') ? `
+      <div class="insp-section">
+        <div class="insp-sec-title">
+          <span>合成变换 (Transform)</span>
+          <button class="btn" id="btnResetTransform" style="height:20px;padding:0 6px;font-size:10px;" ${locked ? 'disabled' : ''}>复位变换</button>
+        </div>
+
+        <div class="insp-row">
+          <span class="insp-label">不透明度</span>
+          <div class="insp-control">
+            <input type="range" id="inspOpacity" min="0" max="100" step="1" value="${Math.round((clip.opacity ?? 1) * 100)}" ${locked ? 'disabled' : ''} />
+            <span class="insp-val" id="valOpacity">${Math.round((clip.opacity ?? 1) * 100)}%</span>
+          </div>
+        </div>
+
+        <div class="insp-row">
+          <span class="insp-label">缩放比例</span>
+          <div class="insp-control">
+            <input type="range" id="inspScale" min="10" max="250" step="1" value="${Math.round((clip.scale ?? 1) * 100)}" ${locked ? 'disabled' : ''} />
+            <span class="insp-val" id="valScale">${Math.round((clip.scale ?? 1) * 100)}%</span>
+          </div>
+        </div>
+
+        <div class="insp-row">
+          <span class="insp-label">水平坐标 X</span>
+          <div class="insp-control">
+            <input type="range" id="inspPosX" min="-560" max="560" step="1" value="${Math.round(clip.posX || 0)}" ${locked ? 'disabled' : ''} />
+            <span class="insp-val" id="valPosX">${Math.round(clip.posX || 0)}</span>
+          </div>
+        </div>
+
+        <div class="insp-row">
+          <span class="insp-label">垂直坐标 Y</span>
+          <div class="insp-control">
+            <input type="range" id="inspPosY" min="-340" max="340" step="1" value="${Math.round(clip.posY || 0)}" ${locked ? 'disabled' : ''} />
+            <span class="insp-val" id="valPosY">${Math.round(clip.posY || 0)}</span>
+          </div>
+        </div>
+      </div>
+    ` : '';
+
+    inspectorClipContentEl.innerHTML = `
+      <div class="insp-section">
+        <div class="insp-sec-title">
+          <span style="color:var(--text-primary);">${clip.name}</span>
+          <span style="color:var(--accent-cyan);">${locked ? '🔒 已锁定' : clip.track}</span>
+        </div>
+        <div class="insp-row">
+          <span class="insp-label">时间区间</span>
+          <span id="inspTimingText" style="font-family:Consolas,monospace;font-size:11px;color:var(--text-secondary);">
+            ${clip.start.toFixed(2)}s ~ ${(clip.start + clip.duration).toFixed(2)}s (${clip.duration.toFixed(2)}s)
+          </span>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:2px;">
+          <button class="btn" id="inspBtnSplit" style="flex:1;height:25px;" ${locked ? 'disabled' : ''}>✂ 指针处分割</button>
+          <button class="btn btn-danger" id="inspBtnDelete" style="flex:1;height:25px;" ${locked ? 'disabled' : ''}>🗑 删除片段</button>
+        </div>
+      </div>
+      ${specificHtml}
+      ${transformHtml}
+    `;
+
+    // Bind Inspector Controls cleanly (push single Undo snapshot per continuous interaction)
+    let recordedForCurrentFocus = false;
+    const ensureUndoOnce = () => {
+      if (!recordedForCurrentFocus) {
+        pushUndoSnapshot();
+        recordedForCurrentFocus = true;
+      }
+    };
+    const resetUndoLatch = () => { recordedForCurrentFocus = false; };
+
+    const bindRange = (id, valId, suffix, applyFn) => {
+      const input = document.getElementById(id);
+      const valSpan = document.getElementById(valId);
+      if (!input) return;
+      input.addEventListener('pointerdown', resetUndoLatch);
+      input.addEventListener('change', resetUndoLatch);
+      input.addEventListener('input', () => {
+        ensureUndoOnce();
+        const v = parseFloat(input.value);
+        if (valSpan) valSpan.textContent = `${v}${suffix}`;
+        applyFn(v);
+        renderCompositeMonitor();
+      });
+    };
+
+    document.getElementById('inspBtnSplit')?.addEventListener('click', splitClipAtPlayhead);
+    document.getElementById('inspBtnDelete')?.addEventListener('click', deleteSelectedClip);
+
+    // Text content
+    const textInput = document.getElementById('inspTextInput');
+    if (textInput) {
+      textInput.value = clip.text || '';
+      textInput.addEventListener('focus', resetUndoLatch);
+      textInput.addEventListener('blur', resetUndoLatch);
+      textInput.addEventListener('input', () => {
+        ensureUndoOnce();
+        clip.text = textInput.value;
+        updateSingleClipDOMOnTimeline(clip);
+        renderCompositeMonitor();
+      });
+    }
+
+    // Style presets for text
+    for (const btn of inspectorClipContentEl.querySelectorAll('[data-preset]')) {
+      btn.addEventListener('click', () => {
+        if (locked) return;
+        pushUndoSnapshot();
+        clip.stylePreset = btn.dataset.preset;
+        if (clip.stylePreset === 'cinema' && (clip.bgOpacity ?? 0) < 0.1) clip.bgOpacity = 0.68;
+        if (clip.stylePreset === 'neon') clip.bgOpacity = 0;
+        renderInspector();
+        renderCompositeMonitor();
+      });
+    }
+
+    // Quick video framing presets
+    for (const btn of inspectorClipContentEl.querySelectorAll('[data-layout]')) {
+      btn.addEventListener('click', () => {
+        if (locked) return;
+        pushUndoSnapshot();
+        const mode = btn.dataset.layout;
+        if (mode === 'pip-tr') {
+          clip.scale = 0.38; clip.posX = 355; clip.posY = -185;
+        } else if (mode === 'full') {
+          clip.scale = 1.0; clip.posX = 0; clip.posY = 0;
+        } else if (mode === 'zoom') {
+          clip.scale = 1.35; clip.posX = 0; clip.posY = 0;
+        }
+        renderInspector();
+        renderCompositeMonitor();
+      });
+    }
+
+    // Color picker & swatches
+    const colorInput = document.getElementById('inspColor');
+    if (colorInput) {
+      colorInput.addEventListener('pointerdown', resetUndoLatch);
+      colorInput.addEventListener('change', resetUndoLatch);
+      colorInput.addEventListener('input', () => {
+        ensureUndoOnce();
+        clip.color = colorInput.value;
+        updateSingleClipDOMOnTimeline(clip);
+        renderCompositeMonitor();
+      });
+    }
+    for (const sw of inspectorClipContentEl.querySelectorAll('.color-swatch')) {
+      sw.addEventListener('click', () => {
+        if (locked) return;
+        pushUndoSnapshot();
+        clip.color = sw.dataset.hex;
+        if (colorInput) colorInput.value = clip.color;
+        updateSingleClipDOMOnTimeline(clip);
+        renderCompositeMonitor();
+      });
+    }
+
+    bindRange('inspFontSize', 'valFontSize', 'px', (v) => { clip.fontSize = v; });
+    bindRange('inspBgOpacity', 'valBgOpacity', '%', (v) => { clip.bgOpacity = v / 100; });
+    bindRange('inspOpacity', 'valOpacity', '%', (v) => { clip.opacity = v / 100; });
+    bindRange('inspScale', 'valScale', '%', (v) => { clip.scale = v / 100; });
+    bindRange('inspPosX', 'valPosX', '', (v) => { clip.posX = v; });
+    bindRange('inspPosY', 'valPosY', '', (v) => { clip.posY = v; });
+
+    bindRange('inspVolume', 'valVolume', '%', (v) => {
+      clip.volume = v / 100;
+      updateSingleClipDOMOnTimeline(clip);
+      if (state.isPlaying) syncAudioPlayback();
+    });
+    bindRange('inspFadeIn', 'valFadeIn', 's', (v) => {
+      clip.fadeIn = v;
+      updateSingleClipDOMOnTimeline(clip);
+      if (state.isPlaying) syncAudioPlayback();
+    });
+    bindRange('inspFadeOut', 'valFadeOut', 's', (v) => {
+      clip.fadeOut = v;
+      updateSingleClipDOMOnTimeline(clip);
+      if (state.isPlaying) syncAudioPlayback();
+    });
+
+    document.getElementById('btnResetTransform')?.addEventListener('click', () => {
+      pushUndoSnapshot();
+      clip.opacity = 1.0;
+      clip.scale = clip.track === 'V2' ? 0.38 : 1.0;
+      clip.posX = clip.track === 'V2' ? 355 : 0;
+      clip.posY = clip.track === 'V2' ? -185 : (clip.type === 'text' ? (clip.stylePreset === 'cinema' ? 255 : -175) : 0);
+      renderInspector();
+      renderCompositeMonitor();
+    });
+  }
+
+  // =========================================================================
+  // 12. DIRECT CANVAS LAYER SELECTION & POSITION DRAGGING ON MONITOR
+  // =========================================================================
+  previewCanvas.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    const rect = previewCanvas.getBoundingClientRect();
+    const scaleX = COMP_W / rect.width;
+    const scaleY = COMP_H / rect.height;
+    const mx = (e.clientX - rect.left) * scaleX;
+    const my = (e.clientY - rect.top) * scaleY;
+
+    // Hit-test visible layers top-to-bottom: T1 -> V2 -> V1
+    const order = ['T1', 'V2', 'V1'];
+    let hitClip = null;
+    for (const trk of order) {
+      if (!state.tracks[trk].visible) continue;
+      const active = getActiveClipsOnTrack(trk, state.currentTime);
+      for (let i = active.length - 1; i >= 0; i--) {
+        const c = active[i];
+        const b = c._lastBounds;
+        if (b && mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) {
+          hitClip = c;
+          break;
+        }
+      }
+      if (hitClip) break;
+    }
+
+    if (!hitClip) return;
+
+    if (state.selectedClipId !== hitClip.id) {
+      state.selectedClipId = hitClip.id;
+      renderTimelineClips();
+      renderInspector();
+      renderCompositeMonitor();
+    }
+
+    if (state.tracks[hitClip.track]?.locked) return;
+
+    const startClientX = e.clientX;
+    const startClientY = e.clientY;
+    const origPosX = hitClip.posX || 0;
+    const origPosY = hitClip.posY || 0;
+    let dragged = false;
+
+    const onMove = (ev) => {
+      const dx = (ev.clientX - startClientX) * scaleX;
+      const dy = (ev.clientY - startClientY) * scaleY;
+      if (!dragged && Math.hypot(dx, dy) > 2.5) {
+        pushUndoSnapshot();
+        dragged = true;
+      }
+      if (!dragged) return;
+      hitClip.posX = clamp(Math.round(origPosX + dx), -560, 560);
+      hitClip.posY = clamp(Math.round(origPosY + dy), -340, 340);
+
+      const sx = document.getElementById('inspPosX');
+      const sy = document.getElementById('inspPosY');
+      const vx = document.getElementById('valPosX');
+      const vy = document.getElementById('valPosY');
+      if (sx) sx.value = hitClip.posX;
+      if (sy) sy.value = hitClip.posY;
+      if (vx) vx.textContent = String(hitClip.posX);
+      if (vy) vy.textContent = String(hitClip.posY);
+
+      renderCompositeMonitor();
+    };
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  });
+
+  // =========================================================================
+  // 13. TRANSPORT ENGINE, ZOOM CONTROLS, SHORTCUTS & WEBM VIDEO EXPORTER
+  // =========================================================================
+  const btnPlayPauseEl = document.getElementById('btnPlayPause');
+  let lastFramePerfMs = 0;
+
+  function setPlayingState(playing) {
+    if (playing) {
+      ensureAudioContext();
+      const projEnd = getProjectEnd();
+      if (state.currentTime >= projEnd - 0.02) {
+        state.currentTime = 0;
+      }
+      state.isPlaying = true;
+      lastFramePerfMs = performance.now();
+      btnPlayPauseEl.textContent = '⏸';
+      btnPlayPauseEl.classList.add('playing');
+      syncAudioPlayback();
+      setStatus('▶ 正在按真实帧率实时合成播放视频、字幕与音频流...');
+    } else {
+      state.isPlaying = false;
+      stopAllScheduledAudio();
+      btnPlayPauseEl.textContent = '▶';
+      btnPlayPauseEl.classList.remove('playing');
+      renderCompositeMonitor();
+    }
+  }
+
+  function stepFrame(deltaFrames) {
+    if (state.isPlaying) setPlayingState(false);
+    ensureAudioContext();
+    state.currentTime = Math.max(0, state.currentTime + deltaFrames * FRAME_STEP);
+    updatePlayheadDOM();
+    renderCompositeMonitor();
+    triggerScrubAudioGrain(state.currentTime);
+  }
+
+  // Main Animation Loop (drives both Playback and Hovered Library Asset Thumbnails)
+  function masterAnimationTick(nowMs) {
+    if (state.isPlaying) {
+      const dt = Math.min(0.1, (nowMs - lastFramePerfMs) / 1000);
+      lastFramePerfMs = nowMs;
+      state.currentTime += dt;
+
+      const projEnd = getProjectEnd();
+      if (state.currentTime >= projEnd) {
+        if (state.loopPlayback && !isExportingVideo) {
+          state.currentTime = 0;
+          syncAudioPlayback();
+        } else {
+          state.currentTime = projEnd;
+          setPlayingState(false);
+          if (isExportingVideo && finishExportCallback) {
+            finishExportCallback();
+          }
+        }
+      }
+
+      updatePlayheadDOM();
+      // Auto-follow playhead in timeline scroll viewport
+      const phX = timeToX(state.currentTime);
+      const viewLeft = timelineScrollEl.scrollLeft;
+      const viewW = timelineScrollEl.clientWidth;
+      if (phX > viewLeft + viewW - 45) {
+        timelineScrollEl.scrollLeft = phX - 80;
+      } else if (phX < viewLeft) {
+        timelineScrollEl.scrollLeft = Math.max(0, phX - 30);
+      }
+
+      renderCompositeMonitor(isExportingVideo);
+    }
+
+    // Animate hovered library card preview smoothly
+    if (hoveredAssetCardId) {
+      const entry = thumbCanvasList.find(it => it.asset.id === hoveredAssetCardId);
+      if (entry) {
+        drawAssetThumbFrame(entry.canvas, entry.asset, nowMs / 1000);
+      }
+    }
+
+    requestAnimationFrame(masterAnimationTick);
+  }
+
+  // Timeline Zoom Synchronization (Inspector Slider <-> Toolbar Slider <-> Ctrl+Wheel)
+  const zoomSliderInspEl = document.getElementById('zoomSliderInsp');
+  const zoomSliderTlEl = document.getElementById('zoomSliderTl');
+  const zoomLabelInspectorEl = document.getElementById('zoomLabelInspector');
+
+  function setTimelineZoom(newPxPerSec) {
+    const clamped = clamp(Math.round(newPxPerSec), 25, 240);
+    if (clamped === state.pxPerSec) return;
+
+    // Keep playhead centered smoothly during zoom
+    const viewW = timelineScrollEl.clientWidth;
+    const playheadScreenOffset = timeToX(state.currentTime) - timelineScrollEl.scrollLeft;
+
+    state.pxPerSec = clamped;
+    zoomSliderInspEl.value = String(clamped);
+    zoomSliderTlEl.value = String(clamped);
+    zoomLabelInspectorEl.textContent = `${clamped} px/s`;
+
+    renderTimelineAll();
+
+    if (playheadScreenOffset >= 0 && playheadScreenOffset <= viewW) {
+      timelineScrollEl.scrollLeft = Math.max(0, timeToX(state.currentTime) - playheadScreenOffset);
+    }
+  }
+
+  zoomSliderInspEl.addEventListener('input', () => setTimelineZoom(parseFloat(zoomSliderInspEl.value)));
+  zoomSliderTlEl.addEventListener('input', () => setTimelineZoom(parseFloat(zoomSliderTlEl.value)));
+
+  document.getElementById('btnZoomOutInsp').addEventListener('click', () => setTimelineZoom(state.pxPerSec - 16));
+  document.getElementById('btnZoomInInsp').addEventListener('click', () => setTimelineZoom(state.pxPerSec + 16));
+  document.getElementById('btnZoomOutTl').addEventListener('click', () => setTimelineZoom(state.pxPerSec - 16));
+  document.getElementById('btnZoomInTl').addEventListener('click', () => setTimelineZoom(state.pxPerSec + 16));
+
+  document.getElementById('btnZoomFit').addEventListener('click', () => {
+    const viewW = Math.max(300, timelineScrollEl.clientWidth - 60);
+    const fitPx = viewW / Math.max(4, getProjectEnd() + 1);
+    setTimelineZoom(fitPx);
+    timelineScrollEl.scrollLeft = 0;
+  });
+
+  timelineScrollEl.addEventListener('wheel', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.14 : 0.88;
+      setTimelineZoom(state.pxPerSec * factor);
+    }
+  }, { passive: false });
+
+  // Buttons & Toggles
+  btnPlayPauseEl.addEventListener('click', () => setPlayingState(!state.isPlaying));
+  document.getElementById('btnSkipStart').addEventListener('click', () => {
+    state.currentTime = 0;
+    if (state.isPlaying) syncAudioPlayback();
+    updatePlayheadDOM();
+    timelineScrollEl.scrollLeft = 0;
+    renderCompositeMonitor();
+    setStatus('⏮ 已跳至时间轴开头 (00:00:00:00)');
+  });
+  document.getElementById('btnPrevFrame').addEventListener('click', () => stepFrame(-1));
+  document.getElementById('btnNextFrame').addEventListener('click', () => stepFrame(1));
+
+  const btnLoopEl = document.getElementById('btnLoop');
+  btnLoopEl.addEventListener('click', () => {
+    state.loopPlayback = !state.loopPlayback;
+    btnLoopEl.classList.toggle('btn-active', state.loopPlayback);
+    setStatus(`循环播放已${state.loopPlayback ? '开启' : '关闭'}`);
+  });
+
+  document.getElementById('btnFullscreen').addEventListener('click', () => {
+    const wrap = document.getElementById('monitorStageWrap');
+    if (!document.fullscreenElement) {
+      wrap.requestFullscreen?.().catch(() => {});
+    } else {
+      document.exitFullscreen?.().catch(() => {});
+    }
+  });
+
+  const btnWaveOverlayEl = document.getElementById('btnWaveOverlay');
+  btnWaveOverlayEl.addEventListener('click', () => {
+    state.showWaveOverlay = !state.showWaveOverlay;
+    btnWaveOverlayEl.classList.toggle('btn-active', state.showWaveOverlay);
+    renderCompositeMonitor();
+  });
+
+  const btnSafeGuidesEl = document.getElementById('btnSafeGuides');
+  btnSafeGuidesEl.addEventListener('click', () => {
+    state.showSafeGuides = !state.showSafeGuides;
+    btnSafeGuidesEl.classList.toggle('btn-active', state.showSafeGuides);
+    renderCompositeMonitor();
+  });
+
+  const btnSnapToggleEl = document.getElementById('btnSnapToggle');
+  btnSnapToggleEl.addEventListener('click', () => {
+    state.snapEnabled = !state.snapEnabled;
+    btnSnapToggleEl.classList.toggle('btn-active', state.snapEnabled);
+    btnSnapToggleEl.textContent = `🧲 边缘磁吸: ${state.snapEnabled ? '开启' : '关闭'}`;
+  });
+
+  document.getElementById('btnSplit').addEventListener('click', splitClipAtPlayhead);
+  document.getElementById('btnDelete').addEventListener('click', deleteSelectedClip);
+  document.getElementById('btnDuplicate').addEventListener('click', duplicateSelectedClip);
+  btnUndoEl.addEventListener('click', performUndo);
+  btnRedoEl.addEventListener('click', performRedo);
+
+  document.getElementById('btnClearAll').addEventListener('click', () => {
+    if (!state.clips.length) return;
+    setPlayingState(false);
+    pushUndoSnapshot();
+    state.clips = [];
+    state.selectedClipId = null;
+    state.currentTime = 0;
+    updateUndoRedoButtons();
+    renderTimelineAll();
+    renderInspector();
+    renderCompositeMonitor();
+    setStatus('已清空所有轨道片段（可从左上素材库点击/拖拽添加，或按 Ctrl+Z 撤销）');
+  });
+
+  document.getElementById('btnResetDemo').addEventListener('click', () => {
+    setPlayingState(false);
+    pushUndoSnapshot();
+    loadDemoSequence(false);
+    setStatus('↺ 已恢复内置多轨道演示工程');
+  });
+
+  // Library Category Filter Tabs
+  document.getElementById('libraryTabs').addEventListener('click', (e) => {
+    const tab = e.target.closest('.filter-tab');
+    if (!tab) return;
+    state.libraryFilter = tab.dataset.filter;
+    for (const el of document.querySelectorAll('.filter-tab')) {
+      el.classList.toggle('active', el === tab);
+    }
+    renderMediaLibrary();
+  });
+
+  // Track Header Visibility/Mute & Lock Toggles
+  document.getElementById('trackHeaderList').addEventListener('click', (e) => {
+    const btn = e.target.closest('.th-btn');
+    if (!btn) return;
+    const trk = btn.dataset.track;
+    const act = btn.dataset.action;
+    if (!state.tracks[trk]) return;
+
+    if (act === 'vis') {
+      state.tracks[trk].visible = !state.tracks[trk].visible;
+      const on = state.tracks[trk].visible;
+      btn.classList.toggle('off', !on);
+      if (trk === 'A1') {
+        btn.textContent = on ? '🔊' : '🔇';
+        if (state.isPlaying) syncAudioPlayback();
+      } else {
+        btn.textContent = on ? '👁' : '🚫';
+      }
+      renderCompositeMonitor();
+      setStatus(`${trk} 轨道已${on ? '开启显示/发声' : '隐藏/静音'}`);
+    } else if (act === 'lock') {
+      state.tracks[trk].locked = !state.tracks[trk].locked;
+      const locked = state.tracks[trk].locked;
+      btn.classList.toggle('off', locked);
+      btn.textContent = locked ? '🔒' : '🔓';
+      renderTimeRuler();
+      renderInspector();
+      renderCompositeMonitor();
+      setStatus(`${trk} 轨道已${locked ? '锁定保护' : '解锁编辑'}`);
+    }
+  });
+
+  // Global NLE Keyboard Shortcuts (ignores active text inputs)
+  window.addEventListener('keydown', (e) => {
+    const active = document.activeElement;
+    const isEditingField = active && (
+      active.tagName === 'TEXTAREA' ||
+      (active.tagName === 'INPUT' && active.type !== 'range' && active.type !== 'color') ||
+      active.isContentEditable
+    );
+    if (isEditingField) return;
+
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+      e.preventDefault();
+      if (e.shiftKey) performRedo();
+      else performUndo();
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+      e.preventDefault();
+      performRedo();
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
+      e.preventDefault();
+      duplicateSelectedClip();
+      return;
+    }
+
+    if (e.code === 'Space') {
+      e.preventDefault();
+      setPlayingState(!state.isPlaying);
+    } else if (e.key === 's' || e.key === 'S') {
+      e.preventDefault();
+      splitClipAtPlayhead();
+    } else if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault();
+      deleteSelectedClip();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      stepFrame(e.shiftKey ? -10 : -1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      stepFrame(e.shiftKey ? 10 : 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      state.currentTime = 0;
+      if (state.isPlaying) syncAudioPlayback();
+      updatePlayheadDOM();
+      renderCompositeMonitor();
+    }
+  });
+
+  // Real-time Composite WebM Video + Audio Exporter
+  let isExportingVideo = false;
+  let finishExportCallback = null;
+  const btnExportEl = document.getElementById('btnExport');
+
+  btnExportEl.addEventListener('click', () => {
+    if (isExportingVideo) return;
+    if (!state.clips.length) {
+      setStatus('轨道为空，请先添加片段后再导出视频');
+      return;
+    }
+    if (typeof MediaRecorder === 'undefined') {
+      setStatus('当前浏览器环境不支持 MediaRecorder 实时录制');
+      return;
+    }
+
+    const ctx = ensureAudioContext();
+    const canvasStream = previewCanvas.captureStream(FPS);
+    if (ctx) {
+      exportDestNode = ctx.createMediaStreamDestination();
+      for (const track of exportDestNode.stream.getAudioTracks()) {
+        canvasStream.addTrack(track);
+      }
+    }
+
+    const mimeCandidates = [
+      'video/webm;codecs=vp9,opus',
+      'video/webm;codecs=vp8,opus',
+      'video/webm'
+    ];
+    const mimeType = mimeCandidates.find(m => MediaRecorder.isTypeSupported(m)) || '';
+    const chunks = [];
+    const recorder = new MediaRecorder(canvasStream, mimeType ? { mimeType, videoBitsPerSecond: 5_000_000 } : {});
+
+    recorder.ondataavailable = (ev) => {
+      if (ev.data && ev.data.size > 0) chunks.push(ev.data);
+    };
+    recorder.onstop = () => {
+      exportDestNode = null;
+      isExportingVideo = false;
+      btnExportEl.disabled = false;
+      btnExportEl.textContent = '⤓ 导出合成短片';
+
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `NovaCut_Composite_${Date.now()}.webm`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      setStatus('✅ 合成视频导出完毕，已开始下载 WebM 文件！');
+    };
+
+    isExportingVideo = true;
+    btnExportEl.disabled = true;
+    btnExportEl.textContent = '● 正在渲染录制...';
+    state.currentTime = 0;
+
+    finishExportCallback = () => {
+      finishExportCallback = null;
+      if (recorder.state !== 'inactive') recorder.stop();
+    };
+
+    recorder.start(200);
+    setPlayingState(true);
+    setStatus('● 正在从头至尾实时渲染并录制多轨音视频流，请稍候...');
+  });
+
+  window.addEventListener('resize', () => {
+    renderTimeRuler();
+    updatePlayheadDOM();
+  });
+
+  // =========================================================================
+  // 14. DEMO PROJECT BOOTSTRAP & INITIALIZATION
+  // =========================================================================
+  function loadDemoSequence(resetHistory = true) {
+    state.clips = [
+      // V1 Main Video Sequence: 3s Countdown -> 5s Cyber Grid -> 4s Fluid Aurora (12.0s total)
+      createClipFromAsset('vid_countdown', 'V1', 0.0, {
+        duration: 3.0,
+        offset: 2.0, // Counts 3 -> 2 -> 1 cleanly!
+        color: '#f5d08a'
+      }),
+      createClipFromAsset('vid_cyber', 'V1', 3.0, {
+        duration: 5.0,
+        offset: 0.0,
+        color: '#00f0ff'
+      }),
+      createClipFromAsset('vid_aurora', 'V1', 8.0, {
+        duration: 4.0,
+        offset: 0.5,
+        color: '#00ffa3'
+      }),
+
+      // V2 Picture-in-Picture Overlay (3.8s ~ 7.5s)
+      createClipFromAsset('vid_aurora', 'V2', 3.8, {
+        duration: 3.7,
+        offset: 0.0,
+        scale: 0.36,
+        posX: 365,
+        posY: -185,
+        opacity: 0.96,
+        color: '#38bdf8'
+      }),
+
+      // T1 Subtitles & Neon Titles
+      createClipFromAsset('txt_cinema', 'T1', 0.2, {
+        duration: 2.6,
+        text: 'SMPTE 胶片同步片头 · 准备切入赛博空间',
+        fontSize: 32,
+        color: '#ffd866',
+        posY: 255
+      }),
+      createClipFromAsset('txt_neon', 'T1', 3.2, {
+        duration: 4.4,
+        text: 'CYBERPUNK // 赛博网格穿梭',
+        fontSize: 56,
+        color: '#00f0ff',
+        posX: -90,
+        posY: -195
+      }),
+      createClipFromAsset('txt_cinema', 'T1', 8.2, {
+        duration: 3.5,
+        text: '支持红针逐帧刷画面、边缘磁吸裁剪与 [S] 分割',
+        fontSize: 34,
+        color: '#a7f3d0',
+        posY: 255
+      }),
+
+      // A1 Synthesized Audio Tracks
+      createClipFromAsset('aud_beep', 'A1', 0.0, {
+        duration: 3.0,
+        offset: 0.0,
+        volume: 0.9,
+        fadeIn: 0.02,
+        fadeOut: 0.08
+      }),
+      createClipFromAsset('aud_synth', 'A1', 3.0, {
+        duration: 9.0,
+        offset: 0.0,
+        volume: 1.0,
+        fadeIn: 0.15,
+        fadeOut: 0.8
+      })
+    ];
+
+    // Park on a rich multi-layer composite frame (V1 Cyber Grid + V2 Aurora PiP + T1 Neon Title + A1 Synth)
+    state.currentTime = 4.2;
+    state.selectedClipId = state.clips[5].id;
+
+    if (resetHistory) {
+      state.undoStack.length = 0;
+      state.redoStack.length = 0;
+    }
+    updateUndoRedoButtons();
+    renderTimelineAll();
+    renderInspector();
+    renderCompositeMonitor();
+  }
+
+  function initApp() {
+    synthesizeAllProceduralAudio();
+    renderMediaLibrary();
+    loadDemoSequence(true);
+    requestAnimationFrame(masterAnimationTick);
+  }
+
+  initApp();
+})();
+</script>
+</body>
+</html>

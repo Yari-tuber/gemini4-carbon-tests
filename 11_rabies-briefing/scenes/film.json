@@ -1,0 +1,3467 @@
+{
+ "dur": 105.875,
+ "reveal": 98.5,
+ "board": {
+  "w": 7680,
+  "h": 4320,
+  "seed": 23,
+  "texScale": 0.42,
+  "ghosts": 105
+ },
+ "hand": 1.0,
+ "sheen": 0.075,
+ "light": {
+  "x": -1800,
+  "y": -2400,
+  "r": 19000,
+  "min": 0.8
+ },
+ "shade": [
+  {
+   "t0": 18.0,
+   "t1": 22.0,
+   "x0": 800,
+   "x1": 3400,
+   "w": 520,
+   "amt": 0.055,
+   "ang": -16
+  },
+  {
+   "t0": 99.1,
+   "t1": 106.67,
+   "x0": -1800,
+   "x1": 8600,
+   "w": 1350,
+   "amt": 0.14,
+   "ang": -16
+  }
+ ],
+ "tray": [
+  {
+   "kind": "marker",
+   "color": "graphite",
+   "x": 1650,
+   "rot": -1.8
+  },
+  {
+   "kind": "marker",
+   "color": "blue",
+   "x": 2120,
+   "rot": 1.4
+  },
+  {
+   "kind": "marker",
+   "color": "red",
+   "x": 2560,
+   "rot": -0.9
+  },
+  {
+   "kind": "eraser",
+   "x": 4950,
+   "rot": 0.6
+  },
+  {
+   "kind": "marker",
+   "color": "graphite",
+   "x": 5880,
+   "rot": 2.4
+  }
+ ],
+ "cam": {
+  "x": 980.0,
+  "y": 640.0,
+  "z": 1.48,
+  "roll": -1.4,
+  "moves": [
+   {
+    "t": 4.125,
+    "d": 1.25,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": 260.0,
+    "dy": 60.0,
+    "dl": -0.25228,
+    "dr": 1.4
+   },
+   {
+    "t": 9.5,
+    "d": 1.375,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": 1700.0,
+    "dy": -10.0,
+    "dl": -0.062801,
+    "dr": 0.5
+   },
+   {
+    "t": 14.5,
+    "d": 1.25,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": 740.0,
+    "dy": 10.0,
+    "dl": -0.097164,
+    "dr": -0.9
+   },
+   {
+    "t": 19.75,
+    "d": 1.5,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": -2220.0,
+    "dy": 1120.0,
+    "dl": 0.097164,
+    "dr": 0.7
+   },
+   {
+    "t": 24.375,
+    "d": 1.375,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": 660.0,
+    "dy": 0.0,
+    "dl": -0.057158,
+    "dr": -0.3
+   },
+   {
+    "t": 29.875,
+    "d": 1.375,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": 640.0,
+    "dy": 0.0,
+    "dl": -0.040005,
+    "dr": -0.3
+   },
+   {
+    "t": 41.75,
+    "d": 1.5,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": -1600.0,
+    "dy": 940.0,
+    "dl": 0.078472,
+    "dr": 0.3
+   },
+   {
+    "t": 47.875,
+    "d": 1.125,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": 720.0,
+    "dy": 530.0,
+    "dl": -0.120144,
+    "dr": 0.0
+   },
+   {
+    "t": 53.25,
+    "d": 1.125,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": 760.0,
+    "dy": 540.0,
+    "dl": -0.112478,
+    "dr": 0.0
+   },
+   {
+    "t": 59.875,
+    "d": 1.25,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": 1800.0,
+    "dy": -1050.0,
+    "dl": 0.174353,
+    "dr": 0.3
+   },
+   {
+    "t": 71.375,
+    "d": 1.25,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": 60.0,
+    "dy": 980.0,
+    "dl": 0.0,
+    "dr": -0.5
+   },
+   {
+    "t": 81.625,
+    "d": 1.375,
+    "a": 2.2,
+    "b": 2.5,
+    "dx": 100.0,
+    "dy": -2020.0,
+    "dl": 0.019803,
+    "dr": 0.2
+   },
+   {
+    "t": 98.5,
+    "d": 3.0,
+    "a": 2.2,
+    "b": 2.6,
+    "dx": -760.0,
+    "dy": 475.0,
+    "dl": -1.463726,
+    "dr": 0.0
+   }
+  ],
+  "shakes": [
+   {
+    "t": 36.5,
+    "amp": 9.5,
+    "k": 7.0,
+    "f": 9.5,
+    "dir": [
+     0.25,
+     1.0
+    ],
+    "roll": 0.14
+   },
+   {
+    "t": 56.5,
+    "amp": 7.0,
+    "k": 7.5,
+    "f": 10.0,
+    "dir": [
+     0.2,
+     1.0
+    ],
+    "roll": 0.1
+   }
+  ]
+ },
+ "elements": [
+  {
+   "id": "w_hook_100",
+   "type": "ink",
+   "kind": "write",
+   "text": "≈100%",
+   "xy": [
+    760,
+    560
+   ],
+   "t": 0.25,
+   "d": 0.625,
+   "size": 195,
+   "color": "red",
+   "align": "center"
+  },
+  {
+   "id": "tag_hook_fatal",
+   "type": "tag",
+   "text": "狂犬病临床致死率",
+   "xy": [
+    520,
+    720
+   ],
+   "size": 48,
+   "color": "graphite",
+   "magnetColor": "red",
+   "rot": -0.8,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 0.5,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "ln_hook_under",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     510,
+     605
+    ],
+    [
+     1010,
+     605
+    ]
+   ],
+   "t": 1.0,
+   "d": 0.375,
+   "lw": 12,
+   "color": "red"
+  },
+  {
+   "id": "p_em_niaid",
+   "type": "print",
+   "src": "em_niaid",
+   "xy": [
+    1620,
+    565
+   ],
+   "w": 660,
+   "z": 14.0,
+   "rot": 1.2,
+   "arrive": {
+    "kind": "drop",
+    "t": 4.875,
+    "d": 0.625,
+    "lift": 180,
+    "land": 0.6,
+    "spin": 1.6
+   }
+  },
+  {
+   "id": "m_em_l",
+   "type": "magnet",
+   "xy": [
+    1340,
+    255
+   ],
+   "r": 30,
+   "color": "graphite",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 5.375,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "m_em_r",
+   "type": "magnet",
+   "xy": [
+    1900,
+    263
+   ],
+   "r": 30,
+   "color": "graphite",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 5.5,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "dim_virion",
+   "type": "ink",
+   "kind": "dim",
+   "from": [
+    1310,
+    935
+   ],
+   "to": [
+    1930,
+    935
+   ],
+   "t": 5.75,
+   "d": 0.5,
+   "lw": 9,
+   "color": "blue",
+   "ext": [
+    [
+     1310,
+     900,
+     955
+    ],
+    [
+     1930,
+     900,
+     955
+    ]
+   ]
+  },
+  {
+   "id": "w_virion_nm",
+   "type": "ink",
+   "kind": "write",
+   "text": "弹状病毒 · 180×75 nm",
+   "xy": [
+    1620,
+    1002
+   ],
+   "t": 6.0,
+   "d": 0.625,
+   "size": 50,
+   "color": "blue",
+   "align": "center"
+  },
+  {
+   "id": "arr_envelope",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     1140,
+     845
+    ],
+    [
+     1360,
+     700
+    ]
+   ],
+   "t": 6.0,
+   "d": 0.375,
+   "lw": 9,
+   "color": "red",
+   "arrow": true
+  },
+  {
+   "id": "tag_envelope",
+   "type": "tag",
+   "text": "脆弱脂质包膜",
+   "xy": [
+    710,
+    865
+   ],
+   "size": 46,
+   "color": "red",
+   "magnetColor": "red",
+   "rot": 0.6,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 6.125,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "ln_z1_bridge",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     1980,
+     585
+    ],
+    [
+     2480,
+     585
+    ]
+   ],
+   "t": 9.5,
+   "d": 0.875,
+   "lw": 10,
+   "color": "graphite",
+   "arrow": true
+  },
+  {
+   "id": "p_dog",
+   "type": "print",
+   "src": "dog",
+   "xy": [
+    2760,
+    610
+   ],
+   "w": 620,
+   "z": 14.0,
+   "rot": -1.0,
+   "arrive": {
+    "kind": "drop",
+    "t": 10.125,
+    "d": 0.625,
+    "lift": 180,
+    "land": 0.6,
+    "spin": -1.6
+   }
+  },
+  {
+   "id": "w_deaths_yr",
+   "type": "ink",
+   "kind": "write",
+   "text": "全球 5.9万例/年",
+   "xy": [
+    2760,
+    1015
+   ],
+   "t": 10.875,
+   "d": 0.625,
+   "size": 56,
+   "color": "graphite",
+   "align": "center"
+  },
+  {
+   "id": "tag_dog_99",
+   "type": "tag",
+   "text": "99% 犬类传播",
+   "xy": [
+    3120,
+    470
+   ],
+   "size": 52,
+   "color": "red",
+   "magnetColor": "red",
+   "rot": -0.5,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 11.75,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "m_dog_0",
+   "type": "magnet",
+   "xy": [
+    3160,
+    595
+   ],
+   "r": 28,
+   "color": "red",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 12.125,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "m_dog_1",
+   "type": "magnet",
+   "xy": [
+    3236,
+    595
+   ],
+   "r": 28,
+   "color": "red",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 12.25,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "m_dog_2",
+   "type": "magnet",
+   "xy": [
+    3312,
+    595
+   ],
+   "r": 28,
+   "color": "red",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 12.375,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "m_dog_3",
+   "type": "magnet",
+   "xy": [
+    3388,
+    595
+   ],
+   "r": 28,
+   "color": "red",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 12.5,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "m_dog_4",
+   "type": "magnet",
+   "xy": [
+    3464,
+    595
+   ],
+   "r": 28,
+   "color": "graphite",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 12.625,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "p_cat",
+   "type": "print",
+   "src": "cat",
+   "xy": [
+    3460,
+    845
+   ],
+   "w": 500,
+   "z": 14.0,
+   "rot": 1.4,
+   "arrive": {
+    "kind": "drop",
+    "t": 14.875,
+    "d": 0.625,
+    "lift": 170,
+    "land": 0.6,
+    "spin": 1.6
+   }
+  },
+  {
+   "id": "tag_cat_wild",
+   "type": "tag",
+   "text": "猫与野生动物",
+   "xy": [
+    3240,
+    1075
+   ],
+   "size": 44,
+   "color": "graphite",
+   "magnetColor": "graphite",
+   "rot": 0.5,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 15.5,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "p_bat",
+   "type": "print",
+   "src": "bat",
+   "xy": [
+    4150,
+    540
+   ],
+   "w": 720,
+   "z": 14.0,
+   "rot": -3.5,
+   "arrive": {
+    "kind": "drop",
+    "t": 16.125,
+    "d": 0.625,
+    "lift": 190,
+    "land": 0.6,
+    "spin": -1.6
+   }
+  },
+  {
+   "id": "tag_bat_cat3",
+   "type": "tag",
+   "text": "碰蝙蝠＝III级",
+   "xy": [
+    3920,
+    910
+   ],
+   "size": 46,
+   "color": "red",
+   "magnetColor": "red",
+   "rot": -0.8,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 16.75,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "ring_bat",
+   "type": "ink",
+   "kind": "ring",
+   "c": [
+    4145,
+    910
+   ],
+   "r": [
+    325,
+    86
+   ],
+   "t": 17.125,
+   "d": 0.5,
+   "lw": 9,
+   "color": "red"
+  },
+  {
+   "id": "ln_z1_to_z2",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     3460,
+     1140
+    ],
+    [
+     1160,
+     1580
+    ]
+   ],
+   "t": 19.625,
+   "d": 1.125,
+   "lw": 9,
+   "color": "blue",
+   "dash": [
+    22,
+    16
+   ],
+   "arrow": true
+  },
+  {
+   "id": "ln_wound_notch",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     940,
+     1730
+    ],
+    [
+     1010,
+     1820
+    ],
+    [
+     940,
+     1910
+    ]
+   ],
+   "t": 20.75,
+   "d": 0.375,
+   "lw": 12,
+   "color": "red"
+  },
+  {
+   "id": "ln_axon_trunk",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     1010,
+     1820
+    ],
+    [
+     3120,
+     1820
+    ]
+   ],
+   "t": 21.0,
+   "d": 1.375,
+   "lw": 14,
+   "color": "graphite"
+  },
+  {
+   "id": "ln_myelin_0",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     1220,
+     1792
+    ],
+    [
+     1410,
+     1792
+    ],
+    [
+     1410,
+     1848
+    ],
+    [
+     1220,
+     1848
+    ],
+    [
+     1220,
+     1792
+    ]
+   ],
+   "t": 21.25,
+   "d": 0.25,
+   "lw": 6,
+   "color": "grey"
+  },
+  {
+   "id": "ln_myelin_1",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     1520,
+     1792
+    ],
+    [
+     1710,
+     1792
+    ],
+    [
+     1710,
+     1848
+    ],
+    [
+     1520,
+     1848
+    ],
+    [
+     1520,
+     1792
+    ]
+   ],
+   "t": 21.375,
+   "d": 0.25,
+   "lw": 6,
+   "color": "grey"
+  },
+  {
+   "id": "ln_myelin_2",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     1820,
+     1792
+    ],
+    [
+     2010,
+     1792
+    ],
+    [
+     2010,
+     1848
+    ],
+    [
+     1820,
+     1848
+    ],
+    [
+     1820,
+     1792
+    ]
+   ],
+   "t": 21.5,
+   "d": 0.25,
+   "lw": 6,
+   "color": "grey"
+  },
+  {
+   "id": "ln_myelin_3",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     2120,
+     1792
+    ],
+    [
+     2310,
+     1792
+    ],
+    [
+     2310,
+     1848
+    ],
+    [
+     2120,
+     1848
+    ],
+    [
+     2120,
+     1792
+    ]
+   ],
+   "t": 21.625,
+   "d": 0.25,
+   "lw": 6,
+   "color": "grey"
+  },
+  {
+   "id": "ln_myelin_4",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     2420,
+     1792
+    ],
+    [
+     2610,
+     1792
+    ],
+    [
+     2610,
+     1848
+    ],
+    [
+     2420,
+     1848
+    ],
+    [
+     2420,
+     1792
+    ]
+   ],
+   "t": 21.75,
+   "d": 0.25,
+   "lw": 6,
+   "color": "grey"
+  },
+  {
+   "id": "ln_myelin_5",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     2720,
+     1792
+    ],
+    [
+     2910,
+     1792
+    ],
+    [
+     2910,
+     1848
+    ],
+    [
+     2720,
+     1848
+    ],
+    [
+     2720,
+     1792
+    ]
+   ],
+   "t": 21.875,
+   "d": 0.25,
+   "lw": 6,
+   "color": "grey"
+  },
+  {
+   "id": "tag_nerve_in",
+   "type": "tag",
+   "text": "钻入外周神经",
+   "xy": [
+    980,
+    1610
+   ],
+   "size": 48,
+   "color": "graphite",
+   "magnetColor": "blue",
+   "rot": -0.6,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 21.125,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "tag_no_blood",
+   "type": "tag",
+   "text": "血液传播",
+   "xy": [
+    1020,
+    2020
+   ],
+   "size": 46,
+   "color": "graphite",
+   "magnetColor": "graphite",
+   "rot": 0.5,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 21.875,
+    "d": 0.5,
+    "amp": 10
+   },
+   "strike": {
+    "t": 22.5,
+    "d": 0.25,
+    "color": "red"
+   }
+  },
+  {
+   "id": "ruler_axon",
+   "type": "ruler",
+   "from": [
+    1460,
+    1945
+   ],
+   "to": [
+    2820,
+    1945
+   ],
+   "w": 72,
+   "z": 20,
+   "magnetColor": "graphite",
+   "arrive": {
+    "kind": "slide",
+    "t": 24.625,
+    "d": 0.5,
+    "from": [
+     -520,
+     90
+    ]
+   }
+  },
+  {
+   "id": "dim_crawl_rate",
+   "type": "ink",
+   "kind": "dim",
+   "from": [
+    1500,
+    1720
+   ],
+   "to": [
+    2780,
+    1720
+   ],
+   "t": 25.375,
+   "d": 0.875,
+   "lw": 10,
+   "color": "blue",
+   "ext": [
+    [
+     1500,
+     1775,
+     1700
+    ],
+    [
+     2780,
+     1775,
+     1700
+    ]
+   ]
+  },
+  {
+   "id": "w_crawl_mm",
+   "type": "ink",
+   "kind": "write",
+   "text": "逆行 50–100 mm/天",
+   "xy": [
+    2140,
+    1665
+   ],
+   "t": 25.75,
+   "d": 0.75,
+   "size": 60,
+   "color": "blue",
+   "align": "center"
+  },
+  {
+   "id": "ln_cns_brain",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     3240,
+     1820
+    ],
+    [
+     3260,
+     1690
+    ],
+    [
+     3350,
+     1610
+    ],
+    [
+     3490,
+     1605
+    ],
+    [
+     3600,
+     1680
+    ],
+    [
+     3630,
+     1810
+    ],
+    [
+     3580,
+     1935
+    ],
+    [
+     3460,
+     1975
+    ],
+    [
+     3360,
+     1960
+    ],
+    [
+     3330,
+     2060
+    ],
+    [
+     3280,
+     2060
+    ],
+    [
+     3280,
+     1910
+    ],
+    [
+     3240,
+     1820
+    ]
+   ],
+   "t": 30.5,
+   "d": 0.875,
+   "lw": 12,
+   "color": "graphite"
+  },
+  {
+   "id": "w_cns_label",
+   "type": "ink",
+   "kind": "write",
+   "text": "中枢神经 / 脑",
+   "xy": [
+    3440,
+    2135
+   ],
+   "t": 31.125,
+   "d": 0.5,
+   "size": 48,
+   "color": "graphite",
+   "align": "center"
+  },
+  {
+   "id": "tag_incub",
+   "type": "tag",
+   "text": "潜伏期 1–3 个月",
+   "xy": [
+    1980,
+    2090
+   ],
+   "size": 48,
+   "color": "blue",
+   "magnetColor": "blue",
+   "rot": -0.4,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 30.875,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "w_window",
+   "type": "ink",
+   "kind": "write",
+   "text": "黄金抢救窗口",
+   "xy": [
+    2660,
+    1555
+   ],
+   "t": 32.125,
+   "d": 0.625,
+   "size": 62,
+   "color": "blue",
+   "align": "center"
+  },
+  {
+   "id": "ln_bbb_dead",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     3140,
+     1480
+    ],
+    [
+     3140,
+     2180
+    ]
+   ],
+   "t": 35.25,
+   "d": 0.375,
+   "lw": 16,
+   "color": "red"
+  },
+  {
+   "id": "w_bbb_label",
+   "type": "ink",
+   "kind": "write",
+   "text": "血脑屏障",
+   "xy": [
+    3140,
+    1445
+   ],
+   "t": 35.375,
+   "d": 0.375,
+   "size": 50,
+   "color": "red",
+   "align": "center"
+  },
+  {
+   "id": "st_fatal",
+   "type": "stamp",
+   "text": "发病无药可救",
+   "xy": [
+    3435,
+    1815
+   ],
+   "size": 92,
+   "color": "red",
+   "rot": -6.0,
+   "t": 36.5,
+   "seed": 41
+  },
+  {
+   "id": "w_pre_intercept",
+   "type": "ink",
+   "kind": "write",
+   "text": "越线前 · 步步可拦",
+   "xy": [
+    2785,
+    2112
+   ],
+   "t": 38.625,
+   "d": 0.625,
+   "size": 54,
+   "color": "blue",
+   "align": "center"
+  },
+  {
+   "id": "ln_z2_to_z3",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     2540,
+     2170
+    ],
+    [
+     1160,
+     2500
+    ]
+   ],
+   "t": 41.75,
+   "d": 1.125,
+   "lw": 9,
+   "color": "graphite",
+   "dash": [
+    20,
+    16
+   ],
+   "arrow": true
+  },
+  {
+   "id": "ln_cat1_skin",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     560,
+     2740
+    ],
+    [
+     1760,
+     2740
+    ]
+   ],
+   "t": 43.375,
+   "d": 0.5,
+   "lw": 12,
+   "color": "graphite"
+  },
+  {
+   "id": "tag_cat1",
+   "type": "tag",
+   "text": "I级：完好皮肤被舔",
+   "xy": [
+    560,
+    2590
+   ],
+   "size": 48,
+   "color": "graphite",
+   "magnetColor": "blue",
+   "rot": 0.0,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 43.5,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "w_cat1_act",
+   "type": "ink",
+   "kind": "write",
+   "text": "清洗即可 · 免打针",
+   "xy": [
+    1160,
+    2880
+   ],
+   "t": 44.5,
+   "d": 0.625,
+   "size": 58,
+   "color": "blue",
+   "align": "center"
+  },
+  {
+   "id": "ln_cat2_skin",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     1240,
+     3265
+    ],
+    [
+     1780,
+     3265
+    ],
+    [
+     1860,
+     3335
+    ],
+    [
+     1940,
+     3265
+    ],
+    [
+     2520,
+     3265
+    ]
+   ],
+   "t": 49.0,
+   "d": 0.5,
+   "lw": 12,
+   "color": "blue"
+  },
+  {
+   "id": "tag_cat2",
+   "type": "tag",
+   "text": "II级：轻咬 / 无血抓伤",
+   "xy": [
+    1240,
+    3115
+   ],
+   "size": 48,
+   "color": "blue",
+   "magnetColor": "blue",
+   "rot": 0.0,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 49.125,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "w_cat2_act",
+   "type": "ink",
+   "kind": "write",
+   "text": "立即冲洗＋全程疫苗",
+   "xy": [
+    1880,
+    3440
+   ],
+   "t": 50.0,
+   "d": 0.625,
+   "size": 58,
+   "color": "blue",
+   "align": "center"
+  },
+  {
+   "id": "ln_cat3_dermis",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     1820,
+     3865
+    ],
+    [
+     3460,
+     3865
+    ]
+   ],
+   "t": 54.375,
+   "d": 0.375,
+   "lw": 9,
+   "color": "red",
+   "dash": [
+    18,
+    14
+   ]
+  },
+  {
+   "id": "ln_cat3_breach",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     1840,
+     3775
+    ],
+    [
+     2340,
+     3775
+    ],
+    [
+     2440,
+     3965
+    ],
+    [
+     2540,
+     3775
+    ],
+    [
+     3440,
+     3775
+    ]
+   ],
+   "t": 54.5,
+   "d": 0.5,
+   "lw": 14,
+   "color": "red"
+  },
+  {
+   "id": "tag_cat3",
+   "type": "tag",
+   "text": "III级：见血 / 黏膜 / 蝙蝠",
+   "xy": [
+    1840,
+    3630
+   ],
+   "size": 48,
+   "color": "red",
+   "magnetColor": "red",
+   "rot": 0.0,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 54.625,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "w_cat3_act",
+   "type": "ink",
+   "kind": "write",
+   "text": "冲洗＋疫苗",
+   "xy": [
+    2220,
+    4045
+   ],
+   "t": 55.625,
+   "d": 0.5,
+   "size": 56,
+   "color": "graphite",
+   "align": "center"
+  },
+  {
+   "id": "st_cat3_rig",
+   "type": "stamp",
+   "text": "加打球蛋白",
+   "xy": [
+    3060,
+    4010
+   ],
+   "size": 88,
+   "color": "red",
+   "rot": -4.0,
+   "t": 56.5,
+   "seed": 77
+  },
+  {
+   "id": "ln_z3_to_z4a",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     3480,
+     3775
+    ],
+    [
+     3820,
+     2820
+    ]
+   ],
+   "t": 59.875,
+   "d": 0.875,
+   "lw": 9,
+   "color": "blue",
+   "dash": [
+    18,
+    14
+   ],
+   "arrow": true
+  },
+  {
+   "id": "p_tap",
+   "type": "print",
+   "src": "tap",
+   "xy": [
+    3920,
+    2540
+   ],
+   "w": 310,
+   "z": 14.0,
+   "rot": 0.0,
+   "arrive": {
+    "kind": "drop",
+    "t": 60.625,
+    "d": 0.625,
+    "lift": 170,
+    "land": 0.6,
+    "spin": 1.6
+   }
+  },
+  {
+   "id": "p_soap",
+   "type": "print",
+   "src": "soap",
+   "xy": [
+    4060,
+    2990
+   ],
+   "w": 235,
+   "z": 14.0,
+   "rot": -2.0,
+   "arrive": {
+    "kind": "drop",
+    "t": 61.125,
+    "d": 0.625,
+    "lift": 170,
+    "land": 0.6,
+    "spin": -1.6
+   }
+  },
+  {
+   "id": "hatch_water",
+   "type": "ink",
+   "kind": "hatch",
+   "color": "water",
+   "lw": 6,
+   "strokes": [
+    {
+     "t": 61.625,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4030.6,
+       2690
+      ],
+      [
+       4024,
+       2875
+      ]
+     ]
+    },
+    {
+     "t": 61.75,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4037.8,
+       2690
+      ],
+      [
+       4042,
+       2910
+      ]
+     ]
+    },
+    {
+     "t": 61.875,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4045.0,
+       2690
+      ],
+      [
+       4060,
+       2945
+      ]
+     ]
+    },
+    {
+     "t": 62.0,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4052.2,
+       2690
+      ],
+      [
+       4078,
+       2875
+      ]
+     ]
+    },
+    {
+     "t": 62.125,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4059.4,
+       2690
+      ],
+      [
+       4096,
+       2910
+      ]
+     ]
+    },
+    {
+     "t": 62.25,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4030.6,
+       2690
+      ],
+      [
+       4024,
+       2945
+      ]
+     ]
+    },
+    {
+     "t": 62.375,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4037.8,
+       2690
+      ],
+      [
+       4042,
+       2875
+      ]
+     ]
+    },
+    {
+     "t": 62.5,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4045.0,
+       2690
+      ],
+      [
+       4060,
+       2910
+      ]
+     ]
+    },
+    {
+     "t": 62.625,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4052.2,
+       2690
+      ],
+      [
+       4078,
+       2945
+      ]
+     ]
+    },
+    {
+     "t": 62.75,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4059.4,
+       2690
+      ],
+      [
+       4096,
+       2875
+      ]
+     ]
+    },
+    {
+     "t": 62.875,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4030.6,
+       2690
+      ],
+      [
+       4024,
+       2910
+      ]
+     ]
+    },
+    {
+     "t": 63.0,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4037.8,
+       2690
+      ],
+      [
+       4042,
+       2945
+      ]
+     ]
+    },
+    {
+     "t": 63.125,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4045.0,
+       2690
+      ],
+      [
+       4060,
+       2875
+      ]
+     ]
+    },
+    {
+     "t": 63.25,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4052.2,
+       2690
+      ],
+      [
+       4078,
+       2910
+      ]
+     ]
+    },
+    {
+     "t": 63.375,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4059.4,
+       2690
+      ],
+      [
+       4096,
+       2945
+      ]
+     ]
+    },
+    {
+     "t": 63.5,
+     "d": 0.22,
+     "lw": 6,
+     "color": "water",
+     "points": [
+      [
+       4030.6,
+       2690
+      ],
+      [
+       4024,
+       2875
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dim_15min",
+   "type": "ink",
+   "kind": "dim",
+   "from": [
+    4280,
+    2500
+   ],
+   "to": [
+    5160,
+    2500
+   ],
+   "t": 62.0,
+   "d": 0.5,
+   "lw": 9,
+   "color": "blue"
+  },
+  {
+   "id": "w_15min",
+   "type": "ink",
+   "kind": "write",
+   "text": "交替冲 ≥15 分钟",
+   "xy": [
+    4720,
+    2450
+   ],
+   "t": 62.125,
+   "d": 0.625,
+   "size": 58,
+   "color": "blue",
+   "align": "center"
+  },
+  {
+   "id": "tag_lyse_env",
+   "type": "tag",
+   "text": "瓦解脂质包膜",
+   "xy": [
+    4280,
+    2700
+   ],
+   "size": 46,
+   "color": "blue",
+   "magnetColor": "blue",
+   "rot": -0.5,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 66.625,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "p_iodine",
+   "type": "print",
+   "src": "iodine",
+   "xy": [
+    5120,
+    2890
+   ],
+   "w": 205,
+   "z": 14.0,
+   "rot": 1.2,
+   "arrive": {
+    "kind": "drop",
+    "t": 67.25,
+    "d": 0.625,
+    "lift": 170,
+    "land": 0.6,
+    "spin": 1.6
+   }
+  },
+  {
+   "id": "tag_iodine_nosut",
+   "type": "tag",
+   "text": "涂碘伏 · 勿缝合",
+   "xy": [
+    4280,
+    3040
+   ],
+   "size": 46,
+   "color": "red",
+   "magnetColor": "red",
+   "rot": 0.4,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 68.0,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "p_syringe",
+   "type": "print",
+   "src": "syringe",
+   "xy": [
+    4140,
+    3500
+   ],
+   "w": 820,
+   "z": 14.0,
+   "rot": -1.2,
+   "arrive": {
+    "kind": "drop",
+    "t": 72.25,
+    "d": 0.625,
+    "lift": 170,
+    "land": 0.6,
+    "spin": -1.6
+   }
+  },
+  {
+   "id": "tag_d0_rig",
+   "type": "tag",
+   "text": "D0 球蛋白封口",
+   "xy": [
+    4640,
+    3490
+   ],
+   "size": 48,
+   "color": "red",
+   "magnetColor": "red",
+   "rot": -0.4,
+   "z": 22,
+   "arrive": {
+    "kind": "swing",
+    "t": 73.0,
+    "d": 0.5,
+    "amp": 10
+   }
+  },
+  {
+   "id": "w_gap_7_14",
+   "type": "ink",
+   "kind": "write",
+   "text": "堵住 7–14 天抗体空窗",
+   "xy": [
+    4220,
+    3690
+   ],
+   "t": 73.75,
+   "d": 0.625,
+   "size": 50,
+   "color": "blue",
+   "align": "center"
+  },
+  {
+   "id": "ruler_pep",
+   "type": "ruler",
+   "from": [
+    3740,
+    3900
+   ],
+   "to": [
+    5040,
+    3900
+   ],
+   "w": 68,
+   "z": 20,
+   "magnetColor": "graphite",
+   "arrive": {
+    "kind": "slide",
+    "t": 77.25,
+    "d": 0.5,
+    "from": [
+     -480,
+     70
+    ]
+   }
+  },
+  {
+   "id": "p_vial",
+   "type": "print",
+   "src": "vial",
+   "xy": [
+    5220,
+    3840
+   ],
+   "w": 175,
+   "z": 14.0,
+   "rot": 1.0,
+   "arrive": {
+    "kind": "drop",
+    "t": 77.625,
+    "d": 0.625,
+    "lift": 165,
+    "land": 0.6,
+    "spin": 1.6
+   }
+  },
+  {
+   "id": "m_pep_0",
+   "type": "magnet",
+   "xy": [
+    3840,
+    3825
+   ],
+   "r": 28,
+   "color": "blue",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 78.25,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "m_pep_1",
+   "type": "magnet",
+   "xy": [
+    4100,
+    3825
+   ],
+   "r": 28,
+   "color": "blue",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 78.5,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "m_pep_2",
+   "type": "magnet",
+   "xy": [
+    4360,
+    3825
+   ],
+   "r": 28,
+   "color": "blue",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 78.75,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "m_pep_3",
+   "type": "magnet",
+   "xy": [
+    4620,
+    3825
+   ],
+   "r": 28,
+   "color": "blue",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 79.0,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "m_pep_4",
+   "type": "magnet",
+   "xy": [
+    4880,
+    3825
+   ],
+   "r": 28,
+   "color": "blue",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 79.25,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "w_pep_5dose",
+   "type": "ink",
+   "kind": "write",
+   "text": "D0 · D3 · D7 · D14 · D28 五针",
+   "xy": [
+    4390,
+    4040
+   ],
+   "t": 78.375,
+   "d": 0.75,
+   "size": 48,
+   "color": "graphite",
+   "align": "center"
+  },
+  {
+   "id": "ln_z4b_to_z4c",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     3710,
+     3480
+    ],
+    [
+     3710,
+     1740
+    ],
+    [
+     3830,
+     1740
+    ]
+   ],
+   "t": 81.625,
+   "d": 1.125,
+   "lw": 8,
+   "color": "graphite",
+   "dash": [
+    18,
+    16
+   ],
+   "arrow": true
+  },
+  {
+   "id": "box_myth_frame",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     3840,
+     1330
+    ],
+    [
+     5380,
+     1330
+    ],
+    [
+     5380,
+     2140
+    ],
+    [
+     3840,
+     2140
+    ],
+    [
+     3840,
+     1330
+    ]
+   ],
+   "t": 82.25,
+   "d": 0.75,
+   "lw": 8,
+   "color": "grey"
+  },
+  {
+   "id": "w_myth_10d",
+   "type": "ink",
+   "kind": "write",
+   "text": "误区：等10天再打？",
+   "xy": [
+    4610,
+    1515
+   ],
+   "t": 83.0,
+   "d": 0.5,
+   "size": 56,
+   "color": "graphite",
+   "align": "center",
+   "erase": {
+    "t": 86.75,
+    "d": 0.375,
+    "ghost": 0.07
+   }
+  },
+  {
+   "id": "w_fact_10d",
+   "type": "ink",
+   "kind": "write",
+   "text": "先打针 · 同步观察",
+   "xy": [
+    4610,
+    1515
+   ],
+   "t": 87.125,
+   "d": 0.5,
+   "size": 58,
+   "color": "blue",
+   "align": "center"
+  },
+  {
+   "id": "w_myth_24h",
+   "type": "ink",
+   "kind": "write",
+   "text": "误区：超24h无效？",
+   "xy": [
+    4610,
+    1735
+   ],
+   "t": 87.5,
+   "d": 0.5,
+   "size": 56,
+   "color": "graphite",
+   "align": "center",
+   "erase": {
+    "t": 91.25,
+    "d": 0.375,
+    "ghost": 0.07
+   }
+  },
+  {
+   "id": "w_fact_24h",
+   "type": "ink",
+   "kind": "write",
+   "text": "未发病 · 补打有效",
+   "xy": [
+    4610,
+    1735
+   ],
+   "t": 91.625,
+   "d": 0.5,
+   "size": 58,
+   "color": "blue",
+   "align": "center"
+  },
+  {
+   "id": "m_verdict_red",
+   "type": "magnet",
+   "xy": [
+    4010,
+    1965
+   ],
+   "r": 36,
+   "color": "red",
+   "z": 26,
+   "arrive": {
+    "kind": "snap",
+    "t": 94.625,
+    "d": 0.25,
+    "lift": 75
+   }
+  },
+  {
+   "id": "w_verdict_100",
+   "type": "ink",
+   "kind": "write",
+   "text": "规范阻断 ≈100% 可防",
+   "xy": [
+    4650,
+    1985
+   ],
+   "t": 94.75,
+   "d": 0.625,
+   "size": 66,
+   "color": "red",
+   "align": "center"
+  },
+  {
+   "id": "ring_verdict",
+   "type": "ink",
+   "kind": "ring",
+   "c": [
+    4610,
+    1965
+   ],
+   "r": [
+    540,
+    96
+   ],
+   "t": 95.125,
+   "d": 0.625,
+   "lw": 11,
+   "color": "red"
+  },
+  {
+   "id": "card_title",
+   "type": "card",
+   "xy": [
+    6640,
+    720
+   ],
+   "w": 1680,
+   "h": 980,
+   "z": 18,
+   "rot": -0.4,
+   "magnetR": 32,
+   "magnets": [
+    [
+     -760,
+     -420,
+     "red"
+    ],
+    [
+     760,
+     -420,
+     "red"
+    ],
+    [
+     -760,
+     420,
+     "graphite"
+    ],
+    [
+     760,
+     420,
+     "graphite"
+    ]
+   ],
+   "lines": [
+    {
+     "rule": true,
+     "x": 90,
+     "y": -380,
+     "w": 1500,
+     "h": 10,
+     "color": "red"
+    },
+    {
+     "text": "死线之前",
+     "x": 90,
+     "y": -195,
+     "size": 156,
+     "font": "marker",
+     "color": "graphite"
+    },
+    {
+     "text": "狂犬病暴露后阻断简报",
+     "x": 95,
+     "y": -75,
+     "size": 68,
+     "font": "sc",
+     "weight": 700,
+     "color": "blue",
+     "pass_": true
+    },
+    {
+     "rule": true,
+     "x": 90,
+     "y": -25,
+     "w": 1500,
+     "h": 3,
+     "color": "grey"
+    },
+    {
+     "text": "临床发作 ≈ 100% 致死  ｜  规范阻断 ≈ 100% 可防",
+     "x": 95,
+     "y": 75,
+     "size": 52,
+     "font": "sc",
+     "weight": 900,
+     "color": "red",
+     "pass_": true
+    },
+    {
+     "text": "WHO 狂犬病专家磋商会 TRS 1012 (2018)",
+     "x": 95,
+     "y": 205,
+     "size": 38,
+     "font": "sc",
+     "weight": 500,
+     "color": "grey",
+     "pass_": true
+    },
+    {
+     "text": "中国疾控中心《狂犬病暴露预防处置工作规范 (2023)》",
+     "x": 95,
+     "y": 275,
+     "size": 38,
+     "font": "sc",
+     "weight": 500,
+     "color": "grey",
+     "pass_": true
+    },
+    {
+     "text": "BRIEFING BOARD · ZOONOTIC PEP PROTOCOL",
+     "x": 95,
+     "y": 365,
+     "size": 32,
+     "font": "mono",
+     "weight": 600,
+     "color": "grey",
+     "track": 2,
+     "pass_": true
+    }
+   ]
+  },
+  {
+   "id": "p_phil_em",
+   "type": "print",
+   "src": "print_phil_em",
+   "xy": [
+    6180,
+    2120
+   ],
+   "w": 760,
+   "z": 14,
+   "rot": -1.8
+  },
+  {
+   "id": "m_phil_1",
+   "type": "magnet",
+   "xy": [
+    5860,
+    1660
+   ],
+   "r": 28,
+   "color": "graphite",
+   "z": 24
+  },
+  {
+   "id": "m_phil_2",
+   "type": "magnet",
+   "xy": [
+    6500,
+    1675
+   ],
+   "r": 28,
+   "color": "graphite",
+   "z": 24
+  },
+  {
+   "id": "p_negri",
+   "type": "print",
+   "src": "print_negri",
+   "xy": [
+    7120,
+    2140
+   ],
+   "w": 820,
+   "z": 14,
+   "rot": 1.6
+  },
+  {
+   "id": "m_negri_1",
+   "type": "magnet",
+   "xy": [
+    6760,
+    1890
+   ],
+   "r": 28,
+   "color": "red",
+   "z": 24
+  },
+  {
+   "id": "m_negri_2",
+   "type": "magnet",
+   "xy": [
+    7460,
+    1905
+   ],
+   "r": 28,
+   "color": "red",
+   "z": 24
+  },
+  {
+   "id": "card_pep_summary",
+   "type": "card",
+   "xy": [
+    6640,
+    3540
+   ],
+   "w": 1680,
+   "h": 920,
+   "z": 18,
+   "rot": 0.3,
+   "magnetR": 30,
+   "magnets": [
+    [
+     -760,
+     -390,
+     "blue"
+    ],
+    [
+     760,
+     -390,
+     "blue"
+    ]
+   ],
+   "lines": [
+    {
+     "rule": true,
+     "x": 85,
+     "y": -350,
+     "w": 1510,
+     "h": 8,
+     "color": "blue"
+    },
+    {
+     "text": "暴露后黄金三步 (PEP)",
+     "x": 85,
+     "y": -230,
+     "size": 74,
+     "font": "sc",
+     "weight": 900,
+     "color": "graphite",
+     "pass_": true
+    },
+    {
+     "text": "01  肥皂水＋流动清水交替冲 ≥ 15 分钟",
+     "x": 85,
+     "y": -95,
+     "size": 50,
+     "font": "sc",
+     "weight": 700,
+     "color": "blue",
+     "pass_": true
+    },
+    {
+     "text": "02  碘伏消毒伤口 · 切勿急于包扎缝合",
+     "x": 85,
+     "y": 25,
+     "size": 50,
+     "font": "sc",
+     "weight": 700,
+     "color": "graphite",
+     "pass_": true
+    },
+    {
+     "text": "03  D0 免疫球蛋白封口 ＋ 28天5针疫苗",
+     "x": 85,
+     "y": 145,
+     "size": 50,
+     "font": "sc",
+     "weight": 700,
+     "color": "red",
+     "pass_": true
+    },
+    {
+     "rule": true,
+     "x": 85,
+     "y": 225,
+     "w": 1510,
+     "h": 3,
+     "color": "grey"
+    },
+    {
+     "text": "十日观察：先打针再同步观察  ｜  超24h未发病：立即补打有效",
+     "x": 85,
+     "y": 315,
+     "size": 40,
+     "font": "sc",
+     "weight": 700,
+     "color": "grey",
+     "pass_": true
+    }
+   ]
+  },
+  {
+   "id": "ln_reveal_link",
+   "type": "ink",
+   "kind": "line",
+   "points": [
+    [
+     5180,
+     1965
+    ],
+    [
+     5780,
+     3260
+    ]
+   ],
+   "t": 98.75,
+   "d": 1.0,
+   "lw": 10,
+   "color": "blue",
+   "dash": [
+    24,
+    18
+   ],
+   "arrow": true
+  }
+ ],
+ "ev": [
+  {
+   "t": 0.25,
+   "type": "write",
+   "d": 0.625,
+   "id": "w_hook_100"
+  },
+  {
+   "t": 0.5,
+   "type": "vo",
+   "id": "L01",
+   "d": 3.6891
+  },
+  {
+   "t": 0.5,
+   "type": "tag",
+   "id": "tag_hook_fatal"
+  },
+  {
+   "t": 1.0,
+   "type": "stroke",
+   "d": 0.375,
+   "id": "ln_hook_under"
+  },
+  {
+   "t": 5.0,
+   "type": "vo",
+   "id": "L02",
+   "d": 4.0821
+  },
+  {
+   "t": 5.25,
+   "type": "land",
+   "id": "p_em_niaid"
+  },
+  {
+   "t": 5.375,
+   "type": "magnet",
+   "id": "m_em_l"
+  },
+  {
+   "t": 5.5,
+   "type": "magnet",
+   "id": "m_em_r"
+  },
+  {
+   "t": 5.75,
+   "type": "stroke",
+   "d": 0.5,
+   "id": "dim_virion"
+  },
+  {
+   "t": 6.0,
+   "type": "write",
+   "d": 0.625,
+   "id": "w_virion_nm"
+  },
+  {
+   "t": 6.0,
+   "type": "stroke",
+   "d": 0.375,
+   "id": "arr_envelope"
+  },
+  {
+   "t": 6.125,
+   "type": "tag",
+   "id": "tag_envelope"
+  },
+  {
+   "t": 6.25,
+   "type": "arrow",
+   "id": "dim_virion"
+  },
+  {
+   "t": 6.375,
+   "type": "arrow",
+   "id": "arr_envelope"
+  },
+  {
+   "t": 9.5,
+   "type": "stroke",
+   "d": 0.875,
+   "id": "ln_z1_bridge"
+  },
+  {
+   "t": 9.875,
+   "type": "vo",
+   "id": "L03",
+   "d": 4.3323
+  },
+  {
+   "t": 10.375,
+   "type": "arrow",
+   "id": "ln_z1_bridge"
+  },
+  {
+   "t": 10.5,
+   "type": "land",
+   "id": "p_dog"
+  },
+  {
+   "t": 10.875,
+   "type": "write",
+   "d": 0.625,
+   "id": "w_deaths_yr"
+  },
+  {
+   "t": 11.75,
+   "type": "tag",
+   "id": "tag_dog_99"
+  },
+  {
+   "t": 12.125,
+   "type": "magnet",
+   "id": "m_dog_0"
+  },
+  {
+   "t": 12.25,
+   "type": "magnet",
+   "id": "m_dog_1"
+  },
+  {
+   "t": 12.375,
+   "type": "magnet",
+   "id": "m_dog_2"
+  },
+  {
+   "t": 12.5,
+   "type": "magnet",
+   "id": "m_dog_3"
+  },
+  {
+   "t": 12.625,
+   "type": "magnet",
+   "id": "m_dog_4"
+  },
+  {
+   "t": 15.0,
+   "type": "vo",
+   "id": "L04",
+   "d": 4.4594
+  },
+  {
+   "t": 15.25,
+   "type": "land",
+   "id": "p_cat"
+  },
+  {
+   "t": 15.5,
+   "type": "tag",
+   "id": "tag_cat_wild"
+  },
+  {
+   "t": 16.5,
+   "type": "land",
+   "id": "p_bat"
+  },
+  {
+   "t": 16.75,
+   "type": "tag",
+   "id": "tag_bat_cat3"
+  },
+  {
+   "t": 17.125,
+   "type": "ring",
+   "d": 0.5,
+   "id": "ring_bat"
+  },
+  {
+   "t": 19.625,
+   "type": "stroke",
+   "d": 1.125,
+   "id": "ln_z1_to_z2"
+  },
+  {
+   "t": 20.25,
+   "type": "vo",
+   "id": "L05",
+   "d": 3.6897
+  },
+  {
+   "t": 20.75,
+   "type": "arrow",
+   "id": "ln_z1_to_z2"
+  },
+  {
+   "t": 20.75,
+   "type": "stroke",
+   "d": 0.375,
+   "id": "ln_wound_notch"
+  },
+  {
+   "t": 21.0,
+   "type": "stroke",
+   "d": 1.375,
+   "id": "ln_axon_trunk"
+  },
+  {
+   "t": 21.125,
+   "type": "tag",
+   "id": "tag_nerve_in"
+  },
+  {
+   "t": 21.25,
+   "type": "stroke",
+   "d": 0.25,
+   "id": "ln_myelin_0"
+  },
+  {
+   "t": 21.375,
+   "type": "stroke",
+   "d": 0.25,
+   "id": "ln_myelin_1"
+  },
+  {
+   "t": 21.5,
+   "type": "stroke",
+   "d": 0.25,
+   "id": "ln_myelin_2"
+  },
+  {
+   "t": 21.625,
+   "type": "stroke",
+   "d": 0.25,
+   "id": "ln_myelin_3"
+  },
+  {
+   "t": 21.75,
+   "type": "stroke",
+   "d": 0.25,
+   "id": "ln_myelin_4"
+  },
+  {
+   "t": 21.875,
+   "type": "stroke",
+   "d": 0.25,
+   "id": "ln_myelin_5"
+  },
+  {
+   "t": 21.875,
+   "type": "tag",
+   "id": "tag_no_blood"
+  },
+  {
+   "t": 22.5,
+   "type": "strike",
+   "id": "tag_no_blood"
+  },
+  {
+   "t": 24.75,
+   "type": "vo",
+   "id": "L06",
+   "d": 4.8335
+  },
+  {
+   "t": 25.125,
+   "type": "ruler",
+   "id": "ruler_axon"
+  },
+  {
+   "t": 25.375,
+   "type": "stroke",
+   "d": 0.875,
+   "id": "dim_crawl_rate"
+  },
+  {
+   "t": 25.75,
+   "type": "write",
+   "d": 0.75,
+   "id": "w_crawl_mm"
+  },
+  {
+   "t": 26.25,
+   "type": "arrow",
+   "id": "dim_crawl_rate"
+  },
+  {
+   "t": 30.375,
+   "type": "vo",
+   "id": "L07",
+   "d": 4.444
+  },
+  {
+   "t": 30.5,
+   "type": "stroke",
+   "d": 0.875,
+   "id": "ln_cns_brain"
+  },
+  {
+   "t": 30.875,
+   "type": "tag",
+   "id": "tag_incub"
+  },
+  {
+   "t": 31.125,
+   "type": "write",
+   "d": 0.5,
+   "id": "w_cns_label"
+  },
+  {
+   "t": 32.125,
+   "type": "write",
+   "d": 0.625,
+   "id": "w_window"
+  },
+  {
+   "t": 35.25,
+   "type": "stroke",
+   "d": 0.375,
+   "id": "ln_bbb_dead"
+  },
+  {
+   "t": 35.375,
+   "type": "write",
+   "d": 0.375,
+   "id": "w_bbb_label"
+  },
+  {
+   "t": 36.5,
+   "type": "stamp",
+   "id": "st_fatal"
+  },
+  {
+   "t": 37.125,
+   "type": "vo",
+   "id": "L08",
+   "d": 5.3865
+  },
+  {
+   "t": 38.625,
+   "type": "write",
+   "d": 0.625,
+   "id": "w_pre_intercept"
+  },
+  {
+   "t": 41.75,
+   "type": "stroke",
+   "d": 1.125,
+   "id": "ln_z2_to_z3"
+  },
+  {
+   "t": 42.875,
+   "type": "arrow",
+   "id": "ln_z2_to_z3"
+  },
+  {
+   "t": 43.375,
+   "type": "vo",
+   "id": "L09",
+   "d": 4.4091
+  },
+  {
+   "t": 43.375,
+   "type": "stroke",
+   "d": 0.5,
+   "id": "ln_cat1_skin"
+  },
+  {
+   "t": 43.5,
+   "type": "tag",
+   "id": "tag_cat1"
+  },
+  {
+   "t": 44.5,
+   "type": "write",
+   "d": 0.625,
+   "id": "w_cat1_act"
+  },
+  {
+   "t": 48.625,
+   "type": "vo",
+   "id": "L10",
+   "d": 4.5724
+  },
+  {
+   "t": 49.0,
+   "type": "stroke",
+   "d": 0.5,
+   "id": "ln_cat2_skin"
+  },
+  {
+   "t": 49.125,
+   "type": "tag",
+   "id": "tag_cat2"
+  },
+  {
+   "t": 50.0,
+   "type": "write",
+   "d": 0.625,
+   "id": "w_cat2_act"
+  },
+  {
+   "t": 54.0,
+   "type": "vo",
+   "id": "L11",
+   "d": 5.7384
+  },
+  {
+   "t": 54.375,
+   "type": "stroke",
+   "d": 0.375,
+   "id": "ln_cat3_dermis"
+  },
+  {
+   "t": 54.5,
+   "type": "stroke",
+   "d": 0.5,
+   "id": "ln_cat3_breach"
+  },
+  {
+   "t": 54.625,
+   "type": "tag",
+   "id": "tag_cat3"
+  },
+  {
+   "t": 55.625,
+   "type": "write",
+   "d": 0.5,
+   "id": "w_cat3_act"
+  },
+  {
+   "t": 56.5,
+   "type": "stamp",
+   "id": "st_cat3_rig"
+  },
+  {
+   "t": 59.875,
+   "type": "stroke",
+   "d": 0.875,
+   "id": "ln_z3_to_z4a"
+  },
+  {
+   "t": 60.25,
+   "type": "water",
+   "d": 4.5,
+   "id": "water_flush"
+  },
+  {
+   "t": 60.625,
+   "type": "vo",
+   "id": "L12",
+   "d": 4.8159
+  },
+  {
+   "t": 60.75,
+   "type": "arrow",
+   "id": "ln_z3_to_z4a"
+  },
+  {
+   "t": 61.0,
+   "type": "land",
+   "id": "p_tap"
+  },
+  {
+   "t": 61.5,
+   "type": "land",
+   "id": "p_soap"
+  },
+  {
+   "t": 62.0,
+   "type": "stroke",
+   "d": 0.5,
+   "id": "dim_15min"
+  },
+  {
+   "t": 62.125,
+   "type": "write",
+   "d": 0.625,
+   "id": "w_15min"
+  },
+  {
+   "t": 62.5,
+   "type": "arrow",
+   "id": "dim_15min"
+  },
+  {
+   "t": 66.25,
+   "type": "vo",
+   "id": "L13",
+   "d": 5.1979
+  },
+  {
+   "t": 66.625,
+   "type": "tag",
+   "id": "tag_lyse_env"
+  },
+  {
+   "t": 67.625,
+   "type": "land",
+   "id": "p_iodine"
+  },
+  {
+   "t": 68.0,
+   "type": "tag",
+   "id": "tag_iodine_nosut"
+  },
+  {
+   "t": 71.875,
+   "type": "clink",
+   "id": "vial_clink"
+  },
+  {
+   "t": 72.25,
+   "type": "vo",
+   "id": "L14",
+   "d": 3.8579
+  },
+  {
+   "t": 72.625,
+   "type": "land",
+   "id": "p_syringe"
+  },
+  {
+   "t": 73.0,
+   "type": "tag",
+   "id": "tag_d0_rig"
+  },
+  {
+   "t": 73.75,
+   "type": "write",
+   "d": 0.625,
+   "id": "w_gap_7_14"
+  },
+  {
+   "t": 77.0,
+   "type": "vo",
+   "id": "L15",
+   "d": 4.8569
+  },
+  {
+   "t": 77.75,
+   "type": "ruler",
+   "id": "ruler_pep"
+  },
+  {
+   "t": 78.0,
+   "type": "land",
+   "id": "p_vial"
+  },
+  {
+   "t": 78.25,
+   "type": "magnet",
+   "id": "m_pep_0"
+  },
+  {
+   "t": 78.375,
+   "type": "write",
+   "d": 0.75,
+   "id": "w_pep_5dose"
+  },
+  {
+   "t": 78.5,
+   "type": "magnet",
+   "id": "m_pep_1"
+  },
+  {
+   "t": 78.75,
+   "type": "magnet",
+   "id": "m_pep_2"
+  },
+  {
+   "t": 79.0,
+   "type": "magnet",
+   "id": "m_pep_3"
+  },
+  {
+   "t": 79.25,
+   "type": "magnet",
+   "id": "m_pep_4"
+  },
+  {
+   "t": 81.625,
+   "type": "stroke",
+   "d": 1.125,
+   "id": "ln_z4b_to_z4c"
+  },
+  {
+   "t": 82.25,
+   "type": "stroke",
+   "d": 0.75,
+   "id": "box_myth_frame"
+  },
+  {
+   "t": 82.625,
+   "type": "vo",
+   "id": "L16",
+   "d": 5.5856
+  },
+  {
+   "t": 82.75,
+   "type": "arrow",
+   "id": "ln_z4b_to_z4c"
+  },
+  {
+   "t": 83.0,
+   "type": "write",
+   "d": 0.5,
+   "id": "w_myth_10d"
+  },
+  {
+   "t": 86.75,
+   "type": "erase",
+   "d": 0.375,
+   "id": "w_myth_10d"
+  },
+  {
+   "t": 87.125,
+   "type": "write",
+   "d": 0.5,
+   "id": "w_fact_10d"
+  },
+  {
+   "t": 87.5,
+   "type": "write",
+   "d": 0.5,
+   "id": "w_myth_24h"
+  },
+  {
+   "t": 89.0,
+   "type": "vo",
+   "id": "L17",
+   "d": 4.2246
+  },
+  {
+   "t": 91.25,
+   "type": "erase",
+   "d": 0.375,
+   "id": "w_myth_24h"
+  },
+  {
+   "t": 91.625,
+   "type": "write",
+   "d": 0.5,
+   "id": "w_fact_24h"
+  },
+  {
+   "t": 94.625,
+   "type": "magnet",
+   "id": "m_verdict_red"
+  },
+  {
+   "t": 94.75,
+   "type": "write",
+   "d": 0.625,
+   "id": "w_verdict_100"
+  },
+  {
+   "t": 95.125,
+   "type": "ring",
+   "d": 0.625,
+   "id": "ring_verdict"
+  },
+  {
+   "t": 95.5,
+   "type": "vo",
+   "id": "L18",
+   "d": 5.7177
+  },
+  {
+   "t": 98.5,
+   "type": "reveal",
+   "id": "wall_reveal"
+  },
+  {
+   "t": 98.75,
+   "type": "stroke",
+   "d": 1.0,
+   "id": "ln_reveal_link"
+  },
+  {
+   "t": 99.75,
+   "type": "arrow",
+   "id": "ln_reveal_link"
+  }
+ ],
+ "subs": [
+  {
+   "id": "L01",
+   "t0": 0.5,
+   "t1": 4.814,
+   "zh": "一旦出现临床症状，狂犬病的致死率几乎是 100%。",
+   "en": "",
+   "speech": 3.6891
+  },
+  {
+   "id": "L02",
+   "t0": 5.0,
+   "t1": 9.707,
+   "zh": "元凶是这颗子弹状病毒，外层包着脆弱的脂质包膜。",
+   "en": "",
+   "speech": 4.0821
+  },
+  {
+   "id": "L03",
+   "t0": 9.875,
+   "t1": 14.832,
+   "zh": "它每年夺走约 5.9 万人生命，99% 由犬类传播。",
+   "en": "",
+   "speech": 4.3323
+  },
+  {
+   "id": "L04",
+   "t0": 15.0,
+   "t1": 20.084,
+   "zh": "猫与野生动物也会传播；碰过蝙蝠，一律按最高危处置。",
+   "en": "",
+   "speech": 4.4594
+  },
+  {
+   "id": "L05",
+   "t0": 20.25,
+   "t1": 24.565,
+   "zh": "但它有个破绽：病毒不走血液，只能钻进外周神经末梢。",
+   "en": "",
+   "speech": 3.6897
+  },
+  {
+   "id": "L06",
+   "t0": 24.75,
+   "t1": 30.209,
+   "zh": "沿神经轴突向大脑逆行爬行，每天只走 50–100 毫米。",
+   "en": "",
+   "speech": 4.8335
+  },
+  {
+   "id": "L07",
+   "t0": 30.375,
+   "t1": 35.444,
+   "zh": "潜伏期常为 1–3 个月，离脑越近越急，这正是抢救窗口。",
+   "en": "",
+   "speech": 4.444
+  },
+  {
+   "id": "L08",
+   "t0": 37.125,
+   "t1": 43.136,
+   "zh": "一旦越过血脑屏障发病就无药可救；越线之前，步步可拦。",
+   "en": "",
+   "speech": 5.3865
+  },
+  {
+   "id": "L09",
+   "t0": 43.375,
+   "t1": 48.409,
+   "zh": "一级暴露：完好皮肤被舔且无破损，清洗即可，无需打针。",
+   "en": "",
+   "speech": 4.4091
+  },
+  {
+   "id": "L10",
+   "t0": 48.625,
+   "t1": 53.822,
+   "zh": "二级暴露：轻咬或无出血抓伤，必须立即冲洗并接种疫苗。",
+   "en": "",
+   "speech": 4.5724
+  },
+  {
+   "id": "L11",
+   "t0": 54.0,
+   "t1": 60.363,
+   "zh": "三级暴露：出血、伤口沾唾液或碰蝙蝠，必须加打免疫球蛋白。",
+   "en": "",
+   "speech": 5.7384
+  },
+  {
+   "id": "L12",
+   "t0": 60.625,
+   "t1": 66.066,
+   "zh": "现场急救：立即用肥皂水与流动清水，交替冲洗至少 15 分钟。",
+   "en": "",
+   "speech": 4.8159
+  },
+  {
+   "id": "L13",
+   "t0": 66.25,
+   "t1": 72.073,
+   "zh": "肥皂水能破坏病毒包膜；冲净涂碘伏，不要急着缝合伤口。",
+   "en": "",
+   "speech": 5.1979
+  },
+  {
+   "id": "L14",
+   "t0": 72.25,
+   "t1": 76.733,
+   "zh": "疫苗起效要 7–14 天，当天必须先打免疫球蛋白堵住入口。",
+   "en": "",
+   "speech": 3.8579
+  },
+  {
+   "id": "L15",
+   "t0": 77.0,
+   "t1": 82.482,
+   "zh": "随后在 28 天内按期打满 5 针疫苗，建立全身抗体防线。",
+   "en": "",
+   "speech": 4.8569
+  },
+  {
+   "id": "L16",
+   "t0": 82.625,
+   "t1": 88.836,
+   "zh": "记住：十日观察法不是干等 10 天，必须先打针再同步观察。",
+   "en": "",
+   "speech": 5.5856
+  },
+  {
+   "id": "L17",
+   "t0": 89.0,
+   "t1": 93.85,
+   "zh": "哪怕耽误超过 24 小时，只要未发病，立刻补打依然有效。",
+   "en": "",
+   "speech": 4.2246
+  },
+  {
+   "id": "L18",
+   "t0": 95.5,
+   "t1": 101.843,
+   "zh": "从 100% 致死到 ≈100% 可防——生死全在越线前的每一步。",
+   "en": "",
+   "speech": 5.7177
+  }
+ ],
+ "cues": {
+  "L01": 0.5,
+  "L02": 5.0,
+  "L03": 9.875,
+  "L04": 15.0,
+  "L05": 20.25,
+  "L06": 24.75,
+  "L07": 30.375,
+  "L08": 37.125,
+  "L09": 43.375,
+  "L10": 48.625,
+  "L11": 54.0,
+  "L12": 60.625,
+  "L13": 66.25,
+  "L14": 72.25,
+  "L15": 77.0,
+  "L16": 82.625,
+  "L17": 89.0,
+  "L18": 95.5,
+  "sil1": [
+   35.125,
+   36.5
+  ],
+  "stamp1": 36.5,
+  "stamp2": 56.5,
+  "sil2": [
+   93.5,
+   94.625
+  ],
+  "verdict": 94.625,
+  "reveal": 98.5,
+  "bpm": 120
+ },
+ "judge": {
+  "cat1": {
+   "box": [
+    520,
+    2500,
+    1800,
+    2930
+   ],
+   "z": 1.06,
+   "x": 1160,
+   "y": 2760,
+   "t0": 43.625,
+   "t1": 47.75
+  },
+  "cat2": {
+   "box": [
+    1200,
+    3020,
+    2560,
+    3490
+   ],
+   "z": 0.94,
+   "x": 1880,
+   "y": 3290,
+   "t0": 49.15,
+   "t1": 53.15
+  },
+  "cat3": {
+   "box": [
+    1800,
+    3550,
+    3480,
+    4110
+   ],
+   "z": 0.84,
+   "x": 2640,
+   "y": 3830,
+   "t0": 54.525,
+   "t1": 59.75
+  }
+ },
+ "right_zone": [
+  5650,
+  0,
+  7680,
+  4320
+ ]
+}

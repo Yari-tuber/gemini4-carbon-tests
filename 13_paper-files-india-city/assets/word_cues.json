@@ -1,0 +1,578 @@
+[
+  {
+    "w": "EVERY",
+    "t0": 0.04,
+    "t1": 0.24,
+    "yellow": false
+  },
+  {
+    "w": "INDIAN",
+    "t0": 0.24,
+    "t1": 0.56,
+    "yellow": false
+  },
+  {
+    "w": "COULD",
+    "t0": 0.56,
+    "t1": 0.94,
+    "yellow": false
+  },
+  {
+    "w": "STAND",
+    "t0": 0.94,
+    "t1": 1.26,
+    "yellow": false
+  },
+  {
+    "w": "INSIDE",
+    "t0": 1.26,
+    "t1": 1.5,
+    "yellow": false
+  },
+  {
+    "w": "ONE",
+    "t0": 1.5,
+    "t1": 1.98,
+    "yellow": true
+  },
+  {
+    "w": "CITY",
+    "t0": 1.98,
+    "t1": 2.447,
+    "yellow": false
+  },
+  {
+    "w": "OVER",
+    "t0": 3.15,
+    "t1": 3.29,
+    "yellow": false
+  },
+  {
+    "w": "1.4",
+    "t0": 3.29,
+    "t1": 4.21,
+    "yellow": true
+  },
+  {
+    "w": "BILLION",
+    "t0": 4.21,
+    "t1": 4.53,
+    "yellow": true
+  },
+  {
+    "w": "PEOPLE",
+    "t0": 4.53,
+    "t1": 5.31,
+    "yellow": false
+  },
+  {
+    "w": "PACKED",
+    "t0": 5.55,
+    "t1": 5.61,
+    "yellow": false
+  },
+  {
+    "w": "TWO",
+    "t0": 5.61,
+    "t1": 6.01,
+    "yellow": true
+  },
+  {
+    "w": "TO",
+    "t0": 6.01,
+    "t1": 6.23,
+    "yellow": false
+  },
+  {
+    "w": "A",
+    "t0": 6.23,
+    "t1": 6.35,
+    "yellow": false
+  },
+  {
+    "w": "SQUARE",
+    "t0": 6.35,
+    "t1": 6.51,
+    "yellow": false
+  },
+  {
+    "w": "METRE",
+    "t0": 6.51,
+    "t1": 7.19,
+    "yellow": false
+  },
+  {
+    "w": "THE",
+    "t0": 7.33,
+    "t1": 7.45,
+    "yellow": false
+  },
+  {
+    "w": "SAFE",
+    "t0": 7.45,
+    "t1": 7.67,
+    "yellow": true
+  },
+  {
+    "w": "LIMIT",
+    "t0": 7.67,
+    "t1": 7.99,
+    "yellow": false
+  },
+  {
+    "w": "AT",
+    "t0": 7.99,
+    "t1": 8.17,
+    "yellow": false
+  },
+  {
+    "w": "A",
+    "t0": 8.17,
+    "t1": 8.23,
+    "yellow": false
+  },
+  {
+    "w": "CONCERT",
+    "t0": 8.23,
+    "t1": 8.864,
+    "yellow": true
+  },
+  {
+    "w": "FILL",
+    "t0": 9.12,
+    "t1": 9.2,
+    "yellow": false
+  },
+  {
+    "w": "A",
+    "t0": 9.2,
+    "t1": 9.3,
+    "yellow": false
+  },
+  {
+    "w": "SQUARE",
+    "t0": 9.3,
+    "t1": 9.56,
+    "yellow": false
+  },
+  {
+    "w": "JUST",
+    "t0": 9.56,
+    "t1": 9.92,
+    "yellow": false
+  },
+  {
+    "w": "TWENTY-SEVEN",
+    "t0": 9.92,
+    "t1": 10.6,
+    "yellow": true
+  },
+  {
+    "w": "KILOMETRES",
+    "t0": 10.6,
+    "t1": 11.06,
+    "yellow": true
+  },
+  {
+    "w": "WIDE",
+    "t0": 11.06,
+    "t1": 11.819,
+    "yellow": false
+  },
+  {
+    "w": "POUR",
+    "t0": 12.24,
+    "t1": 12.4,
+    "yellow": false
+  },
+  {
+    "w": "IT",
+    "t0": 12.4,
+    "t1": 12.58,
+    "yellow": false
+  },
+  {
+    "w": "INTO",
+    "t0": 12.58,
+    "t1": 12.72,
+    "yellow": false
+  },
+  {
+    "w": "DELHI",
+    "t0": 12.72,
+    "t1": 13.22,
+    "yellow": true
+  },
+  {
+    "w": "AND",
+    "t0": 13.42,
+    "t1": 13.58,
+    "yellow": false
+  },
+  {
+    "w": "IT",
+    "t0": 13.58,
+    "t1": 13.66,
+    "yellow": false
+  },
+  {
+    "w": "FILLS",
+    "t0": 13.66,
+    "t1": 13.86,
+    "yellow": false
+  },
+  {
+    "w": "ONLY",
+    "t0": 13.86,
+    "t1": 14.34,
+    "yellow": false
+  },
+  {
+    "w": "HALF",
+    "t0": 14.34,
+    "t1": 14.56,
+    "yellow": true
+  },
+  {
+    "w": "THE",
+    "t0": 14.56,
+    "t1": 14.78,
+    "yellow": false
+  },
+  {
+    "w": "CITY",
+    "t0": 14.78,
+    "t1": 15.24,
+    "yellow": false
+  },
+  {
+    "w": "THE",
+    "t0": 15.62,
+    "t1": 15.68,
+    "yellow": false
+  },
+  {
+    "w": "REST",
+    "t0": 15.68,
+    "t1": 15.84,
+    "yellow": false
+  },
+  {
+    "w": "OF",
+    "t0": 15.84,
+    "t1": 16.04,
+    "yellow": false
+  },
+  {
+    "w": "INDIA?",
+    "t0": 16.04,
+    "t1": 16.62,
+    "yellow": false
+  },
+  {
+    "w": "EMPTY",
+    "t0": 16.74,
+    "t1": 17.3,
+    "yellow": true
+  },
+  {
+    "w": "MUMBAI",
+    "t0": 17.75,
+    "t1": 18.19,
+    "yellow": true
+  },
+  {
+    "w": "KOLKATA",
+    "t0": 18.31,
+    "t1": 18.93,
+    "yellow": true
+  },
+  {
+    "w": "CHENNAI",
+    "t0": 18.93,
+    "t1": 19.15,
+    "yellow": true
+  },
+  {
+    "w": "NOT",
+    "t0": 19.15,
+    "t1": 19.51,
+    "yellow": false
+  },
+  {
+    "w": "A",
+    "t0": 19.51,
+    "t1": 19.59,
+    "yellow": false
+  },
+  {
+    "w": "SOUL",
+    "t0": 19.59,
+    "t1": 20.058,
+    "yellow": true
+  },
+  {
+    "w": "NOW",
+    "t0": 20.65,
+    "t1": 20.77,
+    "yellow": false
+  },
+  {
+    "w": "BRING",
+    "t0": 20.77,
+    "t1": 21.05,
+    "yellow": false
+  },
+  {
+    "w": "EVERYONE",
+    "t0": 21.05,
+    "t1": 21.39,
+    "yellow": false
+  },
+  {
+    "w": "ON",
+    "t0": 21.39,
+    "t1": 21.73,
+    "yellow": false
+  },
+  {
+    "w": "EARTH",
+    "t0": 21.73,
+    "t1": 22.21,
+    "yellow": false
+  },
+  {
+    "w": "8.2",
+    "t0": 22.57,
+    "t1": 23.21,
+    "yellow": true
+  },
+  {
+    "w": "BILLION",
+    "t0": 23.21,
+    "t1": 23.803,
+    "yellow": true
+  },
+  {
+    "w": "THE",
+    "t0": 24.18,
+    "t1": 24.24,
+    "yellow": false
+  },
+  {
+    "w": "SQUARE",
+    "t0": 24.24,
+    "t1": 24.46,
+    "yellow": false
+  },
+  {
+    "w": "GROWS",
+    "t0": 24.46,
+    "t1": 24.84,
+    "yellow": false
+  },
+  {
+    "w": "TO",
+    "t0": 24.84,
+    "t1": 25.16,
+    "yellow": false
+  },
+  {
+    "w": "64",
+    "t0": 25.16,
+    "t1": 25.46,
+    "yellow": true
+  },
+  {
+    "w": "KILOMETRES",
+    "t0": 25.46,
+    "t1": 26.671,
+    "yellow": true
+  },
+  {
+    "w": "TOO",
+    "t0": 27.05,
+    "t1": 27.15,
+    "yellow": false
+  },
+  {
+    "w": "BIG",
+    "t0": 27.15,
+    "t1": 27.35,
+    "yellow": false
+  },
+  {
+    "w": "FOR",
+    "t0": 27.35,
+    "t1": 27.57,
+    "yellow": false
+  },
+  {
+    "w": "DELHI",
+    "t0": 27.57,
+    "t1": 27.97,
+    "yellow": true
+  },
+  {
+    "w": "SO",
+    "t0": 28.07,
+    "t1": 28.29,
+    "yellow": false
+  },
+  {
+    "w": "FLY",
+    "t0": 28.29,
+    "t1": 28.59,
+    "yellow": false
+  },
+  {
+    "w": "IT",
+    "t0": 28.59,
+    "t1": 28.79,
+    "yellow": false
+  },
+  {
+    "w": "EAST",
+    "t0": 28.79,
+    "t1": 28.99,
+    "yellow": false
+  },
+  {
+    "w": "INTO",
+    "t0": 28.99,
+    "t1": 29.45,
+    "yellow": false
+  },
+  {
+    "w": "SIKKIM",
+    "t0": 29.45,
+    "t1": 30.078,
+    "yellow": true
+  },
+  {
+    "w": "INDIA'S",
+    "t0": 30.22,
+    "t1": 30.62,
+    "yellow": false
+  },
+  {
+    "w": "LEAST",
+    "t0": 30.62,
+    "t1": 30.78,
+    "yellow": true
+  },
+  {
+    "w": "POPULOUS",
+    "t0": 30.78,
+    "t1": 31.22,
+    "yellow": false
+  },
+  {
+    "w": "STATE",
+    "t0": 31.22,
+    "t1": 31.827,
+    "yellow": false
+  },
+  {
+    "w": "IT",
+    "t0": 32.12,
+    "t1": 32.2,
+    "yellow": false
+  },
+  {
+    "w": "FITS",
+    "t0": 32.2,
+    "t1": 32.42,
+    "yellow": true
+  },
+  {
+    "w": "WITH",
+    "t0": 32.42,
+    "t1": 32.7,
+    "yellow": false
+  },
+  {
+    "w": "ROOM",
+    "t0": 32.7,
+    "t1": 32.88,
+    "yellow": false
+  },
+  {
+    "w": "TO",
+    "t0": 32.88,
+    "t1": 33.14,
+    "yellow": false
+  },
+  {
+    "w": "SPARE",
+    "t0": 33.14,
+    "t1": 33.744,
+    "yellow": true
+  },
+  {
+    "w": "SO",
+    "t0": 34.06,
+    "t1": 34.16,
+    "yellow": false
+  },
+  {
+    "w": "NEXT",
+    "t0": 34.16,
+    "t1": 34.32,
+    "yellow": false
+  },
+  {
+    "w": "TIME",
+    "t0": 34.32,
+    "t1": 34.62,
+    "yellow": false
+  },
+  {
+    "w": "SOMEONE",
+    "t0": 34.62,
+    "t1": 34.94,
+    "yellow": false
+  },
+  {
+    "w": "SAYS",
+    "t0": 34.94,
+    "t1": 35.32,
+    "yellow": false
+  },
+  {
+    "w": "INDIA",
+    "t0": 35.32,
+    "t1": 35.68,
+    "yellow": false
+  },
+  {
+    "w": "IS",
+    "t0": 35.68,
+    "t1": 35.98,
+    "yellow": false
+  },
+  {
+    "w": "TOO",
+    "t0": 35.98,
+    "t1": 36.16,
+    "yellow": false
+  },
+  {
+    "w": "CROWDED",
+    "t0": 36.16,
+    "t1": 36.82,
+    "yellow": true
+  },
+  {
+    "w": "TELL",
+    "t0": 36.96,
+    "t1": 37.06,
+    "yellow": true
+  },
+  {
+    "w": "THEM",
+    "t0": 37.06,
+    "t1": 37.46,
+    "yellow": true
+  }
+]

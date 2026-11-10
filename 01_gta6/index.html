@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRAND THEFT AUTO VI · Vice City (Leonida Edition)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0d0618;
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: #ffffff;
+    }
+
+    #game-canvas-container {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Crosshair */
+    #gta-crosshair {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 22px;
+      height: 22px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 10;
+    }
+    #gta-crosshair::before,
+    #gta-crosshair::after {
+      content: '';
+      position: absolute;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 6px rgba(255, 42, 133, 0.9);
+    }
+    #gta-crosshair::before {
+      top: 10px;
+      left: 3px;
+      width: 16px;
+      height: 2px;
+    }
+    #gta-crosshair::after {
+      top: 3px;
+      left: 10px;
+      width: 2px;
+      height: 16px;
+    }
+    #gta-crosshair-dot {
+      position: absolute;
+      top: 9px;
+      left: 9px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #ff2a85;
+    }
+
+    /* HUD Root */
+    #gta-hud {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 12;
+    }
+
+    /* Top-Left Mission & Protagonist Panel */
+    #top-left-hud {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      width: 365px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: auto;
+    }
+
+    .vice-card {
+      background: linear-gradient(135deg, rgba(16, 10, 32, 0.84), rgba(34, 14, 46, 0.72));
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 71, 182, 0.38);
+      border-left: 4px solid #ff2a85;
+      border-radius: 10px;
+      padding: 11px 14px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+    }
+
+    .protagonist-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    #hud-char-name {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #ff47b6;
+      text-shadow: 0 0 12px rgba(255, 71, 182, 0.5);
+    }
+
+    #hud-char-role {
+      font-size: 11px;
+      color: #b9c4e0;
+    }
+
+    .mission-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      color: #00f0ff;
+      letter-spacing: 0.8px;
+      margin-bottom: 3px;
+    }
+
+    #hud-mission-obj {
+      font-size: 13px;
+      line-height: 1.45;
+      color: #fff6fa;
+      font-weight: 600;
+    }
+
+    .controls-mini {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+    .key-pill {
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.28);
+      padding: 2px 7px;
+      border-radius: 5px;
+      color: #e4f2ff;
+    }
+    .key-pill b {
+      color: #ffeb3b;
+    }
+
+    /* Top-Right Wanted Stars, Cash, Weapon & Radio */
+    #top-right-hud {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 7px;
+    }
+
+    .wanted-container {
+      display: flex;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 8px;
+      min-height: 36px;
+      align-items: center;
+    }
+    .wanted-container.active.pursuit {
+      background: linear-gradient(90deg, rgba(255, 30, 60, 0.38), rgba(0, 120, 255, 0.38));
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      animation: policeFlash 0.55s infinite alternate;
+    }
+    .wanted-container.active.evading {
+      animation: evadeBlink 0.4s infinite alternate;
+    }
+    @keyframes policeFlash {
+      0% { box-shadow: 0 0 18px rgba(255, 30, 66, 0.8); }
+      100% { box-shadow: 0 0 18px rgba(30, 136, 255, 0.8); }
+    }
+    @keyframes evadeBlink {
+      0% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+    .star {
+      font-size: 25px;
+      line-height: 1;
+    }
+    .star.lit {
+      color: #ffd740;
+      text-shadow: 0 0 10px rgba(255, 215, 64, 0.9);
+    }
+    .star.dim {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    #hud-cash {
+      font-size: 28px;
+      font-weight: 900;
+      color: #4cd97b;
+      letter-spacing: 0.8px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+    }
+
+    .weapon-hud-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(14, 11, 28, 0.8);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      padding: 6px 12px;
+      border-radius: 8px;
+    }
+    #hud-weapon-icon {
+      font-size: 20px;
+    }
+    #hud-weapon-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #e8f4ff;
+    }
+
+    #hud-district {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      color: #ff9de2;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+    }
+
+    #hud-radio {
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(12, 10, 24, 0.72);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    /* Bottom-Left Rectangular Tilted GTA VI Radar Minimap */
+    #bottom-left-radar {
+      position: absolute;
+      bottom: 20px;
+      left: 22px;
+      width: 268px;
+    }
+
+    .radar-frame {
+      position: relative;
+      width: 268px;
+      height: 174px;
+      background: #101420;
+      border: 2px solid rgba(255, 71, 182, 0.65);
+      border-radius: 8px 8px 0 0;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75);
+      transform: perspective(500px) rotateX(8deg);
+      transform-origin: bottom center;
+    }
+
+    #gta-radar-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .gta-status-bars {
+      display: grid;
+      grid-template-columns: 2fr 1.2fr 1fr;
+      gap: 4px;
+      background: #0b0c14;
+      padding: 4px;
+      border: 2px solid rgba(255, 71, 182, 0.65);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+    }
+    .bar-track {
+      height: 7px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    #bar-health {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #2bd968, #69ff9c);
+      transition: width 0.15s;
+    }
+    #bar-armor {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #1e88ff, #00f0ff);
+      transition: width 0.15s;
+    }
+    #bar-stamina {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff2a85, #ffbe2e);
+      transition: width 0.15s;
+    }
+
+    .speedo-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 6px;
+      padding: 0 4px;
+    }
+    #hud-vehicle-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #00f0ff;
+    }
+    #hud-speedo .mph-num {
+      font-size: 22px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+    #hud-speedo small {
+      font-size: 11px;
+      color: #ff47b6;
+      font-weight: 800;
+    }
+
+    /* Context Prompt & Subtitles */
+    #hud-context-prompt {
+      position: absolute;
+      top: 78px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(14, 10, 28, 0.88);
+      border: 1px solid #00f0ff;
+      color: #ffffff;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0;
+      transition: opacity 0.2s;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    }
+    #hud-context-prompt.visible {
+      opacity: 1;
+    }
+
+    #hud-subtitle {
+      position: absolute;
+      bottom: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 680px;
+      text-align: center;
+      background: rgba(10, 8, 20, 0.82);
+      border-bottom: 3px solid #ff47b6;
+      padding: 9px 22px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff8fc;
+      opacity: 0;
+      transition: opacity 0.25s;
+      text-shadow: 0 2px 4px #000;
+    }
+    #hud-subtitle.visible {
+      opacity: 1;
+    }
+
+    /* SnapVice Live Toast Notification */
+    #snapvice-toast {
+      position: absolute;
+      bottom: 225px;
+      left: 22px;
+      width: 268px;
+      background: linear-gradient(135deg, rgba(28, 12, 48, 0.9), rgba(16, 20, 42, 0.9));
+      border: 1px solid #00f0ff;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 12px;
+      line-height: 1.4;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+    }
+    #snapvice-toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #snapvice-toast strong {
+      display: block;
+      color: #ff47b6;
+      margin-bottom: 2px;
+    }
+
+    /* Big GTA Mission Passed / Wasted / Stunt Banner */
+    #gta-big-banner {
+      position: absolute;
+      top: 32%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      background: linear-gradient(90deg, transparent, rgba(10, 6, 22, 0.88), transparent);
+      padding: 24px 0;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      pointer-events: none;
+    }
+    #gta-big-banner.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    #gta-banner-title {
+      font-size: 54px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95);
+    }
+    #gta-banner-sub {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 1.5px;
+      margin-top: 6px;
+    }
+
+    /* Radial Weapon Wheel ([Q] Key) */
+    #gta-weapon-wheel {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle, rgba(20, 10, 38, 0.72), rgba(6, 4, 14, 0.88));
+      backdrop-filter: blur(6px);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+    }
+    #gta-weapon-wheel.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .wheel-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #00f0ff;
+      letter-spacing: 2px;
+      margin-bottom: 18px;
+    }
+    .wheel-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 175px);
+      gap: 14px;
+    }
+    .wheel-slot {
+      background: rgba(24, 16, 44, 0.88);
+      border: 2px solid rgba(255, 71, 182, 0.45);
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.16s;
+    }
+    .wheel-slot:hover {
+      border-color: #00f0ff;
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 0 22px rgba(0, 240, 255, 0.45);
+    }
+    .wheel-slot .w-icon {
+      font-size: 34px;
+      margin-bottom: 6px;
+    }
+    .wheel-slot .w-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    /* iFruit Smartphone & SnapVice Social Reels ([P] Key) */
+    #ifruit-phone-trigger {
+      position: fixed;
+      bottom: 20px;
+      right: 22px;
+      z-index: 20;
+      background: linear-gradient(135deg, #ff2a85, #7928ca);
+      border: 2px solid #00f0ff;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(255, 42, 133, 0.5);
+      pointer-events: auto;
+    }
+
+    #ifruit-phone {
+      position: fixed;
+      bottom: 72px;
+      right: 22px;
+      width: 340px;
+      max-height: 82vh;
+      background: linear-gradient(180deg, #160d29 0%, #0d0a1a 100%);
+      border: 3px solid #ff47b6;
+      border-radius: 26px;
+      padding: 14px;
+      z-index: 25;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      transform: translateY(120%);
+      transition: transform 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.15);
+      pointer-events: auto;
+    }
+    #ifruit-phone.open {
+      transform: translateY(0);
+    }
+
+    .phone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      padding-bottom: 8px;
+    }
+    .phone-brand {
+      font-size: 14px;
+      font-weight: 900;
+      color: #00f0ff;
+      letter-spacing: 0.8px;
+    }
+    .phone-section-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #ff9de2;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+    .phone-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .app-btn {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      color: #ffffff;
+      padding: 7px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .app-btn:hover {
+      background: rgba(255, 42, 133, 0.32);
+      border-color: #ff47b6;
+    }
+
+    #snapvice-feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 175px;
+      overflow-y: auto;
+    }
+    .snap-post {
+      background: rgba(255, 255, 255, 0.05);
+      border-left: 3px solid #00f0ff;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 11.5px;
+    }
+    .snap-post-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3px;
+    }
+    .snap-user {
+      font-weight: 800;
+      color: #ff47b6;
+    }
+    .snap-tag {
+      font-size: 10px;
+      color: #00f0ff;
+    }
+    .snap-post-body {
+      color: #e6ecff;
+      line-height: 1.35;
+    }
+
+    /* GTA VI Trailer 1 Intro Overlay */
+    #gta-intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: radial-gradient(circle at center, rgba(35, 12, 54, 0.45) 0%, rgba(10, 5, 20, 0.88) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      transition: opacity 0.45s ease;
+    }
+    #gta-intro-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .gta6-logo-box {
+      max-width: 720px;
+      background: linear-gradient(145deg, rgba(22, 10, 38, 0.85), rgba(42, 14, 52, 0.78));
+      border: 2px solid rgba(255, 71, 182, 0.6);
+      border-radius: 22px;
+      padding: 32px 38px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+    }
+    .rockstar-tag {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #00f0ff;
+      margin-bottom: 8px;
+    }
+    .gta6-main-title {
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, #ff2a85, #ff9d3b, #ffe26a, #00f0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .gta6-subtitle {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffd6f0;
+      letter-spacing: 4px;
+      margin-bottom: 18px;
+    }
+    .feature-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .f-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 71, 182, 0.4);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #f3e8ff;
+    }
+    #btn-start-gta6 {
+      background: linear-gradient(90deg, #ff2a85, #ff7b3b);
+      border: 2px solid #fff;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      padding: 14px 42px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 0 32px rgba(255, 42, 133, 0.75);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    #btn-start-gta6:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 44px rgba(0, 240, 255, 0.9);
+    }
+  </style>
+</head>
+<body>
+  <div id="game-canvas-container"></div>
+
+  <div id="gta-crosshair">
+    <div id="gta-crosshair-dot"></div>
+  </div>
+
+  <!-- HUD Layer -->
+  <div id="gta-hud">
+    <!-- Top Left: Protagonist & Campaign Mission -->
+    <div id="top-left-hud">
+      <div class="vice-card">
+        <div class="protagonist-row">
+          <div>
+            <div id="hud-char-name">Lucia (露西亚)</div>
+            <div id="hud-char-role">Leonida Outlaw · [Tab] 卫星视角切换杰森</div>
+          </div>
+          <button class="app-btn" onclick="window.GTA6_ACTIONS.switchProtagonist()">🔄 切换角色 [Tab]</button>
+        </div>
+        <div class="mission-badge" id="hud-mission-title">MISSION 01 · "TRUST."</div>
+        <div id="hud-mission-obj">前往海洋大道粉红光圈，按 [F] 登上敞篷跑车与杰森汇合</div>
+        <div class="controls-mini">
+          <span class="key-pill"><b>WASD</b> 移动/驾驶</span>
+          <span class="key-pill"><b>F</b> 上下车/劫车</span>
+          <span class="key-pill"><b>Space</b> 漂移/跳跃/升空</span>
+          <span class="key-pill"><b>Shift</b> 氮气加速/冲刺</span>
+          <span class="key-pill"><b>Q / 1-6</b> 武器轮盘</span>
+          <span class="key-pill"><b>左键/右键</b> 射击/瞄准</span>
+          <span class="key-pill"><b>R</b> 电台</span>
+          <span class="key-pill"><b>E</b> 抢超市/乘电梯</span>
+          <span class="key-pill"><b>T</b> 天气</span>
+          <span class="key-pill"><b>P</b> 手机</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Right: Wanted Stars, Cash, Weapon & District -->
+    <div id="top-right-hud">
+      <div id="hud-wanted-stars" class="wanted-container"></div>
+      <div id="hud-cash">$18,500</div>
+      <div class="weapon-hud-box">
+        <span id="hud-weapon-icon">🔫</span>
+        <span id="hud-weapon-name">HEAVY PISTOL · 战术手枪 [240]</span>
+      </div>
+      <div id="hud-district">OCEAN DRIVE · 海洋大道装饰艺术区</div>
+      <div id="hud-radio">📻 FLASH FM 102.8 (80s Vice Synthpop) · [R] 切台</div>
+    </div>
+
+    <!-- Context Prompt & Subtitles -->
+    <div id="hud-context-prompt">按 [F] 驾驶跑车</div>
+    <div id="hud-subtitle"></div>
+
+    <!-- SnapVice Live Toast -->
+    <div id="snapvice-toast"></div>
+
+    <!-- Big GTA Banner (Mission Passed / Wasted / Stunt Jump) -->
+    <div id="gta-big-banner">
+      <div id="gta-banner-title">MISSION PASSED</div>
+      <div id="gta-banner-sub">RESPECT + $25,000</div>
+    </div>
+
+    <!-- Bottom Left: Tilted Rectangular GTA VI Radar Minimap -->
+    <div id="bottom-left-radar">
+      <div class="radar-frame">
+        <canvas id="gta-radar-canvas" width="268" height="174"></canvas>
+      </div>
+      <div class="gta-status-bars">
+        <div class="bar-track"><div id="bar-health"></div></div>
+        <div class="bar-track"><div id="bar-armor"></div></div>
+        <div class="bar-track"><div id="bar-stamina"></div></div>
+      </div>
+      <div class="speedo-row">
+        <span id="hud-vehicle-name">ON FOOT · 徒步模式</span>
+        <span id="hud-speedo"><span class="mph-num">0</span> <small>MPH</small></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Radial Weapon Wheel ([Q] Key) -->
+  <div id="gta-weapon-wheel">
+    <div class="wheel-title">⚡ GTA VI WEAPON WHEEL · 武器轮盘 (按 1-6 或点击选择)</div>
+    <div class="wheel-grid">
+      <div class="wheel-slot" onclick="window.GTA6_ACTIONS.selectWeapon(0)">
+        <div class="w-icon">👊</div>
+        <div class="w-name">[1] UNARMED · 徒手格斗</div>
+      </div>
+      <div class="wheel-slot" onclick="window.GTA6_ACTIONS.selectWeapon(1)">
+        <div class="w-icon">🔫</div>
+        <div class="w-name">[2] HEAVY PISTOL · 战术手枪</div>
+      </div>
+      <div class="wheel-slot" onclick="window.GTA6_ACTIONS.selectWeapon(2)">
+        <div class="w-icon">⚡</div>
+        <div class="w-name">[3] MICRO SMG · 车载冲锋枪</div>
+      </div>
+      <div class="wheel-slot" onclick="window.GTA6_ACTIONS.selectWeapon(3)">
+        <div class="w-icon">🎯</div>
+        <div class="w-name">[4] CARBINE RIFLE · 突击步枪</div>
+      </div>
+      <div class="wheel-slot" onclick="window.GTA6_ACTIONS.selectWeapon(4)">
+        <div class="w-icon">💥</div>
+        <div class="w-name">[5] PUMP SHOTGUN · 霰弹枪</div>
+      </div>
+      <div class="wheel-slot" onclick="window.GTA6_ACTIONS.selectWeapon(5)">
+        <div class="w-icon">🚀</div>
+        <div class="w-name">[6] RPG LAUNCHER · 火箭筒</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- iFruit Smartphone Trigger & Drawer ([P] Key) -->
+  <button id="ifruit-phone-trigger" onclick="window.GTA6_ACTIONS.togglePhone()">
+    📱 iFruit 手机 & SnapVice [P]
+  </button>
+
+  <div id="ifruit-phone">
+    <div class="phone-header">
+      <span class="phone-brand">📱 iFRUIT OS · LEONIDA 5G</span>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.togglePhone()">✖ 关闭</button>
+    </div>
+
+    <div class="phone-section-title">🏎️ Pegasus 载具空投召唤</div>
+    <div class="phone-btn-grid">
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.summonVehicle('cheetah')">🏎️ Cheetah 超跑</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.summonVehicle('banshee')">🌴 Banshee 敞篷</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.summonVehicle('muscle')">🔥 Sabre 肌肉车</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.summonVehicle('lowrider')">👑 Donk 改装大轮</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.summonVehicle('police')">🚔 VCPD 警车</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.summonVehicle('helicopter')">🚁 Maverick 直升机</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.summonVehicle('boat')">🚤 Squalo 快艇</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.teleportToHelipad()">🏙️ 传送摩天停机坪</button>
+    </div>
+
+    <div class="phone-section-title">🌅 罪恶都市光影与天气</div>
+    <div class="phone-btn-grid">
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.setWeather(0)">🌇 宣传片粉金日落</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.setWeather(1)">🌃 海洋大道霓虹夜</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.setWeather(2)">☀️ 热带迈阿密正午</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.setWeather(3)">⛈️ 暴雨霓虹倒影</button>
+    </div>
+
+    <div class="phone-section-title">⚡ 雷奥奈达导演秘籍 (Cheats)</div>
+    <div class="phone-btn-grid">
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.addWantedStar()">⭐ 增加通缉星级</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.clearWantedStars()">🛡️ 立即消除通缉</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.toggleGodMode()">💪 无敌模式开关</button>
+      <button class="app-btn" onclick="window.GTA6_ACTIONS.toggleExplosiveAmmo()">💥 爆炸子弹开关</button>
+    </div>
+
+    <div class="phone-section-title">📲 SnapVice 雷奥奈达实时短视频热搜</div>
+    <div id="snapvice-feed-list"></div>
+  </div>
+
+  <!-- GTA VI Trailer 1 Intro Screen -->
+  <div id="gta-intro-overlay">
+    <div class="gta6-logo-box">
+      <div class="rockstar-tag">WELCOME TO LEONIDA · 欢迎来到雷奥奈达州</div>
+      <div class="gta6-main-title">GRAND THEFT AUTO VI</div>
+      <div class="gta6-subtitle">VICE CITY · 罪恶都市开放世界</div>
+      <div class="feature-pills">
+        <span class="f-pill">👫 露西亚 & 杰森 双主角卫星切换</span>
+        <span class="f-pill">🏎️ 超跑/敞篷/大轮改装车/快艇/直升机</span>
+        <span class="f-pill">🌴 Ocean Drive 霓虹酒店群 & 罪恶海滩</span>
+        <span class="f-pill">🚔 6星 VCPD 警车与武装直升机追捕</span>
+        <span class="f-pill">📻 4大合成器电台 & SnapVice 实时热搜</span>
+        <span class="f-pill">🎯 "Trust." 三大剧情劫案与特技跳台</span>
+      </div>
+      <button id="btn-start-gta6">ENTER VICE CITY · 立即进入罪恶都市</button>
+    </div>
+  </div>
+
+  <script type="module" src="/src_gta6/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+# Credits & Third-Party Asset Licences
+
+Every third-party dataset, satellite image, font, and synthesis tool used in `paper-files-india-city.mp4` is listed below with its source, cartographic view, and licence.
+
+## 1. Satellite Imagery
+- **NASA Blue Marble: Shaded Relief & Bathymetry (`BlueMarble_ShadedRelief_Bathymetry`)** & **Blue Marble: Next Generation (`BlueMarble_NextGeneration`)**
+  - Source: NASA Earthdata Global Imagery Browse Services (GIBS) — https://earthdata.nasa.gov/gibs
+  - Credit: NASA Earth Observatory / Reto Stöckli
+  - Licence: **Public Domain** (U.S. Government Work, 17 U.S.C. § 105)
+- **NASA Suomi NPP / VIIRS Earth at Night (`VIIRS_CityLights_2012`)**
+  - Source: NASA Earthdata GIBS — https://earthdata.nasa.gov/gibs
+  - Credit: NASA Earth Observatory / NOAA NGDC
+  - Licence: **Public Domain** (U.S. Government Work, 17 U.S.C. § 105)
+
+## 2. Cartographic & GIS Vector Data
+- **Natural Earth 1:10m Admin 0 Countries — China View (`ne_10m_admin_0_countries_chn`)** & **Natural Earth 1:10m Coastline (`ne_10m_coastline`)**
+  - Source: Natural Earth — https://www.naturalearthdata.com (`nvkelso/natural-earth-vector`)
+  - View: **Natural Earth 1:10m, China view** (compliant with China standard map boundaries)
+  - Licence: **Public Domain (CC0 1.0)**
+- **Administrative Polygon Boundaries for NCT of Delhi (`relation/1942586`) and Sikkim (`relation/1791324`)**
+  - Source: OpenStreetMap contributors — https://www.openstreetmap.org/copyright
+  - Attribution: © OpenStreetMap contributors
+  - Licence: **Open Data Commons Open Database License (ODbL 1.0)**
+
+## 3. Typography
+- **Inter (`Inter-800.woff2`, `Inter-900.woff2`)**
+  - Author: Rasmus Andersson — https://rsms.me/inter/
+  - Licence: **SIL Open Font License 1.1 (OFL-1.1)**
+
+## 4. Voice Synthesis, Rendering & Score
+- **Kokoro v1.0 (`am_michael` English Neural TTS)**
+  - Model: `hexgrad/Kokoro-82M` (`kokoro-onnx`)
+  - Licence: **Apache License 2.0**
+- **3D Engine**: Three.js (`MIT License`)
+- **Musical Score & Foley**: 100% original procedural synthesis in Python (`numpy` / `scipy`, `mix.py`). Zero stock loops or third-party audio samples.

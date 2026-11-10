@@ -1,0 +1,42 @@
+{
+  "id": "cat",
+  "w": 2200,
+  "h": 1370,
+  "trim": [
+    0,
+    241,
+    3352,
+    2328
+  ],
+  "anchors": {},
+  "credit": {
+    "title": "Cat August 2010-2.jpg",
+    "author": "Alvesgaspar (Wikimedia Commons)",
+    "licence": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Cat_August_2010-2.jpg"
+  },
+  "prep": {
+    "raw": "sources\\raw\\cat_white.jpg",
+    "id": "cat",
+    "rotate": 0,
+    "crop": null,
+    "mask": null,
+    "mask_mul": null,
+    "mask_max": null,
+    "thin_region": null,
+    "thin_color": null,
+    "radial": null,
+    "patch": [],
+    "poly": null,
+    "cut": [],
+    "keep_largest": true,
+    "min_island": 0.002,
+    "erode": 1,
+    "sat": 0.88,
+    "contrast": 1.06,
+    "warm": 0.015,
+    "gamma": 1.0,
+    "exposure": 0.0,
+    "max": 2200
+  }
+}

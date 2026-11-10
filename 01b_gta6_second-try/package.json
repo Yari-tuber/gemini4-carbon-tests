@@ -1,0 +1,20 @@
+{
+  "name": "gta6-vice-city",
+  "version": "1.0.0",
+  "description": "Grand Theft Auto VI: Leonida / Vice City Open World 3D Game",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 5176 --host",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.187.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.7"
+  }
+}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Every Indian Could Stand Inside One City</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+    #stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    #ui {
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <canvas id="gl"></canvas>
+    <canvas id="ui"></canvas>
+  </div>
+  <script type="module">
+    import { DUR, EVENTS } from './timeline.js';
+    import { createFilm } from './scene.js';
+
+    const gl = document.getElementById('gl');
+    const ui = document.getElementById('ui');
+    gl.width = ui.width = window.innerWidth || 1080;
+    gl.height = ui.height = window.innerHeight || 1920;
+
+    window.DUR = DUR;
+    window.EV = EVENTS;
+
+    const film = await createFilm(gl, ui);
+    window.render = (t) => film.render(t);
+    window.TEXTS = (t) => film.getTexts(t);
+    film.render(0);
+    window.READY = true;
+  </script>
+</body>
+</html>

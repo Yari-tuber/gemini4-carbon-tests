@@ -1,0 +1,26 @@
+《Google Antigravity — 让创造，脱离引力》 — Credits & Third-Party Asset Licences
+
+Brand & Official Product Materials
+- Google Antigravity official press kit (`Press-Kit.zip`: official color/dark/white icons, horizontal lockups, wordmark) and official product UI showcases & live screen captures (`logo_blue.mp4`, `editor.mp4`, `flight_tracker.mp4`, `cli_prompt.mp4`, `ide-agent.jpg`, `ide-editor.jpg`, `ide-artifacts.jpg`, `new-chat.png`, `subagents.png`, `scheduled.png`, `artifacts-app.png`, `marketplace.png`, `skills.jpg`) — © Google LLC (https://antigravity.google · https://antigravity.google/press). Used to present the Google Antigravity platform; verify Google's brand and press-asset terms before commercial distribution.
+
+Motion Design & Spatial Rendering Engine
+- Cupertino daylight/titanium studio lighting, 96-slice 2.5D Retina window perspective projection, spring choreography, live prompt overlay, Python SDK card, and 6-card Bento presentation written in procedural Canvas2D code (`engine.js`, `film.js`, `timeline.js`).
+
+Fonts (SIL Open Font License 1.1, self-hosted in `fonts/`)
+- Inter — Rasmus Andersson (https://github.com/rsms/inter) · SIL OFL 1.1
+- Inter Tight — Rasmus Andersson (https://fonts.google.com/specimen/Inter+Tight) · SIL OFL 1.1
+- JetBrains Mono — The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono) · SIL OFL 1.1
+- Noto Sans SC — Google LLC / Adobe (https://fonts.google.com/noto/specimen/Noto+Sans+SC) · SIL OFL 1.1
+
+Music (Original Composition, `music/score.py`)
+- Sampled Instruments (CC0 1.0 Universal):
+  - VSCO 2 Community Edition by Versilian Studios (https://vis.versilstudios.com/vsco-community.html) — upright piano (`upright`), violins (`violins`), pizzicato violins (`violins_pizz`), cellos (`cellos`) · CC0 1.0
+  - Versilian Community Sample Library (VCSL) by Versilian Studios / Sam Gossner (https://github.com/sgossner/VCSL) — concert harp (`harp`), vibraphone (`vibraphone`, `vibraphone_hard`, `vibraphone_bowed`), marimba (`marimba`), glockenspiel (`glockenspiel`), hand chimes (`hand_chimes`), hi-hat (`hihat`), snare taps (`snare2`), claps (`claps`), shaker (`shaker`) · CC0 1.0
+  - Karoryfer Samples (https://shop.karoryfer.com/pages/free-samples) — acoustic jazz bass (`jazz_bass`) · CC0 1.0
+- Harmonic sub-bass synthesised procedurally in NumPy.
+
+Voice-Over
+- Microsoft Edge Neural Text-to-Speech (`edge-tts`, voice: `zh-CN-XiaoxiaoNeural`). Verify Microsoft's service terms before commercial distribution.
+
+Sound Design & Foley
+- All tactile UI foley, keyboard clicks, Force-Touch haptics, and transitions synthesised procedurally in NumPy / SciPy (`mix.py`).

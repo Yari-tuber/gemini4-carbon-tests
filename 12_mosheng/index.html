@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>墨生 · 字即世界</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;500;600;700&family=Zhi+Mang+Xing&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="stage" class="stage">
+    <!-- Layer 1: Real-time WebGL Navier-Stokes Fluid Ink & Xuan Paper Shader -->
+    <canvas id="fluid-canvas"></canvas>
+
+    <!-- Layer 2: Living Entities, Weather, Calligraphy Morph & Ecosystem -->
+    <canvas id="world-canvas"></canvas>
+
+    <!-- Hidden cursor-following input so OS Chinese IME pops up right at mouse cursor -->
+    <textarea
+      id="ime-input"
+      aria-label="水墨输入"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+      rows="1"
+    ></textarea>
+
+    <!-- Subtle Pinyin buffer pill when typing in English keyboard mode -->
+    <div id="pinyin-buffer" class="pinyin-buffer" aria-hidden="true"></div>
+
+    <!-- Top-Left Cinnabar Seal & Vertical Motto -->
+    <header class="brand-header" aria-label="墨生 · 字即世界">
+      <div class="seal-stamp" id="seal-stamp" title="墨生 · 点击重演开篇落墨">
+        <span class="seal-char">墨</span>
+        <span class="seal-char">生</span>
+      </div>
+      <div class="brand-motto">字即世界 · 落笔成灵</div>
+    </header>
+
+    <!-- Top-Right Control Pills -->
+    <nav class="top-controls" aria-label="画境控制">
+      <button type="button" id="btn-auto" class="pill-btn" title="自在演化模式">自在</button>
+      <button type="button" id="btn-sound" class="pill-btn" title="开启或关闭古琴与自然声景">有声</button>
+      <button type="button" id="btn-snap" class="pill-btn" title="保存当前水墨画卷">留影</button>
+    </nav>
+
+    <!-- Right Margin Vertical Classical Verse -->
+    <aside id="poem-rail" class="poem-rail" aria-live="polite"></aside>
+
+    <!-- Bottom 17-Character Circular Dock & Shortcuts Legend -->
+    <footer class="bottom-dock">
+      <div id="char-bar" class="char-bar" role="toolbar" aria-label="字灵栏">
+        <button type="button" class="char-token" data-char="山">山</button>
+        <button type="button" class="char-token" data-char="月">月</button>
+        <button type="button" class="char-token" data-char="竹">竹</button>
+        <button type="button" class="char-token" data-char="梅">梅</button>
+        <button type="button" class="char-token" data-char="鱼">鱼</button>
+        <button type="button" class="char-token" data-char="鸟">鸟</button>
+        <button type="button" class="char-token" data-char="蝶">蝶</button>
+        <button type="button" class="char-token" data-char="龙">龙</button>
+        <button type="button" class="char-token" data-char="风">风</button>
+        <button type="button" class="char-token" data-char="雨">雨</button>
+        <button type="button" class="char-token" data-char="雪">雪</button>
+        <button type="button" class="char-token" data-char="火">火</button>
+        <button type="button" class="char-token" data-char="水">水</button>
+        <button type="button" class="char-token" data-char="雷">雷</button>
+        <button type="button" class="char-token" data-char="夜">夜</button>
+        <button type="button" class="char-token" data-char="昼">昼</button>
+        <button type="button" class="char-token" data-char="空">空</button>
+      </div>
+      <div class="dock-hint">
+        <span>键盘直接打字，字会活过来</span>
+        <span class="dot">·</span>
+        <span>拖动落墨</span>
+        <span class="dot">·</span>
+        <span>按住 Shift 泼水</span>
+        <span class="dot">·</span>
+        <span class="pigment-switch">
+          <span class="pigment-item active" data-pigment="1">1 墨</span>
+          <span class="pigment-item" data-pigment="2">2 朱</span>
+          <span class="pigment-item" data-pigment="3">3 青</span>
+        </span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="./fluid.js"></script>
+  <script src="./audio.js"></script>
+  <script src="./entities.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

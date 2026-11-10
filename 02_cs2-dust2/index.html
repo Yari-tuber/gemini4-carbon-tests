@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COUNTER-STRIKE 2 · DE_DUST2 (高还原度战术竞技版)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0d1015;
+      font-family: "Segoe UI", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+      color: #f2f5f8;
+    }
+
+    #game-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      display: block;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ==================== SCREEN FX OVERLAYS ==================== */
+    #flash-overlay {
+      position: fixed;
+      inset: 0;
+      background: #ffffff;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 40;
+    }
+
+    #smoke-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle, rgba(176, 182, 188, 0.94) 0%, rgba(142, 148, 154, 0.98) 100%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 25;
+      transition: opacity 0.08s linear;
+    }
+
+    #damage-overlay {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      width: 520px;
+      height: 520px;
+      margin-left: -260px;
+      margin-top: -260px;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 28;
+      background: conic-gradient(from -28deg at 50% 50%, rgba(255, 38, 28, 0.78) 0deg, rgba(255, 38, 28, 0.78) 56deg, transparent 72deg, transparent 360deg);
+      -webkit-mask-image: radial-gradient(circle, transparent 52%, black 66%, transparent 72%);
+      mask-image: radial-gradient(circle, transparent 52%, black 66%, transparent 72%);
+    }
+
+    /* Dual-Lens AWP / Scout Sniper Scope Overlay */
+    #scope-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 26;
+      background: radial-gradient(circle at center, transparent 36vh, rgba(0, 0, 0, 0.985) 38.5vh);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #scope-overlay .scope-ring {
+      width: 76vh;
+      height: 76vh;
+      border-radius: 50%;
+      border: 3px solid rgba(20, 24, 28, 0.95);
+      box-shadow: inset 0 0 38px rgba(0, 0, 0, 0.85);
+      position: relative;
+    }
+    #scope-overlay .line-h {
+      position: absolute;
+      left: 0; right: 0; top: 50%;
+      height: 1.5px;
+      background: rgba(0, 0, 0, 0.92);
+    }
+    #scope-overlay .line-v {
+      position: absolute;
+      top: 0; bottom: 0; left: 50%;
+      width: 1.5px;
+      background: rgba(0, 0, 0, 0.92);
+    }
+    #scope-overlay .scope-dot {
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 5px; height: 5px;
+      margin: -2.5px 0 0 -2.5px;
+      border-radius: 50%;
+      background: #ff2b22;
+    }
+
+    /* ==================== TACTICAL CS2 HUD ==================== */
+    #hud-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    /* Top-Left Rotating Dust2 Radar + Callout + Economy */
+    #radar-panel {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    #radar-canvas {
+      width: 196px;
+      height: 196px;
+      border-radius: 50%;
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.55);
+    }
+    #hud-callout {
+      background: rgba(12, 16, 22, 0.78);
+      backdrop-filter: blur(8px);
+      border-left: 3px solid #f0b23a;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      color: #f6e7c8;
+      border-radius: 0 6px 6px 0;
+      width: fit-content;
+    }
+    .money-box {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      background: rgba(12, 16, 22, 0.74);
+      padding: 6px 14px;
+      border-radius: 6px;
+      width: fit-content;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    #hud-money {
+      font-size: 22px;
+      font-weight: 800;
+      color: #65f08e;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    }
+    #hud-money-delta {
+      font-size: 15px;
+      font-weight: 800;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Top-Center Score & Round Clock */
+    #top-match-bar {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pips-row {
+      display: flex;
+      gap: 5px;
+    }
+    .pip {
+      width: 13px;
+      height: 18px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .pip.ct.alive { background: #4ca6ff; box-shadow: 0 0 8px rgba(76, 166, 255, 0.6); }
+    .pip.t.alive  { background: #f2b63d; box-shadow: 0 0 8px rgba(242, 182, 61, 0.6); }
+    .pip.dead     { background: rgba(40, 44, 52, 0.55); opacity: 0.4; }
+
+    .score-box {
+      min-width: 44px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 900;
+      border-radius: 5px;
+      background: rgba(14, 18, 24, 0.85);
+    }
+    .score-box.ct { color: #5eb2ff; border-bottom: 3px solid #4ca6ff; }
+    .score-box.t  { color: #f5be49; border-bottom: 3px solid #f2b63d; }
+
+    #hud-timer {
+      min-width: 96px;
+      height: 40px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(14, 18, 24, 0.90);
+      border-radius: 5px;
+      font-size: 19px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.6px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    #hud-timer.bomb-alert {
+      background: rgba(155, 22, 18, 0.92);
+      color: #ffeaec;
+      border-color: #ff564e;
+      animation: pulseAlert 0.55s infinite alternate;
+    }
+    @keyframes pulseAlert {
+      from { box-shadow: 0 0 6px rgba(255, 50, 40, 0.4); }
+      to   { box-shadow: 0 0 22px rgba(255, 50, 40, 0.95); }
+    }
+
+    /* Top-Right Killfeed */
+    #hud-killfeed {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .kf-row {
+      background: rgba(12, 15, 20, 0.80);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 5px 11px;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: opacity 0.35s ease;
+    }
+    .team-ct-txt { color: #67b7ff; }
+    .team-t-txt  { color: #f6c14b; }
+    .kf-weapon {
+      background: rgba(255, 255, 255, 0.12);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      color: #e2e7ed;
+    }
+    .kf-badge {
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .kf-badge.hs { background: #d62b24; color: #fff; }
+    .kf-badge.wb { background: #8f6b32; color: #fff; }
+
+    /* Center Crosshair, Action Prompts & Radio */
+    #crosshair-canvas {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #hud-action-hint {
+      position: absolute;
+      top: 61%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(12, 16, 22, 0.84);
+      border: 1px solid rgba(242, 182, 61, 0.55);
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffe29a;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    #hud-progress-wrap {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      background: rgba(12, 16, 22, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      padding: 9px 12px;
+      border-radius: 7px;
+    }
+    #hud-progress-label {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-align: center;
+      color: #f3f6fa;
+    }
+    .prog-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    #hud-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f0b23a, #4dff88);
+    }
+
+    #hud-radio {
+      position: absolute;
+      bottom: 112px;
+      left: 22px;
+      background: rgba(12, 16, 22, 0.78);
+      border-left: 3px solid #5eb2ff;
+      padding: 7px 13px;
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+      max-width: 520px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .radio-tag {
+      color: #7cc2ff;
+      font-weight: 800;
+      margin-right: 6px;
+    }
+
+    /* Round Win Banner */
+    #hud-round-banner {
+      position: absolute;
+      top: 19%;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 480px;
+      padding: 18px 34px;
+      text-align: center;
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65);
+    }
+    #hud-round-banner.ct-win {
+      background: linear-gradient(135deg, rgba(22, 56, 98, 0.92), rgba(14, 24, 38, 0.92));
+      border: 1px solid #5eb2ff;
+    }
+    #hud-round-banner.t-win {
+      background: linear-gradient(135deg, rgba(108, 72, 18, 0.92), rgba(34, 24, 12, 0.92));
+      border: 1px solid #f5be49;
+    }
+    #banner-title {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      margin-bottom: 6px;
+    }
+    #banner-sub {
+      font-size: 14px;
+      color: #dce3ec;
+    }
+
+    /* Bottom-Left Vitals (HP & Armor) */
+    #vitals-panel {
+      position: absolute;
+      bottom: 22px;
+      left: 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(12, 16, 22, 0.84);
+      backdrop-filter: blur(8px);
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .vital-block {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+    }
+    .vital-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: #9ba7b8;
+    }
+    .vital-val {
+      font-size: 34px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .equip-badge {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 3px 7px;
+      border-radius: 4px;
+      background: rgba(94, 178, 255, 0.22);
+      color: #8acaff;
+      border: 1px solid rgba(94, 178, 255, 0.45);
+    }
+
+    /* Bottom-Right Weapon Slots & Ammo */
+    #arsenal-panel {
+      position: absolute;
+      bottom: 22px;
+      right: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    #hud-weapon-slots {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .wslot {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 4px 11px;
+      border-radius: 5px;
+      background: rgba(12, 16, 22, 0.55);
+      color: #a4b0bf;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .wslot.active {
+      background: rgba(240, 178, 58, 0.24);
+      color: #ffffff;
+      border-right: 3px solid #f0b23a;
+    }
+    .wslot-key {
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.14);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    .ammo-card {
+      background: rgba(12, 16, 22, 0.84);
+      backdrop-filter: blur(8px);
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      text-align: right;
+    }
+    #hud-weapon-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #f0b23a;
+      margin-bottom: 2px;
+    }
+    #hud-ammo-mag {
+      font-size: 34px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+    #hud-ammo-res {
+      font-size: 18px;
+      font-weight: 700;
+      color: #9ba7b8;
+      margin-left: 4px;
+    }
+
+    /* ==================== INTERACTIVE MODALS (BUY MENU, SCOREBOARD, MAIN MENU) ==================== */
+    #buy-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(8, 11, 16, 0.84);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .buy-container {
+      width: min(1140px, 94vw);
+      background: rgba(18, 23, 31, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      padding: 22px 26px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.75);
+    }
+    .buy-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .buy-title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+    }
+    #buy-money-val {
+      font-size: 24px;
+      font-weight: 900;
+      color: #65f08e;
+    }
+    #buy-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    .buy-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .buy-col-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #f0b23a;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(240, 178, 58, 0.3);
+    }
+    .buy-card {
+      background: rgba(30, 38, 50, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #f2f5f8;
+      border-radius: 7px;
+      padding: 10px 11px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+    .buy-card:hover {
+      background: rgba(54, 68, 90, 0.95);
+      border-color: #f0b23a;
+      transform: translateY(-1px);
+    }
+    .buy-card.owned {
+      border-color: #58e885;
+      background: rgba(28, 62, 42, 0.65);
+    }
+    .buy-card.locked {
+      opacity: 0.45;
+    }
+    .buy-card-top {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .buy-card-price { color: #65f08e; }
+    .buy-card-zh { font-size: 12px; color: #a8b4c4; }
+
+    .buy-footer {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #buy-toast {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.22); }
+
+    /* Scoreboard (TAB) */
+    #scoreboard-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 55;
+      background: rgba(8, 11, 16, 0.72);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .sb-card {
+      width: min(760px, 92vw);
+      background: rgba(15, 20, 28, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+    .sb-title {
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 12px;
+      color: #f0b23a;
+      display: flex;
+      justify-content: space-between;
+    }
+    .sb-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .sb-table th {
+      text-align: left;
+      padding: 6px 10px;
+      color: #8f9db0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .sb-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .me-row { background: rgba(240, 178, 58, 0.16); font-weight: 700; }
+    .dead-row { opacity: 0.48; }
+
+    /* Main Briefing / Team Selection Overlay */
+    #main-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: linear-gradient(90deg, rgba(10, 13, 18, 0.90) 0%, rgba(10, 13, 18, 0.68) 55%, rgba(10, 13, 18, 0.35) 100%);
+      display: flex;
+      align-items: center;
+      padding-left: min(7vw, 80px);
+    }
+    .menu-panel {
+      width: min(560px, 92vw);
+      background: rgba(16, 21, 28, 0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(240, 178, 58, 0.35);
+      border-radius: 12px;
+      padding: 28px 32px;
+      box-shadow: 0 25px 75px rgba(0, 0, 0, 0.78);
+    }
+    .cs-badge {
+      display: inline-block;
+      background: #f0b23a;
+      color: #11151c;
+      font-weight: 900;
+      font-size: 12px;
+      padding: 3px 9px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .menu-h1 {
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .menu-sub {
+      font-size: 13px;
+      color: #b4c0cf;
+      margin-bottom: 18px;
+    }
+    .opt-group {
+      margin-bottom: 15px;
+    }
+    .opt-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: #f0b23a;
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .opt-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+    }
+    .opt-btn {
+      background: rgba(30, 38, 50, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      padding: 10px 12px;
+      border-radius: 7px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+    .opt-btn:hover { border-color: rgba(240, 178, 58, 0.65); }
+    .opt-btn.selected {
+      background: rgba(240, 178, 58, 0.24);
+      border-color: #f0b23a;
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(240, 178, 58, 0.28);
+    }
+
+    .sens-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+    }
+    #sens-slider { flex: 1; accent-color: #f0b23a; }
+
+    #btn-deploy {
+      width: 100%;
+      margin-top: 10px;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #f5be49, #df8d1d);
+      color: #101318;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(240, 178, 58, 0.4);
+      transition: transform 0.12s ease;
+    }
+    #btn-deploy:hover { transform: translateY(-1px); filter: brightness(1.06); }
+
+    .controls-box {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      line-height: 1.7;
+      color: #a9b6c7;
+    }
+    .controls-box b { color: #f6e3ba; }
+
+    #click-to-resume {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 58;
+      background: rgba(14, 18, 25, 0.92);
+      border: 1px solid #f0b23a;
+      padding: 16px 28px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game-canvas"></canvas>
+
+  <!-- Tactical Screen Overlays -->
+  <div id="smoke-overlay"></div>
+  <div id="damage-overlay"></div>
+  <div id="scope-overlay" class="hidden">
+    <div class="scope-ring">
+      <div class="line-h"></div>
+      <div class="line-v"></div>
+      <div class="scope-dot"></div>
+    </div>
+  </div>
+  <div id="flash-overlay"></div>
+
+  <!-- CS2 In-Game HUD -->
+  <div id="hud-layer">
+    <div id="radar-panel">
+      <canvas id="radar-canvas" width="196" height="196"></canvas>
+      <div id="hud-callout">Dust II</div>
+      <div class="money-box">
+        <span id="hud-money">$ 800</span>
+        <span id="hud-money-delta">+$300</span>
+      </div>
+    </div>
+
+    <div id="top-match-bar">
+      <div id="hud-pips-ct" class="pips-row"></div>
+      <div id="hud-score-ct" class="score-box ct">0</div>
+      <div id="hud-timer">1:55</div>
+      <div id="hud-score-t" class="score-box t">0</div>
+      <div id="hud-pips-t" class="pips-row"></div>
+    </div>
+
+    <div id="hud-killfeed"></div>
+
+    <canvas id="crosshair-canvas" width="240" height="240"></canvas>
+
+    <div id="hud-progress-wrap" class="hidden">
+      <div id="hud-progress-label">进度...</div>
+      <div class="prog-track"><div id="hud-progress-fill"></div></div>
+    </div>
+
+    <div id="hud-action-hint"></div>
+    <div id="hud-radio"></div>
+
+    <div id="hud-round-banner" class="hidden">
+      <div id="banner-title">COUNTER-TERRORISTS WIN</div>
+      <div id="banner-sub">当前比分 0 : 0</div>
+    </div>
+
+    <div id="vitals-panel">
+      <div class="vital-block">
+        <span class="vital-label">✚ HP</span>
+        <span id="hud-hp" class="vital-val">100</span>
+      </div>
+      <div class="vital-block">
+        <span class="vital-label">🛡 ARMOR</span>
+        <span id="hud-armor" class="vital-val">0</span>
+      </div>
+      <span id="hud-helm-badge" class="equip-badge">+头盔</span>
+      <span id="hud-kit-badge" class="equip-badge">✂️ 拆弹器</span>
+    </div>
+
+    <div id="arsenal-panel">
+      <div id="hud-weapon-slots"></div>
+      <div class="ammo-card">
+        <div id="hud-weapon-name">USP-S · 消音手枪</div>
+        <div>
+          <span id="hud-ammo-mag">12</span>
+          <span id="hud-ammo-res">/ 24</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CS2 Buy Menu (`B` Key) -->
+  <div id="buy-menu" class="hidden">
+    <div class="buy-container">
+      <div class="buy-header">
+        <div>
+          <div class="buy-title">CS2 军火库购买菜单 · BUY MENU</div>
+          <div style="font-size:12px;color:#9aa7b8;">点击卡片即可购买装备 · 按 [B] 或 [ESC] 返回战场</div>
+        </div>
+        <div id="buy-money-val">$ 800</div>
+      </div>
+      <div id="buy-grid"></div>
+      <div class="buy-footer">
+        <div id="buy-toast">选择武器、防弹衣+头盔与烟闪雷</div>
+        <button id="btn-close-buy" class="btn-secondary">关闭并返回战斗 [B / ESC]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5v5 Scoreboard (`TAB` Key) -->
+  <div id="scoreboard-modal" class="hidden">
+    <div class="sb-card">
+      <div class="sb-title">
+        <span>DE_DUST2 · 5v5 竞技积分榜</span>
+        <span>MR12 爆破模式</span>
+      </div>
+      <div style="color:#67b7ff;font-weight:800;font-size:13px;margin-bottom:4px;">COUNTER-TERRORISTS · 反恐精英 (CT)</div>
+      <table class="sb-table">
+        <thead><tr><th>干员</th><th>状态</th><th>经济</th><th>击杀 K</th><th>阵亡 D</th></tr></thead>
+        <tbody id="sb-ct-rows"></tbody>
+      </table>
+      <div style="color:#f6c14b;font-weight:800;font-size:13px;margin-bottom:4px;">TERRORISTS · 恐怖分子 (T)</div>
+      <table class="sb-table">
+        <thead><tr><th>干员</th><th>状态</th><th>经济</th><th>击杀 K</th><th>阵亡 D</th></tr></thead>
+        <tbody id="sb-t-rows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="click-to-resume" class="hidden">点击屏幕继续锁定准星战斗 · 按 [M] 打开设置菜单</div>
+
+  <!-- Pre-Match Briefing & Team Select (`M` Key) -->
+  <div id="main-menu">
+    <div class="menu-panel">
+      <span class="cs-badge">SOURCE 2 INSPIRED · 5V5 COMPETITIVE</span>
+      <div class="menu-h1">COUNTER-STRIKE · DUST II</div>
+      <div class="menu-sub">全尺寸拓扑还原炙热沙城 II (A大道/A坑/蓝箱/中门对狙/Xbox上A小/B一二层/B门狗洞)</div>
+
+      <div class="opt-group">
+        <div class="opt-label">选择参战阵营 · Team Select</div>
+        <div class="opt-row">
+          <button class="opt-btn selected" data-team="CT">🛡 反恐精英 CT (SAS)</button>
+          <button class="opt-btn" data-team="T">💣 恐怖分子 T (Elite Crew)</button>
+        </div>
+      </div>
+
+      <div class="opt-group">
+        <div class="opt-label">战术 AI 强度 · Bot Difficulty</div>
+        <div class="opt-row">
+          <button class="opt-btn" data-diff="easy">白银练枪 Easy</button>
+          <button class="opt-btn selected" data-diff="normal">黄金竞技 Normal</button>
+          <button class="opt-btn" data-diff="hard">大地球 Global Elite</button>
+        </div>
+      </div>
+
+      <div class="opt-group">
+        <div class="opt-label">开局经济模式 · Economy</div>
+        <div class="opt-row">
+          <button class="opt-btn selected" data-money="800">$800 经典手枪局起步</button>
+          <button class="opt-btn" data-money="16000">$16,000 满经济直接起大狙/AK</button>
+        </div>
+      </div>
+
+      <div class="opt-group">
+        <div class="opt-label">鼠标灵敏度 · Sensitivity</div>
+        <div class="sens-row">
+          <input id="sens-slider" type="range" min="0.5" max="4.5" step="0.05" value="2.0" />
+          <span id="sens-val">2.00</span>
+        </div>
+      </div>
+
+      <button id="btn-deploy">进入炙热沙城 II · 开始 5v5 对局</button>
+
+      <div class="controls-box">
+        <b>[WASD]</b> 移动急停 &nbsp;|&nbsp; <b>[Shift]</b> 静步无声 &nbsp;|&nbsp; <b>[Ctrl]</b> 下蹲压枪 &nbsp;|&nbsp; <b>[Space]</b> 跳跃/大跳上Xbox<br/>
+        <b>[B]</b> 购买菜单 &nbsp;|&nbsp; <b>[1-5]</b> 切换主武/手枪/刺刀/投掷物/C4 &nbsp;|&nbsp; <b>[Q]</b> 快速切枪 &nbsp;|&nbsp; <b>[F]</b> 检视把玩武器<br/>
+        <b>[右键]</b> AWP双倍开镜 / 刺刀重击背刺 / 闪光弹低抛瞬爆 &nbsp;|&nbsp; <b>[G]</b> 丢枪 &nbsp;|&nbsp; <b>[E]</b> 安放/拆除C4/捡枪 &nbsp;|&nbsp; <b>[TAB]</b> 计分板
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src_cs2/main.js"></script>
+</body>
+</html>

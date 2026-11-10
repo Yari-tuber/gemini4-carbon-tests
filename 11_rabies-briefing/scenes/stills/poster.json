@@ -1,0 +1,6 @@
+{
+  "extends": "scenes/film.json",
+  "t": 104.5,
+  "size": [2560, 1440],
+  "out": "../poster.jpg"
+}

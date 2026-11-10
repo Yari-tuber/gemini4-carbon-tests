@@ -1,0 +1,3273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>教务选课工作台 · 2026 秋季学期 — 林默</title>
+  <style>
+    /* ==========================================================================
+       2026 Modern Academic Workbench Design System
+       Inspired by Linear, Notion Calendar & Apple Human Interface Guidelines
+       Zero generic blue-purple gradients · Pure editorial hierarchy & tactile craft
+       ========================================================================== */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "PingFang SC",
+                   "Hiragino Sans GB", "Microsoft YaHei UI", "Segoe UI", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* Theme Tokens Scoped to #app so standalone & embedded contexts behave identically */
+    #app[data-theme="light"] {
+      --bg-canvas: #F6F6F4;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F0F0EC;
+      --bg-muted: #E8E8E3;
+      --bg-hover: #F3F3EF;
+      --bg-elevated: rgba(255, 255, 255, 0.88);
+      --bg-lunch: #FAFAF8;
+
+      --border-hairline: rgba(24, 24, 27, 0.075);
+      --border-default: rgba(24, 24, 27, 0.11);
+      --border-strong: rgba(24, 24, 27, 0.20);
+      --border-focus: #18181B;
+
+      --text-primary: #151517;
+      --text-secondary: #57585E;
+      --text-muted: #8A8B93;
+      --text-on-solid: #FFFFFF;
+
+      --btn-primary-bg: #18181B;
+      --btn-primary-hover: #2C2C31;
+      --btn-primary-text: #FAFAFA;
+
+      --accent-emerald: #0F766E;
+      --accent-emerald-soft: rgba(15, 118, 110, 0.10);
+      --accent-emerald-border: rgba(15, 118, 110, 0.25);
+
+      --accent-amber: #B45309;
+      --accent-amber-bar: #D97706;
+      --accent-amber-soft: rgba(217, 119, 6, 0.10);
+      --accent-amber-border: rgba(217, 119, 6, 0.30);
+
+      --accent-danger: #DC2626;
+      --accent-danger-ink: #991B1B;
+      --accent-danger-soft: rgba(220, 38, 38, 0.08);
+      --accent-danger-stripe: rgba(220, 38, 38, 0.065);
+      --accent-danger-border: rgba(220, 38, 38, 0.38);
+
+      --ring-track: rgba(24, 24, 27, 0.08);
+      --ring-fill: #18181B;
+      --ring-preview: rgba(15, 118, 110, 0.42);
+
+      --shadow-xs: 0 1px 2px rgba(15, 15, 18, 0.035);
+      --shadow-sm: 0 2px 8px rgba(15, 15, 18, 0.045), 0 1px 2px rgba(15, 15, 18, 0.03);
+      --shadow-md: 0 8px 24px rgba(15, 15, 18, 0.08), 0 2px 6px rgba(15, 15, 18, 0.04);
+      --shadow-toast: 0 12px 32px rgba(15, 15, 18, 0.14), 0 2px 6px rgba(15, 15, 18, 0.06);
+
+      /* Mineral Course Palette - Light */
+      --c-teal-bg: rgba(13, 148, 136, 0.09);
+      --c-teal-border: rgba(13, 148, 136, 0.24);
+      --c-teal-bar: #0D9488;
+      --c-teal-ink: #115E59;
+      --c-teal-sub: #0F766E;
+
+      --c-slate-bg: rgba(37, 99, 235, 0.075);
+      --c-slate-border: rgba(37, 99, 235, 0.22);
+      --c-slate-bar: #2563EB;
+      --c-slate-ink: #1E3A8A;
+      --c-slate-sub: #1D4ED8;
+
+      --c-sage-bg: rgba(46, 125, 82, 0.09);
+      --c-sage-border: rgba(46, 125, 82, 0.24);
+      --c-sage-bar: #2E7D52;
+      --c-sage-ink: #194D30;
+      --c-sage-sub: #276744;
+
+      --c-terracotta-bg: rgba(194, 65, 12, 0.085);
+      --c-terracotta-border: rgba(194, 65, 12, 0.24);
+      --c-terracotta-bar: #C2410C;
+      --c-terracotta-ink: #7C2D12;
+      --c-terracotta-sub: #9A3412;
+
+      --c-cyan-bg: rgba(2, 132, 199, 0.085);
+      --c-cyan-border: rgba(2, 132, 199, 0.24);
+      --c-cyan-bar: #0284C7;
+      --c-cyan-ink: #0C4A6E;
+      --c-cyan-sub: #0369A1;
+
+      --c-amber-bg: rgba(217, 119, 6, 0.095);
+      --c-amber-border: rgba(217, 119, 6, 0.30);
+      --c-amber-bar: #D97706;
+      --c-amber-ink: #78350F;
+      --c-amber-sub: #92400E;
+
+      --c-rose-bg: rgba(190, 24, 93, 0.075);
+      --c-rose-border: rgba(190, 24, 93, 0.22);
+      --c-rose-bar: #BE185D;
+      --c-rose-ink: #831843;
+      --c-rose-sub: #9D174D;
+    }
+
+    #app[data-theme="dark"] {
+      --bg-canvas: #0B0C0E;
+      --bg-surface: #131417;
+      --bg-subtle: #1A1C20;
+      --bg-muted: #23262B;
+      --bg-hover: #181A1E;
+      --bg-elevated: rgba(19, 20, 23, 0.88);
+      --bg-lunch: #101114;
+
+      --border-hairline: rgba(255, 255, 255, 0.068);
+      --border-default: rgba(255, 255, 255, 0.105);
+      --border-strong: rgba(255, 255, 255, 0.20);
+      --border-focus: #EDEDEF;
+
+      --text-primary: #F2F2F4;
+      --text-secondary: #9E9FA8;
+      --text-muted: #696B74;
+      --text-on-solid: #111214;
+
+      --btn-primary-bg: #EDEDEF;
+      --btn-primary-hover: #FFFFFF;
+      --btn-primary-text: #111214;
+
+      --accent-emerald: #2DD4BF;
+      --accent-emerald-soft: rgba(45, 212, 191, 0.12);
+      --accent-emerald-border: rgba(45, 212, 191, 0.28);
+
+      --accent-amber: #FBBF24;
+      --accent-amber-bar: #F59E0B;
+      --accent-amber-soft: rgba(245, 158, 11, 0.13);
+      --accent-amber-border: rgba(245, 158, 11, 0.34);
+
+      --accent-danger: #F87171;
+      --accent-danger-ink: #FCA5A5;
+      --accent-danger-soft: rgba(239, 68, 68, 0.15);
+      --accent-danger-stripe: rgba(239, 68, 68, 0.11);
+      --accent-danger-border: rgba(248, 113, 113, 0.45);
+
+      --ring-track: rgba(255, 255, 255, 0.09);
+      --ring-fill: #F2F2F4;
+      --ring-preview: rgba(45, 212, 191, 0.48);
+
+      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.28);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.50);
+      --shadow-toast: 0 14px 36px rgba(0, 0, 0, 0.65);
+
+      /* Mineral Course Palette - Dark */
+      --c-teal-bg: rgba(20, 184, 166, 0.15);
+      --c-teal-border: rgba(45, 212, 191, 0.30);
+      --c-teal-bar: #2DD4BF;
+      --c-teal-ink: #CCFBF1;
+      --c-teal-sub: #5EEAD4;
+
+      --c-slate-bg: rgba(59, 130, 246, 0.15);
+      --c-slate-border: rgba(96, 165, 250, 0.30);
+      --c-slate-bar: #60A5FA;
+      --c-slate-ink: #DBEAFE;
+      --c-slate-sub: #93C5FD;
+
+      --c-sage-bg: rgba(52, 211, 153, 0.14);
+      --c-sage-border: rgba(52, 211, 153, 0.28);
+      --c-sage-bar: #34D399;
+      --c-sage-ink: #D1FAE5;
+      --c-sage-sub: #6EE7B7;
+
+      --c-terracotta-bg: rgba(249, 115, 22, 0.15);
+      --c-terracotta-border: rgba(251, 146, 60, 0.32);
+      --c-terracotta-bar: #FB923C;
+      --c-terracotta-ink: #FFEDD5;
+      --c-terracotta-sub: #FDBA74;
+
+      --c-cyan-bg: rgba(56, 189, 248, 0.15);
+      --c-cyan-border: rgba(56, 189, 248, 0.30);
+      --c-cyan-bar: #38BDF8;
+      --c-cyan-ink: #E0F2FE;
+      --c-cyan-sub: #7DD3FC;
+
+      --c-amber-bg: rgba(245, 158, 11, 0.15);
+      --c-amber-border: rgba(251, 191, 36, 0.35);
+      --c-amber-bar: #FBBF24;
+      --c-amber-ink: #FEF3C7;
+      --c-amber-sub: #FCD34D;
+
+      --c-rose-bg: rgba(244, 114, 182, 0.14);
+      --c-rose-border: rgba(244, 114, 182, 0.30);
+      --c-rose-bar: #F472B6;
+      --c-rose-ink: #FCE7F3;
+      --c-rose-sub: #F9A8D4;
+    }
+
+    #app {
+      min-height: 100vh;
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      transition: background-color 240ms ease, color 240ms ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tabular {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+
+    /* ==========================================================================
+       Top Navigation Chrome
+       ========================================================================== */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      height: 54px;
+      background: var(--bg-elevated);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-hairline);
+      transition: background-color 240ms ease, border-color 240ms ease;
+    }
+
+    .topbar-inner {
+      max-width: 1480px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: var(--text-primary);
+      color: var(--bg-surface);
+      display: grid;
+      place-items: center;
+      transition: transform 200ms ease;
+    }
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+    }
+
+    .brand-divider {
+      color: var(--border-strong);
+      font-weight: 300;
+    }
+
+    .semester-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 0 3px var(--accent-emerald-soft);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ghost-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 11px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+
+    .ghost-action-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-hover);
+      border-color: var(--border-strong);
+    }
+
+    .ghost-action-btn:active {
+      transform: scale(0.97);
+    }
+
+    .theme-switch {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px;
+      border-radius: 9px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .theme-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 26px;
+      padding: 0 9px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 180ms ease;
+    }
+
+    .theme-option.active {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* ==========================================================================
+       Student Metrics Strip (Bento Header)
+       ========================================================================== */
+    .workspace-shell {
+      max-width: 1480px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 18px 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr 0.82fr 1.35fr;
+      gap: 12px;
+    }
+
+    .metric-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+      transition: background-color 240ms ease, border-color 200ms ease;
+    }
+
+    .metric-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .student-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .student-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      color: var(--text-primary);
+      font-size: 15px;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .student-info h1 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .grade-chip {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 1px 7px;
+      border-radius: 5px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .student-dept {
+      margin-top: 3px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .metric-value-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .metric-big {
+      font-size: 23px;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    .metric-denom {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-left: 2px;
+    }
+
+    .metric-subpill {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+    }
+
+    .metric-subpill.emerald {
+      background: var(--accent-emerald-soft);
+      color: var(--accent-emerald);
+    }
+
+    /* Linear Progress Track */
+    .linear-track {
+      height: 6px;
+      border-radius: 999px;
+      background: var(--ring-track);
+      overflow: hidden;
+      display: flex;
+      position: relative;
+    }
+
+    .linear-fill-done {
+      height: 100%;
+      background: var(--text-primary);
+      border-radius: 999px 0 0 999px;
+      transition: width 480ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .linear-fill-projected {
+      height: 100%;
+      background: var(--accent-emerald);
+      opacity: 0.45;
+      transition: width 480ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Semester Credit Card with Circular Progress Ring */
+    .credit-cap-card {
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .ring-wrap {
+      position: relative;
+      width: 62px;
+      height: 62px;
+      flex-shrink: 0;
+    }
+
+    .ring-wrap svg {
+      width: 62px;
+      height: 62px;
+      transform: rotate(-90deg);
+    }
+
+    .ring-circle-bg {
+      fill: none;
+      stroke: var(--ring-track);
+      stroke-width: 5.5;
+    }
+
+    .ring-circle-preview {
+      fill: none;
+      stroke: var(--ring-preview);
+      stroke-width: 5;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
+    }
+
+    .ring-circle-waitlist {
+      fill: none;
+      stroke: var(--accent-amber-bar);
+      stroke-width: 5;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 480ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
+    }
+
+    .ring-circle-fill {
+      fill: none;
+      stroke: var(--ring-fill);
+      stroke-width: 5.6;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 500ms cubic-bezier(0.22, 1, 0.36, 1), stroke 220ms ease;
+    }
+
+    .ring-center-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 650;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .credit-cap-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .credit-bar-multi {
+      height: 6px;
+      border-radius: 999px;
+      background: var(--ring-track);
+      overflow: hidden;
+      display: flex;
+      gap: 1px;
+    }
+
+    .credit-seg-confirmed {
+      height: 100%;
+      background: var(--ring-fill);
+      border-radius: 999px;
+      transition: width 480ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms ease;
+    }
+
+    .credit-seg-waitlist {
+      height: 100%;
+      background: var(--accent-amber-bar);
+      border-radius: 999px;
+      transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .credit-seg-preview {
+      height: 100%;
+      background: var(--accent-emerald);
+      opacity: 0.55;
+      border-radius: 999px;
+      transition: width 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .credit-meta-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .preview-delta-tag {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-emerald);
+      opacity: 0;
+      transform: translateY(2px);
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .preview-delta-tag.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .preview-delta-tag.conflict {
+      color: var(--accent-danger);
+    }
+
+    /* ==========================================================================
+       Main Two-Column Workbench
+       ========================================================================== */
+    .workbench {
+      display: grid;
+      grid-template-columns: 440px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    /* Left Panel: Course Catalog & Pending Pool */
+    .catalog-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .catalog-header {
+      padding: 15px 16px 12px;
+      border-bottom: 1px solid var(--border-hairline);
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .catalog-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .catalog-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .count-pill {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+    }
+
+    .hover-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Search Input */
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      color: var(--text-muted);
+      pointer-events: none;
+      display: flex;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 36px;
+      padding: 0 64px 0 34px;
+      border-radius: 9px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-input:focus {
+      background: var(--bg-surface);
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--ring-track);
+    }
+
+    .search-kbd {
+      position: absolute;
+      right: 9px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .kbd-tag {
+      font-size: 12px;
+      padding: 1px 6px;
+      border-radius: 5px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-family: inherit;
+    }
+
+    .clear-search-btn {
+      display: none;
+      border: none;
+      background: var(--bg-muted);
+      color: var(--text-secondary);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-size: 12px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clear-search-btn.show {
+      display: inline-flex;
+    }
+
+    /* Filter Pills */
+    .filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 7px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 150ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .filter-pill:hover {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+    }
+
+    .filter-pill.active {
+      background: var(--text-primary);
+      color: var(--bg-surface);
+      font-weight: 550;
+    }
+
+    /* Course List Body */
+    .course-list {
+      padding: 10px 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: calc(100vh - 305px);
+      min-height: 520px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-strong) transparent;
+    }
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 4px 2px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.01em;
+    }
+
+    .section-divider:not(:first-child) {
+      margin-top: 6px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    /* Course Item Card */
+    .course-card {
+      position: relative;
+      border-radius: 11px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      padding: 12px 13px 12px 15px;
+      transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+      cursor: default;
+    }
+
+    .course-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 10px;
+      bottom: 10px;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--card-accent, var(--text-muted));
+      opacity: 0.85;
+      transition: top 160ms ease, bottom 160ms ease, opacity 160ms ease;
+    }
+
+    .course-card:hover,
+    .course-card.grid-hovered {
+      background: var(--bg-hover);
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .course-card:hover::before,
+    .course-card.grid-hovered::before {
+      top: 6px;
+      bottom: 6px;
+      opacity: 1;
+    }
+
+    .course-card.is-conflict {
+      border-color: var(--accent-danger-border);
+      background: linear-gradient(to right, var(--accent-danger-soft), transparent 55%);
+    }
+
+    .course-card.is-conflict::before {
+      background: var(--accent-danger);
+    }
+
+    .course-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .course-heading {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .course-name-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .course-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .credit-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 1px 7px;
+      border-radius: 5px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .type-badge {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .course-meta {
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .course-bottom {
+      margin-top: 10px;
+      padding-top: 9px;
+      border-top: 1px dashed var(--border-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    /* Seat Capacity Indicator */
+    .seat-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .seat-mini-bar {
+      width: 54px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--ring-track);
+      overflow: hidden;
+    }
+
+    .seat-mini-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--text-secondary);
+      transition: width 360ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms ease;
+    }
+
+    .seat-mini-fill.tight {
+      background: var(--accent-danger);
+    }
+
+    .seat-mini-fill.full {
+      background: var(--accent-amber-bar);
+    }
+
+    .seat-tag {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .seat-tag.tight {
+      color: var(--accent-danger);
+      font-weight: 600;
+    }
+
+    .seat-tag.full {
+      color: var(--accent-amber);
+      font-weight: 600;
+    }
+
+    .conflict-inline-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-danger);
+    }
+
+    /* Course Action Buttons */
+    .course-btn {
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border: 1px solid transparent;
+      transition: all 160ms cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .course-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Select Primary */
+    .course-btn.btn-select {
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+    }
+
+    .course-btn.btn-select:hover {
+      background: var(--btn-primary-hover);
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* Enrolled -> Hover to Drop */
+    .course-btn.btn-enrolled {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      border-color: var(--border-default);
+    }
+
+    .course-btn.btn-enrolled .label-hover {
+      display: none;
+    }
+
+    .course-btn.btn-enrolled:not(.just-confirmed):hover {
+      background: var(--accent-danger-soft);
+      color: var(--accent-danger);
+      border-color: var(--accent-danger-border);
+    }
+
+    .course-btn.btn-enrolled:not(.just-confirmed):hover .label-rest {
+      display: none;
+    }
+
+    .course-btn.btn-enrolled:not(.just-confirmed):hover .label-hover {
+      display: inline;
+    }
+
+    .course-btn.btn-enrolled.just-confirmed {
+      background: var(--accent-emerald-soft);
+      color: var(--accent-emerald);
+      border-color: var(--accent-emerald-border);
+    }
+
+    /* Waitlist */
+    .course-btn.btn-waitlist {
+      background: var(--accent-amber-soft);
+      color: var(--accent-amber);
+      border-color: var(--accent-amber-border);
+    }
+
+    .course-btn.btn-waitlist:hover {
+      background: var(--accent-amber-bar);
+      color: #FFFFFF;
+      border-color: var(--accent-amber-bar);
+    }
+
+    .course-btn.btn-waitlisted {
+      background: var(--accent-amber-soft);
+      color: var(--accent-amber);
+      border-color: var(--accent-amber-border);
+    }
+
+    .course-btn.btn-waitlisted .label-hover {
+      display: none;
+    }
+
+    .course-btn.btn-waitlisted:not(.just-confirmed):hover {
+      background: var(--accent-danger-soft);
+      color: var(--accent-danger);
+      border-color: var(--accent-danger-border);
+    }
+
+    .course-btn.btn-waitlisted:not(.just-confirmed):hover .label-rest {
+      display: none;
+    }
+
+    .course-btn.btn-waitlisted:not(.just-confirmed):hover .label-hover {
+      display: inline;
+    }
+
+    /* Conflict Warning Button */
+    .course-btn.btn-conflict {
+      background: var(--accent-danger-soft);
+      color: var(--accent-danger);
+      border-color: var(--accent-danger-border);
+    }
+
+    .course-btn.btn-conflict:hover {
+      background: var(--accent-danger);
+      color: #FFFFFF;
+      border-color: var(--accent-danger);
+    }
+
+    /* Cap Exceeded */
+    .course-btn.btn-cap {
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border-color: var(--border-default);
+      cursor: not-allowed;
+    }
+
+    /* Conflict Quick Swap Drawer inside Card */
+    .conflict-swap-drawer {
+      margin-top: 9px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--accent-danger-soft);
+      border: 1px solid var(--accent-danger-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-primary);
+      animation: fadeSlideDown 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .swap-confirm-btn {
+      height: 26px;
+      padding: 0 10px;
+      border-radius: 6px;
+      border: none;
+      background: var(--accent-danger);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: opacity 150ms ease;
+    }
+
+    .swap-confirm-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* ==========================================================================
+       Right Panel: Weekly Timetable Grid (Mon-Fri, Periods 1-8)
+       ========================================================================== */
+    .timetable-panel {
+      position: sticky;
+      top: 70px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .timetable-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .timetable-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .timetable-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .timetable-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .timetable-legend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    .legend-swatch.enrolled {
+      background: var(--c-teal-bg);
+      border: 1.5px solid var(--c-teal-bar);
+    }
+
+    .legend-swatch.waitlist {
+      background: var(--accent-amber-soft);
+      border: 1.5px dashed var(--accent-amber-bar);
+    }
+
+    .legend-swatch.preview {
+      background: var(--accent-emerald-soft);
+      border: 1.5px dashed var(--accent-emerald);
+    }
+
+    .legend-swatch.conflict {
+      background: var(--accent-danger-soft);
+      border: 1.5px solid var(--accent-danger);
+    }
+
+    /* Calendar Grid Matrix */
+    .calendar-wrapper {
+      padding: 0;
+      overflow-x: auto;
+    }
+
+    .calendar-grid {
+      min-width: 660px;
+      display: grid;
+      grid-template-columns: 74px repeat(5, minmax(0, 1fr));
+      /* Row 1: Weekday headers
+         Rows 2-5: Periods 1-4
+         Row 6: Midday break strip
+         Rows 7-10: Periods 5-8 */
+      grid-template-rows: 40px repeat(4, 62px) 28px repeat(4, 62px);
+      position: relative;
+    }
+
+    .day-col-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-lunch);
+      border-bottom: 1px solid var(--border-default);
+      border-left: 1px solid var(--border-hairline);
+      transition: background-color 180ms ease, color 180ms ease;
+    }
+
+    .day-col-header.corner {
+      border-left: none;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 12px;
+    }
+
+    .day-col-header.highlight-preview {
+      color: var(--accent-emerald);
+      background: var(--accent-emerald-soft);
+    }
+
+    .day-col-header.highlight-conflict {
+      color: var(--accent-danger);
+      background: var(--accent-danger-soft);
+    }
+
+    .period-cell {
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      background: var(--bg-lunch);
+      transition: background-color 180ms ease, color 180ms ease;
+    }
+
+    .period-num {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .period-time {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .period-cell.highlight-preview {
+      background: var(--accent-emerald-soft);
+    }
+
+    .period-cell.highlight-preview .period-num {
+      color: var(--accent-emerald);
+    }
+
+    .period-cell.highlight-conflict {
+      background: var(--accent-danger-soft);
+    }
+
+    .period-cell.highlight-conflict .period-num {
+      color: var(--accent-danger);
+    }
+
+    .grid-slot-bg {
+      border-left: 1px solid var(--border-hairline);
+      border-bottom: 1px solid var(--border-hairline);
+      transition: background-color 180ms ease;
+    }
+
+    /* Subtle dashed horizontal separator between odd & even paired periods */
+    .grid-slot-bg.odd-period,
+    .period-cell.odd-period {
+      border-bottom-style: dashed;
+    }
+
+    .lunch-divider {
+      grid-column: 1 / -1;
+      grid-row: 6;
+      background: var(--bg-lunch);
+      border-bottom: 1px solid var(--border-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* Course Blocks Placed on the Grid */
+    .tt-block {
+      margin: 4px 5px;
+      border-radius: 9px;
+      padding: 9px 10px 9px 12px;
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                  box-shadow 200ms ease,
+                  border-color 200ms ease,
+                  opacity 180ms ease;
+    }
+
+    .tt-block::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3.5px;
+      background: var(--b-bar);
+    }
+
+    .tt-block.enrolled-block {
+      background: var(--b-bg);
+      border: 1px solid var(--b-border);
+      color: var(--b-ink);
+      cursor: pointer;
+    }
+
+    .tt-block.enrolled-block:hover,
+    .tt-block.enrolled-block.focused {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--b-bar);
+      z-index: 12;
+    }
+
+    .tt-block.waitlist-block {
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--c-amber-bg),
+        var(--c-amber-bg) 7px,
+        transparent 7px,
+        transparent 14px
+      );
+      background-color: var(--bg-surface);
+      border: 1.5px dashed var(--c-amber-bar);
+      color: var(--c-amber-ink);
+      cursor: pointer;
+    }
+
+    .tt-block.waitlist-block::before {
+      background: var(--c-amber-bar);
+    }
+
+    .tt-block.waitlist-block:hover,
+    .tt-block.waitlist-block.focused {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      z-index: 12;
+    }
+
+    /* Ghost Hover Preview Block */
+    .tt-block.preview-block {
+      z-index: 15;
+      pointer-events: none;
+      background: var(--b-bg);
+      border: 1.5px dashed var(--b-bar);
+      color: var(--b-ink);
+      box-shadow: var(--shadow-md);
+      animation: previewPulseIn 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards,
+                 previewBreathing 2s ease-in-out infinite;
+    }
+
+    /* Conflict Overlay Block on Hover */
+    .tt-block.conflict-overlay-block {
+      z-index: 25;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--accent-danger-stripe),
+        var(--accent-danger-stripe) 8px,
+        transparent 8px,
+        transparent 16px
+      );
+      background-color: var(--bg-surface);
+      border: 2px solid var(--accent-danger);
+      color: var(--text-primary);
+      box-shadow: 0 0 0 4px var(--accent-danger-soft), var(--shadow-md);
+      animation: conflictPopIn 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .tt-block.conflict-overlay-block::before {
+      background: var(--accent-danger);
+      width: 4px;
+    }
+
+    .tt-block-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .tt-course-title {
+      font-size: 13px;
+      font-weight: 650;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    .tt-quick-drop {
+      opacity: 0;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 5px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 140ms ease;
+      flex-shrink: 0;
+    }
+
+    .tt-block:hover .tt-quick-drop {
+      opacity: 1;
+    }
+
+    .tt-quick-drop:hover {
+      background: var(--accent-danger);
+      border-color: var(--accent-danger);
+      color: #FFFFFF;
+    }
+
+    .tt-block-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--b-sub, var(--text-secondary));
+      font-weight: 500;
+    }
+
+    .tt-status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--bg-surface);
+    }
+
+    .conflict-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      height: 100%;
+      justify-content: space-between;
+    }
+
+    .conflict-alert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      align-self: flex-start;
+      padding: 1px 7px;
+      border-radius: 5px;
+      background: var(--accent-danger);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .conflict-versus {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 12px;
+    }
+
+    .conflict-line-old {
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .conflict-line-new {
+      color: var(--accent-danger);
+      font-weight: 650;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Timetable Bottom Telemetry Bar */
+    .timetable-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border-hairline);
+      background: var(--bg-lunch);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .tt-telemetry-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+
+    .tt-telemetry-status.ok {
+      color: var(--text-secondary);
+    }
+
+    .tt-telemetry-status.preview {
+      color: var(--accent-emerald);
+      font-weight: 600;
+    }
+
+    .tt-telemetry-status.conflict {
+      color: var(--accent-danger);
+      font-weight: 600;
+    }
+
+    /* Empty Search State */
+    .empty-catalog {
+      padding: 44px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ==========================================================================
+       Floating Toast Stack (With One-Click Undo)
+       ========================================================================== */
+    .toast-stack {
+      position: fixed;
+      right: 24px;
+      bottom: 22px;
+      z-index: 80;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast-item {
+      pointer-events: auto;
+      min-width: 280px;
+      max-width: 400px;
+      padding: 10px 13px;
+      border-radius: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-toast);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12.5px;
+      color: var(--text-primary);
+      animation: toastSlideIn 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .toast-item.leaving {
+      animation: toastSlideOut 180ms ease forwards;
+    }
+
+    .toast-msg {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .toast-undo-btn {
+      height: 25px;
+      padding: 0 9px;
+      border-radius: 6px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background-color 140ms ease;
+    }
+
+    .toast-undo-btn:hover {
+      background: var(--bg-muted);
+    }
+
+    /* ==========================================================================
+       Micro-Interaction Keyframes
+       ========================================================================== */
+    @keyframes slotLockIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(5px);
+      }
+      65% {
+        opacity: 1;
+        transform: scale(1.015) translateY(-1px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    @keyframes slotExitOut {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0.91);
+      }
+    }
+
+    @keyframes previewPulseIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes previewBreathing {
+      0%, 100% {
+        box-shadow: 0 4px 16px rgba(15, 118, 110, 0.10);
+      }
+      50% {
+        box-shadow: 0 6px 22px rgba(15, 118, 110, 0.22);
+      }
+    }
+
+    @keyframes conflictPopIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes conflictShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-3px); }
+      80% { transform: translateX(3px); }
+    }
+
+    @keyframes numPop {
+      0% { transform: translateY(-4px); opacity: 0.45; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes toastSlideIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes toastSlideOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(6px) scale(0.96); }
+    }
+
+    .anim-lock-in {
+      animation: slotLockIn 340ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .anim-exit-out {
+      animation: slotExitOut 190ms ease forwards;
+      pointer-events: none;
+    }
+
+    .anim-shake {
+      animation: conflictShake 360ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+    }
+
+    .anim-num-pop {
+       display: inline-block;
+      animation: numPop 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ==========================================================================
+       Responsive Breakpoints
+       ========================================================================== */
+    @media (max-width: 1180px) {
+      .metrics-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .workbench {
+        grid-template-columns: 390px minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 920px) {
+      .workbench {
+        grid-template-columns: 1fr;
+      }
+      .timetable-panel {
+        position: static;
+      }
+      .course-list {
+        max-height: none;
+        min-height: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .metrics-strip {
+        grid-template-columns: 1fr;
+      }
+      .topbar-inner, .workspace-shell {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+      .semester-pill {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app" data-theme="light">
+    <!-- Top Chrome -->
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="16" rx="2.5"></rect>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+              <line x1="9" y1="4" x2="9" y2="20"></line>
+            </svg>
+          </div>
+          <span class="brand-title">教务选课工作台</span>
+          <span class="brand-divider">/</span>
+          <span class="semester-pill">
+            <span class="live-dot"></span>
+            2026–2027 学年秋季学期 · 正选开放中
+          </span>
+        </div>
+
+        <div class="topbar-actions">
+          <button type="button" class="ghost-action-btn" id="resetBtn" title="恢复至初始 18 学分状态">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+            </svg>
+            重置演示
+          </button>
+
+          <div class="theme-switch" role="group" aria-label="界面主题切换">
+            <button type="button" class="theme-option active" data-set-theme="light">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+              </svg>
+              亮色
+            </button>
+            <button type="button" class="theme-option" data-set-theme="dark">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+              </svg>
+              暗黑
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Shell -->
+    <main class="workspace-shell">
+      <!-- Top Bento Student Metrics Strip -->
+      <section class="metrics-strip" aria-label="学生学业与学分概览">
+        <!-- 1. Student Identity -->
+        <div class="metric-card">
+          <div class="metric-label-row">
+            <span>学生档案</span>
+            <span class="tabular">学号 2024011084</span>
+          </div>
+          <div class="student-main">
+            <div class="student-avatar">林</div>
+            <div class="student-info">
+              <h1>
+                林默
+                <span class="grade-chip">2024级</span>
+              </h1>
+              <p class="student-dept">计算机科学与技术 · 本科三年级</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Completed Graduation Credits -->
+        <div class="metric-card">
+          <div class="metric-label-row">
+            <span>毕业已修学分</span>
+            <span class="tabular" id="gradProjectedLabel">含本学期预计 104 / 140</span>
+          </div>
+          <div class="metric-value-row">
+            <div>
+              <span class="metric-big tabular">86</span>
+              <span class="metric-denom tabular">/ 140 学分</span>
+            </div>
+            <span class="metric-subpill tabular">已完成 61.4%</span>
+          </div>
+          <div class="linear-track" title="深色为已修 86 学分，浅色为本学期已选学分预计增量">
+            <div class="linear-fill-done" style="width: 61.43%"></div>
+            <div class="linear-fill-projected" id="gradProjectedBar" style="width: 12.86%"></div>
+          </div>
+        </div>
+
+        <!-- 3. Current GPA -->
+        <div class="metric-card">
+          <div class="metric-label-row">
+            <span>当前平均学分绩点 (GPA)</span>
+            <span>4.0 制</span>
+          </div>
+          <div class="metric-value-row">
+            <div>
+              <span class="metric-big tabular">3.72</span>
+              <span class="metric-denom tabular">/ 4.00</span>
+            </div>
+            <span class="metric-subpill emerald">专业前 12%</span>
+          </div>
+          <div class="linear-track">
+            <div class="linear-fill-done" style="width: 93%; border-radius: 999px;"></div>
+          </div>
+        </div>
+
+        <!-- 4. Semester Credit Cap (Dynamic Linked Ring + Bar) -->
+        <div class="metric-card credit-cap-card">
+          <div class="ring-wrap" aria-hidden="true">
+            <svg viewBox="0 0 64 64">
+              <circle class="ring-circle-bg" cx="32" cy="32" r="26"></circle>
+              <circle class="ring-circle-preview" id="ringPreview" cx="32" cy="32" r="26" stroke-dasharray="163.36" stroke-dashoffset="163.36"></circle>
+              <circle class="ring-circle-waitlist" id="ringWaitlist" cx="32" cy="32" r="26" stroke-dasharray="163.36" stroke-dashoffset="163.36"></circle>
+              <circle class="ring-circle-fill" id="ringConfirmed" cx="32" cy="32" r="26" stroke-dasharray="163.36" stroke-dashoffset="50.26"></circle>
+            </svg>
+            <div class="ring-center-label tabular" id="ringPercentLabel">69%</div>
+          </div>
+
+          <div class="credit-cap-body">
+            <div class="metric-label-row">
+              <span>本学期选课学分（上限 26 学分）</span>
+              <span class="preview-delta-tag tabular" id="creditPreviewDelta">+3 预览</span>
+            </div>
+            <div class="metric-value-row">
+              <div>
+                <span class="metric-big tabular" id="selectedCreditsNum">18</span>
+                <span class="metric-denom tabular">/ 26 学分</span>
+              </div>
+              <span class="metric-subpill tabular" id="waitlistBadgePill" style="display: none;"></span>
+            </div>
+            <div class="credit-bar-multi">
+              <div class="credit-seg-confirmed" id="barConfirmed" style="width: 69.23%"></div>
+              <div class="credit-seg-waitlist" id="barWaitlist" style="width: 0%"></div>
+              <div class="credit-seg-preview" id="barPreview" style="width: 0%"></div>
+            </div>
+            <div class="credit-meta-foot">
+              <span class="tabular" id="remainingCreditsText">剩余可选 8 学分</span>
+              <span class="tabular" title="含培养方案预设集中实践必修模块 7 学分">含实践底数 7 学分</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Split View: Course Pool (Left) + Weekly Timetable Grid (Right) -->
+      <section class="workbench">
+        <!-- Left: Course Pool & Filter -->
+        <aside class="catalog-panel" aria-label="待选课程池与已选管理">
+          <div class="catalog-header">
+            <div class="catalog-title-row">
+              <div class="catalog-title">
+                课程池与选退管理
+                <span class="count-pill tabular" id="visibleCourseCount">7 门</span>
+              </div>
+              <span class="hover-hint">悬停课程可实时预览排课</span>
+            </div>
+
+            <div class="search-box">
+              <span class="search-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.3-4.3"></path>
+                </svg>
+              </span>
+              <input
+                type="text"
+                id="searchInput"
+                class="search-input"
+                placeholder="搜索课程名、教室、星期或课程类型..."
+                autocomplete="off"
+              />
+              <div class="search-kbd">
+                <button type="button" class="clear-search-btn" id="clearSearchBtn" aria-label="清空搜索">×</button>
+                <kbd class="kbd-tag" id="searchKbdHint">/</kbd>
+              </div>
+            </div>
+
+            <div class="filter-pills" id="typeFilterBar" role="tablist" aria-label="按课程类型筛选">
+              <button type="button" class="filter-pill active" data-filter="all">全部类型</button>
+              <button type="button" class="filter-pill" data-filter="专业选修">专业选修</button>
+              <button type="button" class="filter-pill" data-filter="工程实践">工程实践</button>
+              <button type="button" class="filter-pill" data-filter="通识选修">通识选修</button>
+              <button type="button" class="filter-pill" data-filter="专业必修">专业必修</button>
+            </div>
+          </div>
+
+          <div class="course-list" id="courseListContainer">
+            <!-- Populated dynamically -->
+          </div>
+        </aside>
+
+        <!-- Right: Weekly Timetable Grid -->
+        <section class="timetable-panel" aria-label="周课表实时视图">
+          <div class="timetable-header">
+            <div class="timetable-title-group">
+              <h2 class="timetable-title">周课表网格</h2>
+              <span class="timetable-subtitle">周一至周五 · 第 1–8 节实时联动</span>
+            </div>
+
+            <div class="timetable-legend">
+              <span class="legend-item"><span class="legend-swatch enrolled"></span>已选课程</span>
+              <span class="legend-item"><span class="legend-swatch waitlist"></span>候补队列</span>
+              <span class="legend-item"><span class="legend-swatch preview"></span>悬停预览占位</span>
+              <span class="legend-item"><span class="legend-swatch conflict"></span>时间冲突警示</span>
+            </div>
+          </div>
+
+          <div class="calendar-wrapper">
+            <div class="calendar-grid" id="calendarGrid">
+              <!-- Grid background & dynamic course blocks rendered here -->
+            </div>
+          </div>
+
+          <div class="timetable-footer" id="timetableFooter">
+            <!-- Live schedule telemetry rendered dynamically -->
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <!-- Floating Toast Notifications -->
+    <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+  </div>
+
+  <script>
+    (() => {
+      /* ========================================================================
+         Core Academic Dataset (2005 Legacy Data -> 2026 Precision State Engine)
+         Initial enrolled credits: 18 = 4 (OS) + 4 (Compilers) + 3 (Graphics)
+                                      + 7 (Mandatory non-grid practicum module)
+         Semester Cap: 26 credits | Completed: 86/140 | GPA: 3.72
+         ======================================================================== */
+      const BASE_PRACTICUM_CREDITS = 7;
+      const CREDIT_CAP = 26;
+      const COMPLETED_CREDITS = 86;
+      const GRADUATION_TOTAL = 140;
+      const RING_CIRCUMFERENCE = 2 * Math.PI * 26; // r = 26 -> ~163.3628
+
+      const DAY_LABELS = {
+        1: "周一",
+        2: "周二",
+        3: "周三",
+        4: "周四",
+        5: "周五"
+      };
+
+      const PERIOD_TIMES = {
+        1: "08:00",
+        2: "08:55",
+        3: "10:00",
+        4: "10:55",
+        5: "14:00",
+        6: "14:55",
+        7: "16:00",
+        8: "16:55"
+      };
+
+      const PALETTES = {
+        teal: {
+          bg: "var(--c-teal-bg)",
+          border: "var(--c-teal-border)",
+          bar: "var(--c-teal-bar)",
+          ink: "var(--c-teal-ink)",
+          sub: "var(--c-teal-sub)"
+        },
+        slate: {
+          bg: "var(--c-slate-bg)",
+          border: "var(--c-slate-border)",
+          bar: "var(--c-slate-bar)",
+          ink: "var(--c-slate-ink)",
+          sub: "var(--c-slate-sub)"
+        },
+        sage: {
+          bg: "var(--c-sage-bg)",
+          border: "var(--c-sage-border)",
+          bar: "var(--c-sage-bar)",
+          ink: "var(--c-sage-ink)",
+          sub: "var(--c-sage-sub)"
+        },
+        terracotta: {
+          bg: "var(--c-terracotta-bg)",
+          border: "var(--c-terracotta-border)",
+          bar: "var(--c-terracotta-bar)",
+          ink: "var(--c-terracotta-ink)",
+          sub: "var(--c-terracotta-sub)"
+        },
+        cyan: {
+          bg: "var(--c-cyan-bg)",
+          border: "var(--c-cyan-border)",
+          bar: "var(--c-cyan-bar)",
+          ink: "var(--c-cyan-ink)",
+          sub: "var(--c-cyan-sub)"
+        },
+        amber: {
+          bg: "var(--c-amber-bg)",
+          border: "var(--c-amber-border)",
+          bar: "var(--c-amber-bar)",
+          ink: "var(--c-amber-ink)",
+          sub: "var(--c-amber-sub)"
+        },
+        rose: {
+          bg: "var(--c-rose-bg)",
+          border: "var(--c-rose-border)",
+          bar: "var(--c-rose-bar)",
+          ink: "var(--c-rose-ink)",
+          sub: "var(--c-rose-sub)"
+        }
+      };
+
+      const INITIAL_COURSES = [
+        // --- 待选课程池 (4 courses from prompt) ---
+        {
+          id: "dl-intro",
+          group: "pool",
+          name: "深度学习导论",
+          code: "CS3042",
+          type: "专业选修",
+          credits: 4,
+          day: 3,
+          periods: [3, 4],
+          location: "智算楼302",
+          instructor: "陈立 教授",
+          remaining: 3,
+          capacity: 60,
+          waitlistRank: 0,
+          status: "none", // "none" | "enrolled" | "waitlisted"
+          color: "terracotta"
+        },
+        {
+          id: "modern-fe",
+          group: "pool",
+          name: "现代前端工程与交互设计",
+          code: "CS3088",
+          type: "工程实践",
+          credits: 3,
+          day: 2,
+          periods: [5, 6],
+          location: "创客工坊204",
+          instructor: "沈逸飞 副教授",
+          remaining: 18,
+          capacity: 50,
+          waitlistRank: 0,
+          status: "none",
+          color: "cyan"
+        },
+        {
+          id: "classical-music",
+          group: "pool",
+          name: "古典音乐赏析（通识）",
+          code: "GE1024",
+          type: "通识选修",
+          credits: 2,
+          day: 4,
+          periods: [7, 8],
+          location: "艺术厅B101",
+          instructor: "林清弦 教授",
+          remaining: 0,
+          capacity: 120,
+          waitlistRank: 4,
+          status: "none",
+          color: "amber"
+        },
+        {
+          id: "comp-photo",
+          group: "pool",
+          name: "计算摄影学",
+          code: "CS3065",
+          type: "专业选修",
+          credits: 3,
+          day: 1,
+          periods: [3, 4],
+          location: "媒体实验室305",
+          instructor: "顾言川 副教授",
+          remaining: 5,
+          capacity: 40,
+          waitlistRank: 0,
+          status: "none",
+          color: "rose"
+        },
+
+        // --- 初始已选课程 (3 courses on timetable from prompt) ---
+        {
+          id: "os-core",
+          group: "initial",
+          name: "操作系统",
+          code: "CS3011",
+          type: "专业必修",
+          credits: 4,
+          day: 1,
+          periods: [1, 2],
+          location: "理科楼201",
+          instructor: "王建国 教授",
+          remaining: 8,
+          capacity: 80,
+          waitlistRank: 0,
+          status: "enrolled",
+          color: "teal"
+        },
+        {
+          id: "compiler-core",
+          group: "initial",
+          name: "编译原理",
+          code: "CS3015",
+          type: "专业必修",
+          credits: 4,
+          day: 3,
+          periods: [3, 4],
+          location: "信息楼405",
+          instructor: "张敏华 教授",
+          remaining: 12,
+          capacity: 75,
+          waitlistRank: 0,
+          status: "enrolled",
+          color: "slate"
+        },
+        {
+          id: "cg-core",
+          group: "initial",
+          name: "计算机图形学",
+          code: "CS3051",
+          type: "专业选修",
+          credits: 3,
+          day: 5,
+          periods: [5, 6],
+          location: "实验楼102",
+          instructor: "刘思远 教授",
+          remaining: 9,
+          capacity: 60,
+          waitlistRank: 0,
+          status: "enrolled",
+          color: "sage"
+        }
+      ];
+
+      /* ========================================================================
+         Reactive Application State
+         ======================================================================== */
+      let courses = structuredClone(INITIAL_COURSES);
+      let searchQuery = "";
+      let activeTypeFilter = "all";
+      let hoveredCourseId = null;
+      let gridHoveredCourseId = null;
+      let openSwapDrawerId = null;
+      let lastAnimatedCourseId = null;
+      let justConfirmedId = null;
+      let displayedCreditVal = 18;
+      let creditAnimFrame = null;
+
+      // DOM References
+      const appEl = document.getElementById("app");
+      const searchInput = document.getElementById("searchInput");
+      const clearSearchBtn = document.getElementById("clearSearchBtn");
+      const searchKbdHint = document.getElementById("searchKbdHint");
+      const typeFilterBar = document.getElementById("typeFilterBar");
+      const courseListContainer = document.getElementById("courseListContainer");
+      const visibleCourseCount = document.getElementById("visibleCourseCount");
+      const calendarGrid = document.getElementById("calendarGrid");
+      const timetableFooter = document.getElementById("timetableFooter");
+      const toastStack = document.getElementById("toastStack");
+      const resetBtn = document.getElementById("resetBtn");
+
+      // Metric DOM References
+      const selectedCreditsNum = document.getElementById("selectedCreditsNum");
+      const remainingCreditsText = document.getElementById("remainingCreditsText");
+      const waitlistBadgePill = document.getElementById("waitlistBadgePill");
+      const ringConfirmed = document.getElementById("ringConfirmed");
+      const ringWaitlist = document.getElementById("ringWaitlist");
+      const ringPreview = document.getElementById("ringPreview");
+      const ringPercentLabel = document.getElementById("ringPercentLabel");
+      const barConfirmed = document.getElementById("barConfirmed");
+      const barWaitlist = document.getElementById("barWaitlist");
+      const barPreview = document.getElementById("barPreview");
+      const creditPreviewDelta = document.getElementById("creditPreviewDelta");
+      const gradProjectedLabel = document.getElementById("gradProjectedLabel");
+      const gradProjectedBar = document.getElementById("gradProjectedBar");
+
+      /* ========================================================================
+         Helper Computations
+         ======================================================================== */
+      function periodToGridRow(period) {
+        // Row 1 is header; Periods 1..4 -> Rows 2..5; Row 6 is Lunch; Periods 5..8 -> Rows 7..10
+        return period <= 4 ? period + 1 : period + 2;
+      }
+
+      function getEnrolledCredits() {
+        return BASE_PRACTICUM_CREDITS + courses
+          .filter(c => c.status === "enrolled")
+          .reduce((sum, c) => sum + c.credits, 0);
+      }
+
+      function getWaitlistedCredits() {
+        return courses
+          .filter(c => c.status === "waitlisted")
+          .reduce((sum, c) => sum + c.credits, 0);
+      }
+
+      function findConflictCourse(targetCourse) {
+        if (targetCourse.status === "enrolled") return null;
+        return courses.find(other =>
+          other.id !== targetCourse.id &&
+          other.status === "enrolled" &&
+          other.day === targetCourse.day &&
+          other.periods.some(p => targetCourse.periods.includes(p))
+        ) || null;
+      }
+
+      function formatSchedule(course) {
+        return `${DAY_LABELS[course.day]} ${course.periods[0]}-${course.periods[course.periods.length - 1]}节`;
+      }
+
+      /* ========================================================================
+         Smooth Number Counter Animation
+         ======================================================================== */
+      function animateCreditCounter(targetValue) {
+        if (creditAnimFrame) cancelAnimationFrame(creditAnimFrame);
+        const startValue = displayedCreditVal;
+        if (startValue === targetValue) {
+          selectedCreditsNum.textContent = String(targetValue);
+          return;
+        }
+        const startTime = performance.now();
+        const duration = 320;
+
+        function tick(now) {
+          const progress = Math.min(1, (now - startTime) / duration);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.round(startValue + (targetValue - startValue) * eased);
+          selectedCreditsNum.textContent = String(current);
+          if (progress < 1) {
+            creditAnimFrame = requestAnimationFrame(tick);
+          } else {
+            displayedCreditVal = targetValue;
+            selectedCreditsNum.textContent = String(targetValue);
+          }
+        }
+        creditAnimFrame = requestAnimationFrame(tick);
+      }
+
+      /* ========================================================================
+         Update Top Credit Metrics & Hover Preview Arc
+         ======================================================================== */
+      function renderMetrics() {
+        const enrolledCredits = getEnrolledCredits();
+        const waitlistedCredits = getWaitlistedCredits();
+        const remaining = Math.max(0, CREDIT_CAP - enrolledCredits);
+
+        animateCreditCounter(enrolledCredits);
+        remainingCreditsText.textContent = `剩余可选 ${remaining} 学分`;
+
+        // Graduation projection update
+        const projectedTotal = COMPLETED_CREDITS + enrolledCredits;
+        gradProjectedLabel.textContent = `含本学期预计 ${projectedTotal} / ${GRADUATION_TOTAL}`;
+        gradProjectedBar.style.width = `${Math.min(100 - (COMPLETED_CREDITS / GRADUATION_TOTAL) * 100, (enrolledCredits / GRADUATION_TOTAL) * 100).toFixed(2)}%`;
+
+        // Waitlist pill
+        if (waitlistedCredits > 0) {
+          waitlistBadgePill.style.display = "inline-block";
+          waitlistBadgePill.textContent = `候补 +${waitlistedCredits} 学分`;
+          waitlistBadgePill.style.background = "var(--accent-amber-soft)";
+          waitlistBadgePill.style.color = "var(--accent-amber)";
+        } else {
+          waitlistBadgePill.style.display = "none";
+        }
+
+        // Hover preview calculation
+        let previewCredits = 0;
+        let hoveredConflict = null;
+        if (hoveredCourseId) {
+          const hovered = courses.find(c => c.id === hoveredCourseId);
+          if (hovered && hovered.status === "none") {
+            hoveredConflict = findConflictCourse(hovered);
+            if (!hoveredConflict) {
+              previewCredits = hovered.credits;
+            }
+          }
+        }
+
+        // Preview delta tag
+        if (hoveredConflict) {
+          creditPreviewDelta.textContent = `与《${hoveredConflict.name}》冲突`;
+          creditPreviewDelta.className = "preview-delta-tag tabular visible conflict";
+        } else if (previewCredits > 0) {
+          const hovered = courses.find(c => c.id === hoveredCourseId);
+          const isWaitlistHover = hovered && hovered.remaining === 0;
+          creditPreviewDelta.textContent = isWaitlistHover
+            ? `候补预览 +${previewCredits} 学分`
+            : `选后 ${enrolledCredits + previewCredits} / ${CREDIT_CAP} 学分`;
+          creditPreviewDelta.className = "preview-delta-tag tabular visible";
+        } else {
+          creditPreviewDelta.className = "preview-delta-tag tabular";
+        }
+
+        // Ring percentages
+        const confirmedRatio = Math.min(1, enrolledCredits / CREDIT_CAP);
+        const waitlistRatio = Math.min(1, (enrolledCredits + waitlistedCredits) / CREDIT_CAP);
+        const previewRatio = Math.min(1, (enrolledCredits + waitlistedCredits + previewCredits) / CREDIT_CAP);
+
+        ringConfirmed.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1 - confirmedRatio));
+        ringWaitlist.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1 - waitlistRatio));
+        ringWaitlist.style.opacity = waitlistedCredits > 0 ? "1" : "0";
+        ringPreview.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1 - previewRatio));
+        ringPreview.style.opacity = previewCredits > 0 ? "1" : "0";
+
+        ringPercentLabel.textContent = `${Math.round(confirmedRatio * 100)}%`;
+
+        // Multi-segment linear bar
+        const confirmedPct = (enrolledCredits / CREDIT_CAP) * 100;
+        const waitlistPct = Math.min(100 - confirmedPct, (waitlistedCredits / CREDIT_CAP) * 100);
+        const previewPct = Math.min(100 - confirmedPct - waitlistPct, (previewCredits / CREDIT_CAP) * 100);
+
+        barConfirmed.style.width = `${confirmedPct.toFixed(2)}%`;
+        barWaitlist.style.width = `${waitlistPct.toFixed(2)}%`;
+        barPreview.style.width = `${previewPct.toFixed(2)}%`;
+      }
+
+      /* ========================================================================
+         Render Left Course Pool & Management List
+         ======================================================================== */
+      function matchesSearchAndFilter(course) {
+        if (activeTypeFilter !== "all" && course.type !== activeTypeFilter) {
+          return false;
+        }
+        if (!searchQuery) return true;
+        const q = searchQuery.toLowerCase();
+        const conflictWith = findConflictCourse(course);
+        const statusTags = [
+          course.status === "enrolled" ? "已选" : "待选",
+          course.status === "waitlisted" ? "候补中" : "",
+          course.remaining === 0 ? "已满 候补" : "",
+          conflictWith ? `时间冲突 冲突 ${conflictWith.name}` : ""
+        ].join(" ");
+        const hay = [
+          course.name,
+          course.code,
+          course.type,
+          course.location,
+          course.instructor,
+          DAY_LABELS[course.day],
+          formatSchedule(course),
+          statusTags
+        ].join(" ").toLowerCase();
+        return hay.includes(q);
+      }
+
+      function buildCourseCardHTML(course) {
+        const palette = PALETTES[course.color];
+        const conflictWith = findConflictCourse(course);
+        const enrolledCredits = getEnrolledCredits();
+        const exceedsCap = course.status === "none" && !conflictWith && course.remaining > 0 && (enrolledCredits + course.credits > CREDIT_CAP);
+        const isGridHovered = gridHoveredCourseId === course.id;
+
+        // Seat state
+        const isFull = course.remaining === 0 && course.status !== "enrolled";
+        const isTight = course.remaining > 0 && course.remaining <= 5;
+        const usedRatio = Math.min(100, Math.round(((course.capacity - course.remaining) / course.capacity) * 100));
+
+        let seatStatusHTML = "";
+        if (conflictWith) {
+          seatStatusHTML = `
+            <span class="conflict-inline-banner">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              与《${conflictWith.name}》冲突 · 余量 <span class="tabular">${course.remaining}/${course.capacity}</span>
+            </span>
+          `;
+        } else if (isFull) {
+          seatStatusHTML = `
+            <div class="seat-info">
+              <div class="seat-mini-bar"><div class="seat-mini-fill full" style="width: 100%"></div></div>
+              <span class="seat-tag full tabular">余量 0/${course.capacity} · 已满</span>
+            </div>
+          `;
+        } else {
+          seatStatusHTML = `
+            <div class="seat-info">
+              <div class="seat-mini-bar">
+                <div class="seat-mini-fill ${isTight ? "tight" : ""}" style="width: ${usedRatio}%"></div>
+              </div>
+              <span class="seat-tag ${isTight ? "tight" : ""} tabular">
+                余量 <span class="seat-num-val">${course.remaining}</span>/${course.capacity}${isTight ? " · 紧缺" : ""}
+              </span>
+            </div>
+          `;
+        }
+
+        // Action button
+        const isJustConfirmed = justConfirmedId === course.id;
+        let buttonHTML = "";
+        if (course.status === "enrolled") {
+          buttonHTML = `
+            <button type="button" class="course-btn btn-enrolled ${isJustConfirmed ? "just-confirmed" : ""}" data-action="drop" data-id="${course.id}">
+              <span class="label-rest">${isJustConfirmed ? "✓ 选课成功" : "✓ 已选 · 退课"}</span>
+              <span class="label-hover">退选该课</span>
+            </button>
+          `;
+        } else if (course.status === "waitlisted") {
+          buttonHTML = `
+            <button type="button" class="course-btn btn-waitlisted ${isJustConfirmed ? "just-confirmed" : ""}" data-action="cancel-waitlist" data-id="${course.id}">
+              <span class="label-rest tabular">${isJustConfirmed ? `✓ 已候补 #${course.waitlistRank}` : `候补中 #${course.waitlistRank}`}</span>
+              <span class="label-hover">取消候补</span>
+            </button>
+          `;
+        } else if (conflictWith) {
+          buttonHTML = `
+            <button type="button" class="course-btn btn-conflict" data-action="conflict" data-id="${course.id}">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              时间冲突
+            </button>
+          `;
+        } else if (isFull) {
+          buttonHTML = `
+            <button type="button" class="course-btn btn-waitlist" data-action="join-waitlist" data-id="${course.id}">
+              加入候补
+            </button>
+          `;
+        } else if (exceedsCap) {
+          buttonHTML = `
+            <button type="button" class="course-btn btn-cap" data-action="cap-blocked" data-id="${course.id}">
+              超学分上限
+            </button>
+          `;
+        } else {
+          buttonHTML = `
+            <button type="button" class="course-btn btn-select" data-action="enroll" data-id="${course.id}">
+              选课
+            </button>
+          `;
+        }
+
+        // Optional inline conflict resolution swap bar when user clicks a conflicting course
+        const swapDrawerHTML = (conflictWith && openSwapDrawerId === course.id)
+          ? `
+            <div class="conflict-swap-drawer">
+              <span>时段被《${conflictWith.name}》占用，是否直接替换？</span>
+              <button type="button" class="swap-confirm-btn" data-action="swap" data-id="${course.id}" data-drop-id="${conflictWith.id}">
+                退选并改选此课
+              </button>
+            </div>
+          `
+          : "";
+
+        return `
+          <article
+            class="course-card ${conflictWith ? "is-conflict" : ""} ${isGridHovered ? "grid-hovered" : ""}"
+            data-course-card="${course.id}"
+            style="--card-accent: ${palette.bar};"
+          >
+            <div class="course-top">
+              <div class="course-heading">
+                <div class="course-name-row">
+                  <h3 class="course-name">《${course.name}》</h3>
+                  <span class="credit-badge tabular">${course.credits} 学分</span>
+                  <span class="type-badge">${course.type}</span>
+                </div>
+                <div class="course-meta">
+                  <span class="meta-item tabular">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    ${formatSchedule(course)}
+                  </span>
+                  <span class="meta-item">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    ${course.location}
+                  </span>
+                  <span class="meta-item">${course.instructor}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="course-bottom">
+              ${seatStatusHTML}
+              ${buttonHTML}
+            </div>
+            ${swapDrawerHTML}
+          </article>
+        `;
+      }
+
+      function renderCourseList() {
+        const filtered = courses.filter(matchesSearchAndFilter);
+        visibleCourseCount.textContent = `${filtered.length} 门`;
+
+        if (filtered.length === 0) {
+          courseListContainer.innerHTML = `
+            <div class="empty-catalog">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </svg>
+              <div>未找到匹配的课程，请尝试其他关键词或切换课程类型。</div>
+            </div>
+          `;
+          return;
+        }
+
+        const poolCourses = filtered.filter(c => c.group === "pool");
+        const initialCourses = filtered.filter(c => c.group === "initial");
+
+        let html = "";
+        if (poolCourses.length > 0) {
+          html += `
+            <div class="section-divider">
+              <span>待选课程池</span>
+              <span class="tabular">${poolCourses.length} 门</span>
+            </div>
+            ${poolCourses.map(buildCourseCardHTML).join("")}
+          `;
+        }
+
+        if (initialCourses.length > 0) {
+          html += `
+            <div class="section-divider">
+              <span>本学期初始排课</span>
+              <span class="tabular">${initialCourses.length} 门</span>
+            </div>
+            ${initialCourses.map(buildCourseCardHTML).join("")}
+          `;
+        }
+
+        courseListContainer.innerHTML = html;
+      }
+
+      /* ========================================================================
+         Render Right Weekly Timetable Grid (Mon-Fri, Periods 1-8)
+         ======================================================================== */
+      function renderTimetable() {
+        const hovered = hoveredCourseId ? courses.find(c => c.id === hoveredCourseId) : null;
+        const hoveredIsPreviewable = hovered && hovered.status === "none";
+        const hoveredConflictWith = hoveredIsPreviewable ? findConflictCourse(hovered) : null;
+
+        let html = "";
+
+        // 1. Top Row Headers (Corner + Mon..Fri)
+        html += `<div class="day-col-header corner" style="grid-column: 1; grid-row: 1;">节次</div>`;
+        for (let day = 1; day <= 5; day++) {
+          let highlightClass = "";
+          if (hoveredIsPreviewable && hovered.day === day) {
+            highlightClass = hoveredConflictWith ? "highlight-conflict" : "highlight-preview";
+          }
+          html += `
+            <div class="day-col-header ${highlightClass}" style="grid-column: ${day + 1}; grid-row: 1;">
+              <span>${DAY_LABELS[day]}</span>
+            </div>
+          `;
+        }
+
+        // 2. Period Labels & Background Matrix Cells (Periods 1..8)
+        for (let period = 1; period <= 8; period++) {
+          const row = periodToGridRow(period);
+          const oddClass = period % 2 === 1 ? "odd-period" : "";
+          let periodHighlight = "";
+          if (hoveredIsPreviewable && hovered.periods.includes(period)) {
+            periodHighlight = hoveredConflictWith ? "highlight-conflict" : "highlight-preview";
+          }
+
+          html += `
+            <div class="period-cell ${oddClass} ${periodHighlight}" style="grid-column: 1; grid-row: ${row};">
+              <span class="period-num tabular">第 ${period} 节</span>
+              <span class="period-time tabular">${PERIOD_TIMES[period]}</span>
+            </div>
+          `;
+
+          for (let day = 1; day <= 5; day++) {
+            html += `<div class="grid-slot-bg ${oddClass}" style="grid-column: ${day + 1}; grid-row: ${row};"></div>`;
+          }
+        }
+
+        // 3. Midday Break Strip (Row 6)
+        html += `
+          <div class="lunch-divider">
+            <span>午间休息 · 12:00 – 14:00</span>
+          </div>
+        `;
+
+        // 4. Enrolled & Waitlisted Course Blocks
+        courses
+          .filter(c => c.status === "enrolled" || c.status === "waitlisted")
+          .forEach(course => {
+            // If currently overshadowed by a hover conflict overlay, we render the conflict overlay in step 5
+            if (hoveredConflictWith && hoveredConflictWith.id === course.id) {
+              return;
+            }
+
+            const palette = PALETTES[course.color];
+            const startRow = periodToGridRow(course.periods[0]);
+            const endRow = periodToGridRow(course.periods[course.periods.length - 1]) + 1;
+            const col = course.day + 1;
+            const isFocused = hoveredCourseId === course.id;
+            const justAnimated = lastAnimatedCourseId === course.id;
+
+            if (course.status === "enrolled") {
+              html += `
+                <div
+                  class="tt-block enrolled-block ${isFocused ? "focused" : ""} ${justAnimated ? "anim-lock-in" : ""}"
+                  data-tt-course="${course.id}"
+                  style="
+                    grid-column: ${col};
+                    grid-row: ${startRow} / ${endRow};
+                    --b-bg: ${palette.bg};
+                    --b-border: ${palette.border};
+                    --b-bar: ${palette.bar};
+                    --b-ink: ${palette.ink};
+                    --b-sub: ${palette.sub};
+                  "
+                >
+                  <div class="tt-block-top">
+                    <div class="tt-course-title">${course.name}</div>
+                    <button type="button" class="tt-quick-drop" data-tt-drop="${course.id}" title="退选该课程">退课</button>
+                  </div>
+                  <div class="tt-block-foot">
+                    <span>${course.location}</span>
+                    <span class="tabular">${course.credits} 学分</span>
+                  </div>
+                </div>
+              `;
+            } else if (course.status === "waitlisted") {
+              html += `
+                <div
+                  class="tt-block waitlist-block ${isFocused ? "focused" : ""} ${justAnimated ? "anim-lock-in" : ""}"
+                  data-tt-course="${course.id}"
+                  style="grid-column: ${col}; grid-row: ${startRow} / ${endRow};"
+                >
+                  <div class="tt-block-top">
+                    <div class="tt-course-title">${course.name}</div>
+                    <button type="button" class="tt-quick-drop" data-tt-drop="${course.id}" title="取消候补">取消</button>
+                  </div>
+                  <div class="tt-block-foot" style="color: var(--c-amber-sub);">
+                    <span class="tabular">候补队列 #${course.waitlistRank}</span>
+                    <span class="tabular">${course.credits} 学分</span>
+                  </div>
+                </div>
+              `;
+            }
+          });
+
+        // 5. Real-Time Hover Ghost Preview OR Conflict Alert Block
+        if (hoveredIsPreviewable) {
+          const startRow = periodToGridRow(hovered.periods[0]);
+          const endRow = periodToGridRow(hovered.periods[hovered.periods.length - 1]) + 1;
+          const col = hovered.day + 1;
+
+          if (hoveredConflictWith) {
+            html += `
+              <div
+                class="tt-block conflict-overlay-block"
+                id="activeConflictBlock"
+                style="grid-column: ${col}; grid-row: ${startRow} / ${endRow};"
+              >
+                <div class="conflict-stack">
+                  <span class="conflict-alert-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                      <line x1="12" y1="9" x2="12" y2="13"></line>
+                      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    时段冲突 · ${formatSchedule(hovered)}
+                  </span>
+                  <div class="conflict-versus">
+                    <div class="conflict-line-old">已选：《${hoveredConflictWith.name}》(${hoveredConflictWith.location})</div>
+                    <div class="conflict-line-new">待选：《${hovered.name}》(${hovered.credits}学分)</div>
+                  </div>
+                </div>
+              </div>
+            `;
+          } else {
+            const palette = hovered.remaining === 0 ? PALETTES.amber : PALETTES[hovered.color];
+            const previewTag = hovered.remaining === 0 ? "候补预览占位" : "预览占位";
+            html += `
+              <div
+                class="tt-block preview-block"
+                style="
+                  grid-column: ${col};
+                  grid-row: ${startRow} / ${endRow};
+                  --b-bg: ${palette.bg};
+                  --b-border: ${palette.border};
+                  --b-bar: ${palette.bar};
+                  --b-ink: ${palette.ink};
+                  --b-sub: ${palette.sub};
+                "
+              >
+                <div class="tt-block-top">
+                  <div class="tt-course-title">${hovered.name}</div>
+                  <span class="tt-status-chip" style="color: ${palette.bar};">${previewTag}</span>
+                </div>
+                <div class="tt-block-foot">
+                  <span>${hovered.location}</span>
+                  <span class="tabular">+${hovered.credits} 学分</span>
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        calendarGrid.innerHTML = html;
+
+        // 6. Timetable Bottom Live Telemetry Bar
+        const enrolledList = courses.filter(c => c.status === "enrolled");
+        const waitlistList = courses.filter(c => c.status === "waitlisted");
+        const totalPeriods = enrolledList.reduce((s, c) => s + c.periods.length, 0);
+        const summaryLeft = `排课统计：已选定 ${enrolledList.length} 门（${totalPeriods} 节/周）${waitlistList.length ? ` · 候补队列 ${waitlistList.length} 门` : ""}`;
+
+        let statusRightHTML = `<span class="tt-telemetry-status ok">✓ 当前课表无时段冲突</span>`;
+        if (hoveredIsPreviewable) {
+          if (hoveredConflictWith) {
+            statusRightHTML = `<span class="tt-telemetry-status conflict">⚡ 冲突警示：${formatSchedule(hovered)} 已被《${hoveredConflictWith.name}》占用</span>`;
+          } else if (hovered.remaining === 0) {
+            statusRightHTML = `<span class="tt-telemetry-status preview" style="color: var(--accent-amber);">✦ 候补预览：${formatSchedule(hovered)}（${hovered.location}）时段空闲，可加入候补</span>`;
+          } else {
+            statusRightHTML = `<span class="tt-telemetry-status preview">✦ 预览就绪：${formatSchedule(hovered)}（${hovered.location}）无冲突，点击即可选入</span>`;
+          }
+        }
+
+        timetableFooter.innerHTML = `
+          <span class="tabular">${summaryLeft}</span>
+          ${statusRightHTML}
+        `;
+
+        lastAnimatedCourseId = null;
+      }
+
+      function renderAll() {
+        renderMetrics();
+        renderCourseList();
+        renderTimetable();
+      }
+
+      /* ========================================================================
+         Toast Notification with Undo Support
+         ======================================================================== */
+      function showToast(message, undoCallback = null) {
+        const toast = document.createElement("div");
+        toast.className = "toast-item";
+        toast.innerHTML = `
+          <span class="toast-msg">${message}</span>
+          ${undoCallback ? `<button type="button" class="toast-undo-btn">撤销</button>` : ""}
+        `;
+        toastStack.appendChild(toast);
+
+        let removed = false;
+        const dismiss = () => {
+          if (removed) return;
+          removed = true;
+          toast.classList.add("leaving");
+          setTimeout(() => toast.remove(), 190);
+        };
+
+        if (undoCallback) {
+          const undoBtn = toast.querySelector(".toast-undo-btn");
+          undoBtn.addEventListener("click", () => {
+            undoCallback();
+            dismiss();
+          });
+        }
+
+        setTimeout(dismiss, 4000);
+      }
+
+      /* ========================================================================
+         Course Mutation Actions (Enroll / Drop / Waitlist / Swap)
+         ======================================================================== */
+      function enrollCourse(courseId) {
+        const course = courses.find(c => c.id === courseId);
+        if (!course || course.status !== "none") return;
+
+        const conflict = findConflictCourse(course);
+        if (conflict) {
+          triggerConflictFeedback(courseId);
+          return;
+        }
+
+        if (getEnrolledCredits() + course.credits > CREDIT_CAP) {
+          showToast(`超出本学期 ${CREDIT_CAP} 学分选课上限，请先退选部分课程`);
+          return;
+        }
+
+        if (course.remaining <= 0) return;
+
+        course.status = "enrolled";
+        course.remaining -= 1;
+        openSwapDrawerId = null;
+        lastAnimatedCourseId = course.id;
+        justConfirmedId = course.id;
+
+        renderAll();
+        popSeatNumber(course.id);
+
+        showToast(`已选入《${course.name}》（+${course.credits} 学分）`, () => {
+          course.status = "none";
+          course.remaining += 1;
+          justConfirmedId = null;
+          renderAll();
+        });
+      }
+
+      function dropCourse(courseId) {
+        const course = courses.find(c => c.id === courseId);
+        if (!course || course.status !== "enrolled") return;
+
+        const blockEl = calendarGrid.querySelector(`[data-tt-course="${courseId}"]`);
+        const finalizeDrop = () => {
+          course.status = "none";
+          course.remaining = Math.min(course.capacity, course.remaining + 1);
+          openSwapDrawerId = null;
+          renderAll();
+          popSeatNumber(course.id);
+
+          showToast(`已退选《${course.name}》（-${course.credits} 学分）`, () => {
+            if (!findConflictCourse(course) && getEnrolledCredits() + course.credits <= CREDIT_CAP) {
+              course.status = "enrolled";
+              course.remaining = Math.max(0, course.remaining - 1);
+              lastAnimatedCourseId = course.id;
+              renderAll();
+            }
+          });
+        };
+
+        if (blockEl) {
+          blockEl.classList.add("anim-exit-out");
+          setTimeout(finalizeDrop, 175);
+        } else {
+          finalizeDrop();
+        }
+      }
+
+      function joinWaitlist(courseId) {
+        const course = courses.find(c => c.id === courseId);
+        if (!course || course.status !== "none") return;
+
+        const conflict = findConflictCourse(course);
+        if (conflict) {
+          triggerConflictFeedback(courseId);
+          return;
+        }
+
+        course.status = "waitlisted";
+        if (!course.waitlistRank) course.waitlistRank = 1;
+        lastAnimatedCourseId = course.id;
+        justConfirmedId = course.id;
+
+        renderAll();
+        showToast(`已加入《${course.name}》候补队列（顺位 #${course.waitlistRank}）`, () => {
+          course.status = "none";
+          justConfirmedId = null;
+          renderAll();
+        });
+      }
+
+      function cancelWaitlist(courseId) {
+        const course = courses.find(c => c.id === courseId);
+        if (!course || course.status !== "waitlisted") return;
+
+        const blockEl = calendarGrid.querySelector(`[data-tt-course="${courseId}"]`);
+        const finalizeCancel = () => {
+          course.status = "none";
+          justConfirmedId = null;
+          renderAll();
+          showToast(`已取消《${course.name}》候补申请`, () => {
+            if (!findConflictCourse(course)) {
+              course.status = "waitlisted";
+              lastAnimatedCourseId = course.id;
+              renderAll();
+            }
+          });
+        };
+
+        if (blockEl) {
+          blockEl.classList.add("anim-exit-out");
+          setTimeout(finalizeCancel, 175);
+        } else {
+          finalizeCancel();
+        }
+      }
+
+      function swapConflictingCourse(newCourseId, dropCourseId) {
+        const toEnroll = courses.find(c => c.id === newCourseId);
+        const toDrop = courses.find(c => c.id === dropCourseId);
+        if (!toEnroll || !toDrop) return;
+
+        const nextCredits = getEnrolledCredits() - toDrop.credits + toEnroll.credits;
+        if (nextCredits > CREDIT_CAP) {
+          showToast(`替换后将达到 ${nextCredits} 学分，超出 ${CREDIT_CAP} 学分上限`);
+          return;
+        }
+
+        const hadSeats = toEnroll.remaining > 0;
+        toDrop.status = "none";
+        toDrop.remaining = Math.min(toDrop.capacity, toDrop.remaining + 1);
+
+        if (hadSeats) {
+          toEnroll.status = "enrolled";
+          toEnroll.remaining -= 1;
+        } else {
+          toEnroll.status = "waitlisted";
+        }
+
+        openSwapDrawerId = null;
+        lastAnimatedCourseId = toEnroll.id;
+        justConfirmedId = toEnroll.id;
+        renderAll();
+
+        showToast(`已退选《${toDrop.name}》并改选《${toEnroll.name}》`, () => {
+          toEnroll.status = "none";
+          if (hadSeats) toEnroll.remaining = Math.min(toEnroll.capacity, toEnroll.remaining + 1);
+          toDrop.status = "enrolled";
+          toDrop.remaining = Math.max(0, toDrop.remaining - 1);
+          justConfirmedId = null;
+          lastAnimatedCourseId = toDrop.id;
+          renderAll();
+        });
+      }
+
+      function triggerConflictFeedback(courseId) {
+        openSwapDrawerId = openSwapDrawerId === courseId ? null : courseId;
+        renderCourseList();
+
+        const cardEl = courseListContainer.querySelector(`[data-course-card="${courseId}"]`);
+        if (cardEl) {
+          cardEl.classList.remove("anim-shake");
+          void cardEl.offsetWidth;
+          cardEl.classList.add("anim-shake");
+        }
+
+        const conflictBlock = document.getElementById("activeConflictBlock");
+        if (conflictBlock) {
+          conflictBlock.classList.remove("anim-shake");
+          void conflictBlock.offsetWidth;
+          conflictBlock.classList.add("anim-shake");
+        }
+      }
+
+      function popSeatNumber(courseId) {
+        const cardEl = courseListContainer.querySelector(`[data-course-card="${courseId}"]`);
+        const numSpan = cardEl?.querySelector(".seat-num-val");
+        if (numSpan) {
+          numSpan.classList.remove("anim-num-pop");
+          void numSpan.offsetWidth;
+          numSpan.classList.add("anim-num-pop");
+        }
+      }
+
+      /* ========================================================================
+         Event Listeners & Hover Coordination
+         ======================================================================== */
+      // Course list hover -> real-time timetable preview
+      courseListContainer.addEventListener("mouseover", (e) => {
+        const card = e.target.closest("[data-course-card]");
+        const nextId = card ? card.getAttribute("data-course-card") : null;
+        if (nextId !== hoveredCourseId) {
+          hoveredCourseId = nextId;
+          renderMetrics();
+          renderTimetable();
+        }
+      });
+
+      courseListContainer.addEventListener("mouseout", (e) => {
+        const confirmedBtn = e.target.closest(".just-confirmed");
+        if (confirmedBtn && !confirmedBtn.contains(e.relatedTarget)) {
+          justConfirmedId = null;
+          confirmedBtn.classList.remove("just-confirmed");
+          const id = confirmedBtn.getAttribute("data-id");
+          const course = courses.find(c => c.id === id);
+          const restLabel = confirmedBtn.querySelector(".label-rest");
+          if (course && restLabel) {
+            restLabel.textContent = course.status === "enrolled"
+              ? "✓ 已选 · 退课"
+              : `候补中 #${course.waitlistRank}`;
+          }
+        }
+      });
+
+      courseListContainer.addEventListener("mouseleave", () => {
+        justConfirmedId = null;
+        if (hoveredCourseId !== null) {
+          hoveredCourseId = null;
+          renderMetrics();
+          renderTimetable();
+        }
+      });
+
+      // Course list button actions
+      courseListContainer.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-action]");
+        if (!btn) return;
+
+        const action = btn.getAttribute("data-action");
+        const id = btn.getAttribute("data-id");
+
+        if (action === "enroll") enrollCourse(id);
+        else if (action === "drop") dropCourse(id);
+        else if (action === "join-waitlist") joinWaitlist(id);
+        else if (action === "cancel-waitlist") cancelWaitlist(id);
+        else if (action === "conflict") triggerConflictFeedback(id);
+        else if (action === "swap") {
+          const dropId = btn.getAttribute("data-drop-id");
+          swapConflictingCourse(id, dropId);
+        }
+      });
+
+      // Timetable hover -> highlight corresponding card in left catalog
+      calendarGrid.addEventListener("mouseover", (e) => {
+        const block = e.target.closest("[data-tt-course]");
+        const nextId = block ? block.getAttribute("data-tt-course") : null;
+        if (nextId !== gridHoveredCourseId) {
+          gridHoveredCourseId = nextId;
+          document.querySelectorAll("[data-course-card]").forEach(el => {
+            el.classList.toggle("grid-hovered", el.getAttribute("data-course-card") === gridHoveredCourseId);
+          });
+        }
+      });
+
+      calendarGrid.addEventListener("mouseleave", () => {
+        if (gridHoveredCourseId !== null) {
+          gridHoveredCourseId = null;
+          document.querySelectorAll(".course-card.grid-hovered").forEach(el => {
+            el.classList.remove("grid-hovered");
+          });
+        }
+      });
+
+      // Timetable direct drop / cancel button & click-to-locate card
+      calendarGrid.addEventListener("click", (e) => {
+        const dropBtn = e.target.closest("[data-tt-drop]");
+        if (dropBtn) {
+          e.stopPropagation();
+          const id = dropBtn.getAttribute("data-tt-drop");
+          const course = courses.find(c => c.id === id);
+          if (!course) return;
+          if (course.status === "enrolled") dropCourse(id);
+          else if (course.status === "waitlisted") cancelWaitlist(id);
+          return;
+        }
+
+        const block = e.target.closest("[data-tt-course]");
+        if (block) {
+          const id = block.getAttribute("data-tt-course");
+          const cardEl = courseListContainer.querySelector(`[data-course-card="${id}"]`);
+          if (cardEl) {
+            cardEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+        }
+      });
+
+      // Search filtering
+      searchInput.addEventListener("input", () => {
+        searchQuery = searchInput.value.trim();
+        clearSearchBtn.classList.toggle("show", searchQuery.length > 0);
+        searchKbdHint.style.display = searchQuery.length > 0 ? "none" : "inline-block";
+        renderCourseList();
+      });
+
+      clearSearchBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        searchQuery = "";
+        clearSearchBtn.classList.remove("show");
+        searchKbdHint.style.display = "inline-block";
+        searchInput.focus();
+        renderCourseList();
+      });
+
+      // Keyboard shortcut `/` or `Cmd/Ctrl + K` to focus search
+      window.addEventListener("keydown", (e) => {
+        if ((e.key === "/" && document.activeElement !== searchInput) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k")) {
+          e.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        } else if (e.key === "Escape" && document.activeElement === searchInput) {
+          searchInput.blur();
+        }
+      });
+
+      // Course Type Filter Pills
+      typeFilterBar.addEventListener("click", (e) => {
+        const pill = e.target.closest("[data-filter]");
+        if (!pill) return;
+        activeTypeFilter = pill.getAttribute("data-filter");
+        typeFilterBar.querySelectorAll(".filter-pill").forEach(btn => {
+          btn.classList.toggle("active", btn === pill);
+        });
+        renderCourseList();
+      });
+
+      // Reset Demo State
+      resetBtn.addEventListener("click", () => {
+        courses = structuredClone(INITIAL_COURSES);
+        hoveredCourseId = null;
+        gridHoveredCourseId = null;
+        openSwapDrawerId = null;
+        searchQuery = "";
+        searchInput.value = "";
+        clearSearchBtn.classList.remove("show");
+        searchKbdHint.style.display = "inline-block";
+        activeTypeFilter = "all";
+        typeFilterBar.querySelectorAll(".filter-pill").forEach(btn => {
+          btn.classList.toggle("active", btn.getAttribute("data-filter") === "all");
+        });
+        renderAll();
+        showToast("已恢复至初始选课数据（已选 18 / 26 学分）");
+      });
+
+      // Light / Dark Mode Switcher
+      function applyTheme(theme) {
+        appEl.setAttribute("data-theme", theme);
+        document.querySelectorAll("[data-set-theme]").forEach(btn => {
+          btn.classList.toggle("active", btn.getAttribute("data-set-theme") === theme);
+        });
+        try {
+          localStorage.setItem("course_workbench_theme_2026", theme);
+        } catch (_) {}
+      }
+
+      document.querySelectorAll("[data-set-theme]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          applyTheme(btn.getAttribute("data-set-theme"));
+        });
+      });
+
+      // Restore saved or OS-preferred theme
+      try {
+        const saved = localStorage.getItem("course_workbench_theme_2026");
+        if (saved === "dark" || saved === "light") {
+          applyTheme(saved);
+        } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          applyTheme("dark");
+        }
+      } catch (_) {}
+
+      // Initial Render
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

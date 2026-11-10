@@ -1,0 +1,38 @@
+# 依赖、构建产物、环境
+node_modules/
+dist/
+out/
+.venv/
+venv/
+.models/
+__pycache__/
+*.pyc
+tile_cache/
+.cache/
+
+# 渲染出来的成片、音频、模型权重
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.wav
+*.mp3
+*.onnx
+
+# 字体和压缩包（别人的东西，不放）
+*.ttf
+*.otf
+*.woff
+*.woff2
+*.zip
+
+# 密钥、环境文件、日志
+.env
+.env.*
+*.pem
+*.key
+*.log
+
+# 系统文件
+.DS_Store
+Thumbs.db

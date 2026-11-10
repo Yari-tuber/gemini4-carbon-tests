@@ -1,0 +1,48 @@
+[
+  {
+    "id": "L1",
+    "text": "写不完的配置与排错，像引力把创造压向地面。",
+    "asr": "斜不完的配置与排错，向引力把创造压向地面。",
+    "voice": "zh-CN-YunxiNeural",
+    "rate": "+4%",
+    "pitch": "-2Hz"
+  },
+  {
+    "id": "L2",
+    "text": "直到一句纯粹的意图，点燃反重力引擎。",
+    "voice": "zh-CN-YunxiNeural",
+    "rate": "+4%",
+    "pitch": "-2Hz"
+  },
+  {
+    "id": "L3",
+    "text": "繁重任务轻盈升空，多智能体在四条轨道并行编排。",
+    "asr": "凡众任务轻盈生空，多致能体在四条轨道并行编排。",
+    "voice": "zh-CN-YunxiNeural",
+    "rate": "+4%",
+    "pitch": "-2Hz"
+  },
+  {
+    "id": "L4",
+    "text": "每一次推演与修改，严丝合缝卡入秩序。",
+    "asr": "每一次推言与修改，严丝和奉卡入秩序。",
+    "voice": "zh-CN-YunxiNeural",
+    "rate": "+4%",
+    "pitch": "-2Hz"
+  },
+  {
+    "id": "L5",
+    "text": "预判你的下一行脉络，让整座代码库悄然失重。",
+    "asr": "预判你的下一行脉络，让整座代码库巧然失众。",
+    "voice": "zh-CN-YunxiNeural",
+    "rate": "+4%",
+    "pitch": "-2Hz"
+  },
+  {
+    "id": "L6",
+    "text": "反重力。当工程摆脱引力，思想自由升空。",
+    "voice": "zh-CN-YunxiNeural",
+    "rate": "+0%",
+    "pitch": "-2Hz"
+  }
+]

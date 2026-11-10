@@ -1,0 +1,3023 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AETHER Pro — 听见空间的形状 | 旗舰空间音频头戴式耳机</title>
+  <style>
+    :root {
+      --bg-obsidian: #000000;
+      --bg-elevated: #09090c;
+      --bg-card: rgba(18, 18, 23, 0.72);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text-primary: #f5f5f7;
+      --text-secondary: #86868b;
+      --text-muted: #56565c;
+      --accent-titanium: #d4c5b1;
+      --accent-champagne: #e8dccb;
+      --accent-blue: #2997ff;
+      --nav-height: 52px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-obsidian);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: var(--bg-obsidian);
+      overflow-x: hidden;
+      selection-background-color: rgba(212, 197, 177, 0.25);
+    }
+
+    ::selection {
+      background: rgba(212, 197, 177, 0.28);
+      color: #ffffff;
+    }
+
+    /* =========================================
+       1. FROSTED GLASS STICKY NAVIGATION BAR
+       ========================================= */
+    .global-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      z-index: 1000;
+      background: rgba(6, 6, 8, 0.72);
+      backdrop-filter: saturate(180%) blur(22px);
+      -webkit-backdrop-filter: saturate(180%) blur(22px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background 0.35s ease, border-color 0.35s ease;
+    }
+
+    .nav-inner {
+      max-width: 1120px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: conic-gradient(from 140deg, #f5f5f7, #8e8579, #252529, #d4c5b1, #f5f5f7);
+      position: relative;
+      box-shadow: 0 0 12px rgba(212, 197, 177, 0.28);
+    }
+
+    .brand-mark::after {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      background: #060608;
+    }
+
+    .brand-pro-badge {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(212, 197, 177, 0.4);
+      color: var(--accent-titanium);
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(245, 245, 247, 0.76);
+      letter-spacing: 0.01em;
+      transition: color 0.25s ease;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #ffffff;
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -17px;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--accent-titanium), transparent);
+    }
+
+    .nav-cta {
+      padding: 6px 15px !important;
+      border-radius: 980px;
+      background: linear-gradient(180deg, #3a9fff 0%, #0071e3 100%);
+      color: #ffffff !important;
+      font-weight: 500 !important;
+      font-size: 12.5px !important;
+      box-shadow: 0 2px 12px rgba(0, 113, 227, 0.38);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
+    }
+
+    .nav-cta:hover {
+      filter: brightness(1.08);
+      transform: translateY(-0.5px);
+      box-shadow: 0 4px 18px rgba(41, 151, 255, 0.55);
+    }
+
+    .nav-progress-bar {
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      height: 1.5px;
+      width: 0%;
+      background: linear-gradient(90deg, #6e665c, #e8dccb, #2997ff);
+      transition: width 0.08s linear;
+    }
+
+    /* =========================================
+       2. HERO SECTION (首屏视觉与果味排版)
+       ========================================= */
+    .hero-section {
+      position: relative;
+      min-height: 100vh;
+      padding: calc(var(--nav-height) + 64px) 24px 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 75% 52% at 50% 22%, rgba(212, 197, 177, 0.10) 0%, rgba(45, 52, 72, 0.05) 45%, rgba(0, 0, 0, 0) 78%),
+        radial-gradient(circle at 50% 85%, rgba(28, 30, 38, 0.35) 0%, rgba(0, 0, 0, 1) 72%);
+    }
+
+    #hero-wave-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.78;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 980px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(212, 197, 177, 0.25);
+      color: var(--accent-titanium);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-titanium);
+      box-shadow: 0 0 10px var(--accent-titanium);
+    }
+
+    .hero-title {
+      font-size: clamp(3.8rem, 11vw, 9.2rem);
+      font-weight: 700;
+      line-height: 0.96;
+      letter-spacing: -0.048em;
+      background: linear-gradient(180deg, #ffffff 0%, #f2efe9 36%, #b8b0a4 74%, #67635e 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 18px;
+      filter: drop-shadow(0 18px 48px rgba(0, 0, 0, 0.85));
+    }
+
+    .hero-headline-cn {
+      font-size: clamp(1.85rem, 4.2vw, 3.45rem);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      background: linear-gradient(95deg, #d7cab7 0%, #ffffff 48%, #9a98a1 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 24px;
+    }
+
+    .hero-lead {
+      max-width: 660px;
+      font-size: clamp(1rem, 1.5vw, 1.22rem);
+      line-height: 1.65;
+      color: var(--text-secondary);
+      font-weight: 400;
+      letter-spacing: -0.005em;
+      margin-bottom: 40px;
+    }
+
+    .hero-lead strong {
+      color: #e5e5ea;
+      font-weight: 500;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 58px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: 980px;
+      background: linear-gradient(180deg, #f5efe6 0%, #cbbba4 100%);
+      color: #09090b;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 8px 30px rgba(212, 197, 177, 0.22);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.025);
+      box-shadow: 0 10px 38px rgba(212, 197, 177, 0.36);
+    }
+
+    .btn-glass {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 980px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text-primary);
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      backdrop-filter: blur(12px);
+      transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+      cursor: pointer;
+    }
+
+    .btn-glass:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.32);
+      transform: scale(1.02);
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(140px, 1fr));
+      gap: 1px;
+      width: 100%;
+      max-width: 860px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 22px;
+      overflow: hidden;
+      backdrop-filter: blur(18px);
+    }
+
+    .metric-cell {
+      background: rgba(8, 8, 11, 0.88);
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .metric-val {
+      font-size: clamp(1.45rem, 2.3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      background: linear-gradient(180deg, #ffffff 0%, #cfc4b4 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
+    }
+
+    .scroll-cue {
+      margin-top: 44px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.82;
+    }
+
+    .scroll-mouse {
+      width: 22px;
+      height: 36px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      position: relative;
+    }
+
+    .scroll-wheel {
+      width: 3px;
+      height: 7px;
+      border-radius: 2px;
+      background: var(--accent-titanium);
+      position: absolute;
+      left: 50%;
+      top: 7px;
+      transform: translateX(-50%);
+      animation: scrollPulse 1.8s infinite cubic-bezier(0.45, 0, 0.2, 1);
+    }
+
+    @keyframes scrollPulse {
+      0% { opacity: 1; transform: translate(-50%, 0); }
+      75% { opacity: 0.15; transform: translate(-50%, 13px); }
+      100% { opacity: 0; transform: translate(-50%, 15px); }
+    }
+
+    /* =========================================
+       3. STICKY 3D EXPLOSION SECTION (滚轮驱动拆解)
+       ========================================= */
+    .explosion-scroll-track {
+      position: relative;
+      height: 540vh;
+      background: #000000;
+    }
+
+    .explosion-sticky-viewport {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 48%, rgba(36, 38, 48, 0.44) 0%, rgba(10, 10, 14, 0.82) 48%, #000000 85%);
+    }
+
+    #explosion-canvas-container {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Dynamic SVG Leader Lines Overlay */
+    #callout-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* Sticky Top Section Header */
+    .explosion-hud-top {
+      position: absolute;
+      top: calc(var(--nav-height) + 22px);
+      left: 36px;
+      right: 36px;
+      z-index: 4;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .explosion-section-tag {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .explosion-kicker {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent-titanium);
+    }
+
+    .explosion-heading {
+      font-size: clamp(1.3rem, 2.2vw, 1.85rem);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      background: linear-gradient(180deg, #ffffff 0%, #a6a6ad 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Quick Mini Colorway Pills inside Sticky Stage */
+    .hud-mini-swatches {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 14px;
+      border-radius: 980px;
+      background: rgba(16, 16, 20, 0.72);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(16px);
+    }
+
+    .hud-swatch-label {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      margin-right: 4px;
+    }
+
+    .mini-swatch-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      position: relative;
+    }
+
+    .mini-swatch-btn[data-finish="natural"] {
+      background: linear-gradient(135deg, #dfD5c5, #8c8273);
+    }
+    .mini-swatch-btn[data-finish="spaceblack"] {
+      background: linear-gradient(135deg, #3a3c42, #0d0e11);
+    }
+    .mini-swatch-btn[data-finish="starlight"] {
+      background: linear-gradient(135deg, #ffffff, #aeb1b8);
+    }
+
+    .mini-swatch-btn.active {
+      transform: scale(1.2);
+      border-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(212, 197, 177, 0.28);
+    }
+
+    /* Technical Callout Spec Card (Right / Side Floating Panel) */
+    .spec-callout-panel {
+      position: absolute;
+      right: clamp(24px, 5vw, 76px);
+      top: 50%;
+      transform: translateY(-50%);
+      width: min(370px, calc(100vw - 48px));
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .callout-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      transform: translateY(-50%) translateX(18px);
+      opacity: 0;
+      padding: 26px 28px;
+      border-radius: 24px;
+      background: rgba(12, 12, 16, 0.76);
+      border: 1px solid rgba(212, 197, 177, 0.22);
+      backdrop-filter: saturate(180%) blur(26px);
+      -webkit-backdrop-filter: saturate(180%) blur(26px);
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.72),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1), transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .callout-card.active {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    .callout-stage-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-titanium);
+      margin-bottom: 10px;
+    }
+
+    .callout-stage-pill::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-titanium);
+      box-shadow: 0 0 8px var(--accent-titanium);
+    }
+
+    .callout-title {
+      font-size: 23px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .callout-desc {
+      font-size: 13.5px;
+      line-height: 1.62;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+    }
+
+    .callout-metrics-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .callout-mini-stat strong {
+      display: block;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--accent-champagne);
+      margin-bottom: 2px;
+    }
+
+    .callout-mini-stat span {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    /* Bottom Explosion Milestone Scrubber Bar */
+    .explosion-hud-bottom {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 980px;
+      background: rgba(14, 14, 18, 0.78);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+    }
+
+    .stage-jump-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 980px;
+      cursor: pointer;
+      transition: color 0.25s ease, background 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .stage-jump-btn:hover {
+      color: #ffffff;
+    }
+
+    .stage-jump-btn.active {
+      background: rgba(212, 197, 177, 0.16);
+      color: var(--accent-champagne);
+      box-shadow: inset 0 0 0 1px rgba(212, 197, 177, 0.34);
+    }
+
+    .explode-pct-readout {
+      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-titanium);
+      padding: 0 12px 0 8px;
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      margin-left: 4px;
+    }
+
+    /* =========================================
+       4. H3 SILICON & ACOUSTIC BENTO GRID
+       ========================================= */
+    .bento-section,
+    .finishes-section,
+    .specs-section {
+      scroll-margin-top: 68px;
+    }
+
+    .bento-section {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 120px 24px 80px;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 64px;
+    }
+
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent-titanium);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(2.1rem, 4.5vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -0.032em;
+      line-height: 1.12;
+      background: linear-gradient(180deg, #ffffff 0%, #9e9ea6 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+    }
+
+    .bento-card {
+      border-radius: 28px;
+      padding: 36px;
+      background: linear-gradient(160deg, rgba(24, 24, 30, 0.85) 0%, rgba(10, 10, 14, 0.95) 100%);
+      border: 1px solid var(--border-subtle);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 290px;
+    }
+
+    .bento-card.span-7 { grid-column: span 7; }
+    .bento-card.span-5 { grid-column: span 5; }
+    .bento-card.span-4 { grid-column: span 4; min-height: 250px; }
+
+    .bento-chip-visual {
+      width: 88px;
+      height: 88px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #25262c 0%, #0b0b0e 60%, #1f1d1a 100%);
+      border: 1px solid rgba(212, 197, 177, 0.42);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 14px 36px rgba(0, 0, 0, 0.75),
+        0 0 32px rgba(212, 197, 177, 0.14);
+      margin-bottom: 24px;
+    }
+
+    .bento-chip-visual strong {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      background: linear-gradient(180deg, #ffffff, #cbbba4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .bento-chip-visual span {
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      color: var(--accent-titanium);
+    }
+
+    .bento-card h3 {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .bento-card p {
+      font-size: 14.5px;
+      line-height: 1.62;
+      color: var(--text-secondary);
+    }
+
+    .bento-big-num {
+      font-size: clamp(2.4rem, 4vw, 3.4rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      background: linear-gradient(95deg, #ffffff 0%, #d4c5b1 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 12px;
+    }
+
+    /* =========================================
+       5. INTERACTIVE 3D COLORWAY STUDIO (配色切换体验区)
+       ========================================= */
+    .finishes-section {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 90px 24px 100px;
+    }
+
+    .studio-showcase {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 28px;
+      background: linear-gradient(180deg, rgba(18, 18, 24, 0.86) 0%, rgba(8, 8, 11, 0.96) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: 32px;
+      padding: 28px;
+      align-items: center;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7);
+    }
+
+    .studio-viewport-wrap {
+      position: relative;
+      height: 500px;
+      border-radius: 24px;
+      background: radial-gradient(circle at 50% 45%, rgba(46, 48, 58, 0.45) 0%, rgba(8, 8, 11, 0.95) 75%);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      cursor: grab;
+    }
+
+    .studio-viewport-wrap:active {
+      cursor: grabbing;
+    }
+
+    #studio-canvas-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    .studio-viewport-toolbar {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .studio-drag-hint {
+      font-size: 12px;
+      color: rgba(245, 245, 247, 0.62);
+      padding: 6px 12px;
+      border-radius: 980px;
+      background: rgba(0, 0, 0, 0.48);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .studio-explode-toggle {
+      pointer-events: auto;
+      padding: 7px 14px;
+      border-radius: 980px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .studio-explode-toggle:hover,
+    .studio-explode-toggle.active {
+      background: rgba(212, 197, 177, 0.18);
+      border-color: var(--accent-titanium);
+      color: var(--accent-champagne);
+    }
+
+    .studio-controls {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .finish-badge {
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-titanium);
+    }
+
+    .finish-active-name {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.028em;
+      color: #ffffff;
+      margin-top: 4px;
+    }
+
+    .finish-active-desc {
+      font-size: 14.5px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      min-height: 68px;
+    }
+
+    .swatch-selector-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .swatch-option-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-align: left;
+      color: var(--text-primary);
+      font-family: inherit;
+    }
+
+    .swatch-option-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .swatch-option-card.active {
+      background: rgba(212, 197, 177, 0.09);
+      border-color: rgba(212, 197, 177, 0.55);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .swatch-orb {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.35), 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .swatch-orb.natural {
+      background: radial-gradient(circle at 32% 28%, #ede3d4 0%, #b5aa99 52%, #5e574d 100%);
+    }
+    .swatch-orb.spaceblack {
+      background: radial-gradient(circle at 32% 28%, #52555e 0%, #1d1e23 52%, #070709 100%);
+    }
+    .swatch-orb.starlight {
+      background: radial-gradient(circle at 32% 28%, #ffffff 0%, #dcdde2 54%, #8d9099 100%);
+    }
+
+    .swatch-meta strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .swatch-meta span {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .studio-purchase-bar {
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .price-block .price-main {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .price-block .price-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* =========================================
+       6. TECHNICAL COMPARISON SPEC TABLE (对比规格表)
+       ========================================= */
+    .specs-section {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 120px;
+    }
+
+    .spec-table-wrap {
+      border-radius: 28px;
+      background: rgba(14, 14, 18, 0.82);
+      border: 1px solid var(--border-subtle);
+      overflow-x: auto;
+      backdrop-filter: blur(20px);
+    }
+
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+    }
+
+    .spec-table th,
+    .spec-table td {
+      padding: 22px 26px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      vertical-align: top;
+    }
+
+    .spec-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .spec-table thead th {
+      padding-top: 30px;
+      padding-bottom: 26px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .spec-col-label {
+      width: 22%;
+      color: var(--text-secondary);
+      font-size: 13.5px;
+      font-weight: 500;
+    }
+
+    .spec-col-pro {
+      width: 42%;
+      background: linear-gradient(180deg, rgba(212, 197, 177, 0.06) 0%, rgba(212, 197, 177, 0.015) 100%);
+    }
+
+    .spec-col-std {
+      width: 36%;
+      color: rgba(245, 245, 247, 0.75);
+    }
+
+    .model-head-tag {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-titanium);
+      border: 1px solid rgba(212, 197, 177, 0.35);
+      padding: 2px 8px;
+      border-radius: 980px;
+      margin-bottom: 8px;
+    }
+
+    .model-head-name {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .model-head-price {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    .spec-pro-val {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .spec-sub-note {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* =========================================
+       7. FOOTER & PRE-ORDER MODAL
+       ========================================= */
+    .site-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 44px 24px 60px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      line-height: 1.8;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(18px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .preorder-modal {
+      width: 100%;
+      max-width: 480px;
+      border-radius: 28px;
+      background: #101015;
+      border: 1px solid rgba(212, 197, 177, 0.28);
+      padding: 34px;
+      box-shadow: 0 32px 90px rgba(0, 0, 0, 0.85);
+      transform: scale(0.95) translateY(10px);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .modal-backdrop.open .preorder-modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .modal-close {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .modal-summary-box {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .modal-success-banner {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(48, 209, 88, 0.12);
+      border: 1px solid rgba(48, 209, 88, 0.35);
+      color: #6ce38b;
+      font-size: 13.5px;
+      margin-bottom: 16px;
+    }
+
+    /* Responsive Adaptations */
+    @media (max-width: 960px) {
+      .hero-metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .bento-card.span-7,
+      .bento-card.span-5,
+      .bento-card.span-4 {
+        grid-column: span 12;
+      }
+      .studio-showcase {
+        grid-template-columns: 1fr;
+      }
+      .studio-viewport-wrap {
+        height: 390px;
+      }
+      .spec-callout-panel {
+        top: auto;
+        bottom: 88px;
+        right: 20px;
+        left: 20px;
+        width: auto;
+        transform: none;
+      }
+      .callout-card,
+      .callout-card.active {
+        position: absolute;
+        bottom: 0;
+        top: auto;
+        transform: translateY(0);
+      }
+      .explosion-hud-top {
+        left: 20px;
+        right: 20px;
+      }
+      .nav-links {
+        gap: 16px;
+      }
+    }
+  </style>
+
+  <!-- Import Map for Three.js via jsDelivr CDN -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- 1. FROSTED GLASS STICKY NAVBAR -->
+  <header class="global-nav">
+    <div class="nav-inner">
+      <a href="#overview" class="nav-brand">
+        <span class="brand-mark"></span>
+        <span>AETHER</span>
+        <span class="brand-pro-badge">Pro</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#overview" data-nav="overview" class="active">概览</a></li>
+        <li><a href="#acoustic-architecture" data-nav="acoustic">声学架构</a></li>
+        <li><a id="nav-chip-link" data-nav="chip">芯片</a></li>
+        <li><a href="#finishes" class="nav-cta" id="nav-preorder-btn">立即预购</a></li>
+      </ul>
+    </div>
+    <div class="nav-progress-bar" id="nav-progress-bar"></div>
+  </header>
+
+  <!-- 2. HERO SECTION (首屏视觉与果味排版) -->
+  <section class="hero-section" id="overview">
+    <canvas id="hero-wave-canvas"></canvas>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        <span>Flagship Spatial Audio · 五级航空钛金属架构</span>
+      </div>
+
+      <h1 class="hero-title">AETHER Pro</h1>
+      <h2 class="hero-headline-cn">听见空间的形状。</h2>
+
+      <p class="hero-lead">
+        由整块<strong>五级航空钛金属</strong>精密铣削成型，搭载全新 <strong>40mm 镀钛铍金属球顶振膜</strong>与<strong>双核 H3 超算音频芯片</strong>。每一处声学细节，皆为重塑头戴式参考级聆听而生。
+      </p>
+
+      <div class="hero-actions">
+        <a href="#acoustic-architecture" class="btn-primary">探索 3D 精密拆解 ↓</a>
+        <a href="#finishes" class="btn-glass">切换钛金属配色</a>
+      </div>
+
+      <div class="hero-metrics">
+        <div class="metric-cell">
+          <span class="metric-val">40mm</span>
+          <span class="metric-label">镀钛铍金属球顶振膜</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-val">96,000次/秒</span>
+          <span class="metric-label">双核 H3 实时降噪运算</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-val">52 dB</span>
+          <span class="metric-label">自适应全频段深度降噪</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-val">48 小时</span>
+          <span class="metric-label">开启空间音频超长续航</span>
+        </div>
+      </div>
+
+      <div class="scroll-cue">
+        <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+        <span>向下滚动滚轮 · 驱动 3D 声学爆炸拆解</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. STICKY SCROLL 3D EXPLOSION SECTION (滚轮驱动 3D 爆炸拆解) -->
+  <section class="explosion-scroll-track" id="acoustic-architecture">
+    <div class="explosion-sticky-viewport">
+      <!-- Three.js Main Explosion Canvas -->
+      <div id="explosion-canvas-container"></div>
+
+      <!-- Precision Dynamic SVG Callout Leader Lines -->
+      <svg id="callout-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="leaderLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#f5efe6" stop-opacity="0.95" />
+            <stop offset="65%" stop-color="#d4c5b1" stop-opacity="0.7" />
+            <stop offset="100%" stop-color="#d4c5b1" stop-opacity="0.18" />
+          </linearGradient>
+          <filter id="glowDot" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <g id="svg-leader-group" opacity="0">
+          <!-- Secondary Subtle Branch Line -->
+          <polyline id="leader-poly-secondary" fill="none" stroke="rgba(212, 197, 177, 0.36)" stroke-width="1" stroke-dasharray="3 3" points="0,0 0,0 0,0" />
+          <circle id="leader-dot-secondary" cx="0" cy="0" r="3" fill="#d4c5b1" opacity="0.75" />
+
+          <!-- Primary Precision Elbow Line -->
+          <polyline id="leader-poly-primary" fill="none" stroke="url(#leaderLineGrad)" stroke-width="1.4" points="0,0 0,0 0,0" />
+          <circle id="leader-ring-primary" cx="0" cy="0" r="9" fill="rgba(212,197,177,0.12)" stroke="#e8dccb" stroke-width="1" />
+          <circle id="leader-dot-primary" cx="0" cy="0" r="3.6" fill="#ffffff" filter="url(#glowDot)" />
+        </g>
+      </svg>
+
+      <!-- Top HUD Overlay -->
+      <div class="explosion-hud-top">
+        <div class="explosion-section-tag">
+          <span class="explosion-kicker">Scroll-Driven Acoustic Disassembly</span>
+          <span class="explosion-heading">精密声学架构 · 逐层轴向拆解</span>
+        </div>
+
+        <div class="hud-mini-swatches" title="实时预览配色">
+          <span class="hud-swatch-label">实时材质</span>
+          <button class="mini-swatch-btn active" data-finish="natural" aria-label="钛金属原色"></button>
+          <button class="mini-swatch-btn" data-finish="spaceblack" aria-label="深空黑"></button>
+          <button class="mini-swatch-btn" data-finish="starlight" aria-label="星光银"></button>
+        </div>
+      </div>
+
+      <!-- Right Floating Technical Parameter Cards (0% / 30% / 60% / 90%) -->
+      <div class="spec-callout-panel" id="callout-card-anchor">
+        <!-- Stage 0: 0% Overview -->
+        <article class="callout-card active" data-stage="0">
+          <div class="callout-stage-pill">0% · 整机精密闭环形态</div>
+          <h3 class="callout-title">五级航空钛金属一体机身</h3>
+          <p class="callout-desc">
+            穹顶减压织物头梁、CNC 万向钛轴与阳极氧化声学外罩严丝合缝耦合，构成零谐振的封闭式旗舰声学基准。向下滚动滚轮，逐层透视内部精密构造。
+          </p>
+          <div class="callout-metrics-row">
+            <div class="callout-mini-stat">
+              <strong>Grade-5</strong>
+              <span>航空级锻造钛合金外罩</span>
+            </div>
+            <div class="callout-mini-stat">
+              <strong>328 g</strong>
+              <span>人体工学零重力配重</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Stage 1: ~30% Gimbal & Cushion -->
+        <article class="callout-card" data-stage="1">
+          <div class="callout-stage-pill">30% · 悬挂与声学密封层</div>
+          <h3 class="callout-title">CNC 钛金属万向转轴 &amp; 零压记忆海绵耳罩</h3>
+          <p class="callout-desc">
+            独立双轴伸缩套筒内置微型阻尼轴承，自动顺应不同头型轮廓；磁吸快拆慢回弹声学海绵耳罩外覆透气微孔编织网布，构建 38dB 物理声学密封舱。
+          </p>
+          <div class="callout-metrics-row">
+            <div class="callout-mini-stat">
+              <strong>±28°</strong>
+              <span>双轴独立自适应贴合角</span>
+            </div>
+            <div class="callout-mini-stat">
+              <strong>磁吸阵列</strong>
+              <span>0.3 秒无损瞬时拆换耳罩</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Stage 2: ~60% 40mm Beryllium/Titanium Diaphragm -->
+        <article class="callout-card" data-stage="2">
+          <div class="callout-stage-pill">60% · 旗舰换能声学核心</div>
+          <h3 class="callout-title">40mm 镀钛铍金属振膜 &amp; 独立导相声学腔体</h3>
+          <p class="callout-desc">
+            超刚性轻量化铍金属球顶融合纳米镀钛折环悬边，由双钕磁铁环形磁路驱动，配合一体压铸铝合金导相后腔，即使在澎湃满载音量下失真亦低于 0.04%。
+          </p>
+          <div class="callout-metrics-row">
+            <div class="callout-mini-stat">
+              <strong>4Hz – 48kHz</strong>
+              <span>录音棚母带级超宽频响</span>
+            </div>
+            <div class="callout-mini-stat">
+              <strong>&lt; 0.04%</strong>
+              <span>全频段总谐波失真 (THD)</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Stage 3: ~90% Dual-Core H3 Chip -->
+        <article class="callout-card" data-stage="3">
+          <div class="callout-stage-pill">90% · 超算空间音频大脑</div>
+          <h3 class="callout-title">双核 H3 超算音频芯片</h3>
+          <p class="callout-desc">
+            定制 SiP 系统级封装搭载 10 核神经网络音频引擎，驱动 8 颗波束成形麦克风以每秒 96,000 次频率实时抵消环境噪音，并实现亚毫秒级动态头部追踪。
+          </p>
+          <div class="callout-metrics-row">
+            <div class="callout-mini-stat">
+              <strong>96,000 次/秒</strong>
+              <span>自适应反向声波实时计算</span>
+            </div>
+            <div class="callout-mini-stat">
+              <strong>1.8 ms</strong>
+              <span>六轴陀螺仪空间追踪延迟</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Bottom Interactive Stage Scrubber -->
+      <div class="explosion-hud-bottom">
+        <button class="stage-jump-btn active" data-jump="0.0">0% 整机合一</button>
+        <button class="stage-jump-btn" data-jump="0.33">30% 钛轴与耳罩</button>
+        <button class="stage-jump-btn" data-jump="0.63">60% 镀钛铍振膜</button>
+        <button class="stage-jump-btn" data-jump="0.93">90% H3 超算芯片</button>
+        <span class="explode-pct-readout" id="explode-pct-readout">00%</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. CHIP & COMPUTATIONAL AUDIO BENTO HIGHLIGHTS -->
+  <section class="bento-section" id="chip-section">
+    <div class="section-header">
+      <div class="section-eyebrow">Computational Audio Silicon</div>
+      <h2 class="section-title">算力注入声学，<br />让每一缕空气振动皆可编程。</h2>
+      <p class="section-subtitle">
+        左右耳罩各自独立搭载一颗定制 H3 超算音频芯片，通过高带宽超低延迟双耳同步链路协同工作，实时重塑三维球形声场。
+      </p>
+    </div>
+
+    <div class="bento-grid">
+      <div class="bento-card span-7">
+        <div class="bento-chip-visual">
+          <strong>H3</strong>
+          <span>DUAL DSP</span>
+        </div>
+        <div>
+          <h3>双核 H3 超算芯片 · 10 核神经网络音频引擎</h3>
+          <p>
+            采用 3 纳米制程工艺，晶体管密度提升 2.4 倍。能够根据耳垫实时声学密封度、佩戴角度与外部风噪谱，每秒执行 96,000 次 24-bit 浮点声场补偿与混合主动降噪运算。
+          </p>
+        </div>
+      </div>
+
+      <div class="bento-card span-5">
+        <div class="bento-big-num">24-bit / 192kHz</div>
+        <div>
+          <h3>USB-C 纯数字零损直连</h3>
+          <p>
+            内置录音棚级高动态 DAC 阵列，支持 USB-C 原生无损音频输入与超低延迟空间混音监听，动态范围高达 126dB。
+          </p>
+        </div>
+      </div>
+
+      <div class="bento-card span-4">
+        <div class="bento-big-num">360°</div>
+        <div>
+          <h3>个性化耳廓声场建模</h3>
+          <p>结合六轴微机电陀螺仪与动态头部追踪，无论你如何转身，交响乐团始终锚定于正前方舞台中央。</p>
+        </div>
+      </div>
+
+      <div class="bento-card span-4">
+        <div class="bento-big-num">8 麦克风</div>
+        <div>
+          <h3>自适应通透模式 Pro</h3>
+          <p>自然保留人声对话清晰度的同时，以每秒数万次响应速度瞬时压制施工噪音与刺耳鸣笛。</p>
+        </div>
+      </div>
+
+      <div class="bento-card span-4">
+        <div class="bento-big-num">5 分钟</div>
+        <div>
+          <h3>极速闪充 · 畅听 5 小时</h3>
+          <p>新一代高能量密度硅碳负极电池模组，单次满电可连续享受长达 48 小时主动降噪与空间音频。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. REAL-TIME 3D COLORWAY SWITCHER STUDIO (底部配色切换体验区) -->
+  <section class="finishes-section" id="finishes">
+    <div class="section-header">
+      <div class="section-eyebrow">Three Signature Titanium Finishes</div>
+      <h2 class="section-title">三款旗舰钛金属配色，<br />实时触手可及。</h2>
+      <p class="section-subtitle">
+        点击下方配色方案，实时改变全站 3D 耳机模型的金属外罩、阳极转轴、穹顶织物与声学耳罩材质；拖拽模型可 360° 自由鉴赏细节。
+      </p>
+    </div>
+
+    <div class="studio-showcase">
+      <div class="studio-viewport-wrap" id="studio-drag-area">
+        <div id="studio-canvas-container"></div>
+        <div class="studio-viewport-toolbar">
+          <span class="studio-drag-hint">↔ 按住拖拽 360° 旋转鉴赏</span>
+          <button class="studio-explode-toggle" id="studio-explode-btn">切换微拆解透视</button>
+        </div>
+      </div>
+
+      <div class="studio-controls">
+        <div>
+          <div class="finish-badge">AETHER Pro · 实时材质渲染</div>
+          <h3 class="finish-active-name" id="finish-name">钛金属原色</h3>
+        </div>
+
+        <p class="finish-active-desc" id="finish-desc">
+          保留五级航空钛金属经微米级拉丝与喷砂后的温润原生金属光泽，搭配暖曜灰透气穹顶网布与磁吸声学耳罩，尽显精密机械本色。
+        </p>
+
+        <div class="swatch-selector-list">
+          <button class="swatch-option-card active" data-finish="natural">
+            <span class="swatch-orb natural"></span>
+            <span class="swatch-meta">
+              <strong>钛金属原色 · Natural Titanium</strong>
+              <span>温润拉丝原钛外罩 · 暖灰声学织物耳罩</span>
+            </span>
+          </button>
+
+          <button class="swatch-option-card" data-finish="spaceblack">
+            <span class="swatch-orb spaceblack"></span>
+            <span class="swatch-meta">
+              <strong>深空黑 · Space Black</strong>
+              <span>类钻碳 DLC 暗曜黑镀层 · 碳黑声学耳罩</span>
+            </span>
+          </button>
+
+          <button class="swatch-option-card" data-finish="starlight">
+            <span class="swatch-orb starlight"></span>
+            <span class="swatch-meta">
+              <strong>星光银 · Starlight Silver</strong>
+              <span>高光喷砂铂银外罩 · 云雾银灰声学耳罩</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="studio-purchase-bar">
+          <div class="price-block">
+            <div class="price-main">RMB 4,999</div>
+            <div class="price-sub">或 RMB 208/月 (24 期免息) · 免费激光镌刻</div>
+          </div>
+          <button class="btn-primary" id="open-preorder-modal">立即预购</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. COMPARISON SPECIFICATION TABLE (对比规格表) -->
+  <section class="specs-section" id="specs">
+    <div class="section-header">
+      <div class="section-eyebrow">Technical Specifications</div>
+      <h2 class="section-title">巅峰声学规格对比</h2>
+      <p class="section-subtitle">全方位超越上一代参考级标准，从振膜材质到神经算力实现代际跃迁。</p>
+    </div>
+
+    <div class="spec-table-wrap">
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th class="spec-col-label">核心技术维度</th>
+            <th class="spec-col-pro">
+              <span class="model-head-tag">全新旗舰</span>
+              <div class="model-head-name">AETHER Pro</div>
+              <div class="model-head-price">RMB 4,999</div>
+            </th>
+            <th class="spec-col-std">
+              <div class="model-head-name" style="color: #c7c7cc;">AETHER Studio (前代)</div>
+              <div class="model-head-price">RMB 3,699</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="spec-col-label">机身与转轴材质</td>
+            <td class="spec-col-pro">
+              <div class="spec-pro-val">五级航空钛金属一体外罩 + CNC 钛金属万向转轴</div>
+              <div class="spec-sub-note">可选钛金属原色 / 深空黑 (DLC 镀层) / 星光银</div>
+            </td>
+            <td class="spec-col-std">
+              <div>阳极氧化铝合金外罩 + 不锈钢套筒</div>
+              <div class="spec-sub-note">常规喷砂铝合金表面处理</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="spec-col-label">声学换能单元</td>
+            <td class="spec-col-pro">
+              <div class="spec-pro-val">定制 40mm 镀钛铍金属球顶振膜</div>
+              <div class="spec-sub-note">双钕磁铁环形磁路 + 一体压铸铝合金独立导相腔体 (THD &lt; 0.04%)</div>
+            </td>
+            <td class="spec-col-std">
+              <div>40mm 复合生物纤维动圈单元</div>
+              <div class="spec-sub-note">单磁路驱动结构 (THD &lt; 0.18%)</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="spec-col-label">计算音频芯片</td>
+            <td class="spec-col-pro">
+              <div class="spec-pro-val">双核 H3 超算音频芯片 (双耳独立搭载)</div>
+              <div class="spec-sub-note">10 核神经网络引擎 · 每秒 96,000 次自适应实时声场与降噪运算</div>
+            </td>
+            <td class="spec-col-std">
+              <div>单核 H1 音频处理芯片</div>
+              <div class="spec-sub-note">每秒 24,000 次主动降噪采样计算</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="spec-col-label">主动降噪与通透</td>
+            <td class="spec-col-pro">
+              <div class="spec-pro-val">最高 52dB 混合自适应深度降噪</div>
+              <div class="spec-sub-note">8 颗高信噪比波束成形麦克风 + 骨传导语音拾取传感器</div>
+            </td>
+            <td class="spec-col-std">
+              <div>最高 38dB 主动降噪</div>
+              <div class="spec-sub-note">6 颗常规驻极体麦克风</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="spec-col-label">频响与无损传输</td>
+            <td class="spec-col-pro">
+              <div class="spec-pro-val">4Hz – 48kHz · 支持 USB-C 24-bit/192kHz 原生无损</div>
+              <div class="spec-sub-note">蓝牙 5.4 Ultra-Link 超宽带无线传输 + 内置独立参考级 DAC</div>
+            </td>
+            <td class="spec-col-std">
+              <div>16Hz – 22kHz · AAC / SBC 无线编码</div>
+              <div class="spec-sub-note">需转接线进行模拟信号输入</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="spec-col-label">续航与重量</td>
+            <td class="spec-col-pro">
+              <div class="spec-pro-val">最长 48 小时续航 · 整机仅重 328g</div>
+              <div class="spec-sub-note">闪充 5 分钟畅听 5 小时 · 标配磁吸休眠纤薄智能保护套</div>
+            </td>
+            <td class="spec-col-std">
+              <div>最长 24 小时续航 · 整机重 386g</div>
+              <div class="spec-sub-note">充电 10 分钟播放约 2 小时</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 7. FOOTER -->
+  <footer class="site-footer">
+    <p>AETHER Audio Lab · 旗舰空间音频声学工程概念官网演示 · 基于 WebGL / Three.js 实时物理材质渲染</p>
+    <p>* 页面所示 52dB 降噪深度、96,000 次/秒算力及 48 小时续航数据均源于 AETHER 虚构声学实验室基准测试环境。</p>
+  </footer>
+
+  <!-- PRE-ORDER CONFIRMATION MODAL -->
+  <div class="modal-backdrop" id="preorder-modal-backdrop">
+    <div class="preorder-modal">
+      <div class="modal-header">
+        <div>
+          <div class="finish-badge">AETHER Store 旗舰预购</div>
+          <h3 style="font-size: 24px; margin-top: 4px;">确认您的 AETHER Pro</h3>
+        </div>
+        <button class="modal-close" id="close-preorder-modal" aria-label="关闭">×</button>
+      </div>
+
+      <div class="modal-summary-box">
+        <div><strong>所选配色：</strong><span id="modal-selected-finish">钛金属原色 (Natural Titanium)</span></div>
+        <div><strong>声学硬件：</strong>40mm 镀钛铍振膜 + 双核 H3 超算芯片</div>
+        <div><strong>包装清单：</strong>AETHER Pro 主机、磁吸声学智能休眠套、编织 USB-C 无损音频线</div>
+        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between;">
+          <span>预购总计</span>
+          <strong style="color: var(--accent-champagne); font-size: 17px;">RMB 4,999</strong>
+        </div>
+      </div>
+
+      <div class="modal-success-banner" id="modal-success-msg">
+        ✓ 预约成功！您的专属「<span id="modal-confirm-finish">钛金属原色</span>」AETHER Pro 首发席位已锁定。
+      </div>
+
+      <button class="btn-primary" style="width: 100%; justify-content: center;" id="confirm-preorder-btn">
+        锁定首发席位 · 免息预购
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================================
+       THREE.JS 3D PROCEDURAL MODEL & INTERACTION
+       ========================================= -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+    /* ----------------------------------------------------
+       1. HERO AMBIENT SPATIAL SOUNDWAVE CANVAS (2D)
+       ---------------------------------------------------- */
+    (function initHeroWaves() {
+      const canvas = document.getElementById('hero-wave-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w = 0, h = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+      let heroVisible = true;
+
+      function resize() {
+        w = canvas.clientWidth;
+        h = canvas.clientHeight;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      const obs = new IntersectionObserver((entries) => {
+        heroVisible = entries[0].isIntersecting;
+      });
+      obs.observe(canvas);
+
+      function draw(t) {
+        requestAnimationFrame(draw);
+        if (!heroVisible) return;
+        ctx.clearRect(0, 0, w, h);
+        const cx = w * 0.5;
+        const cy = h * 0.44;
+        const time = t * 0.0008;
+
+        for (let i = 0; i < 6; i++) {
+          const baseR = 130 + i * 78 + Math.sin(time * 1.4 + i * 0.7) * 10;
+          const alpha = 0.085 - i * 0.012;
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, baseR * 1.35, baseR * 0.62, 0, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(212, 197, 177, ${Math.max(0.01, alpha)})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+      requestAnimationFrame(draw);
+    })();
+
+    /* ----------------------------------------------------
+       2. COLORWAY DEFINITIONS (钛金属原色 / 深空黑 / 星光银)
+       ---------------------------------------------------- */
+    const FINISH_THEMES = {
+      natural: {
+        name: '钛金属原色',
+        fullLabel: '钛金属原色 (Natural Titanium)',
+        desc: '保留五级航空钛金属经微米级拉丝与喷砂后的温润原生金属光泽，搭配暖曜灰透气穹顶网布与磁吸声学耳罩，尽显精密机械本色。',
+        shellColor: new THREE.Color('#c2b7a6'),
+        shellMetalness: 0.88,
+        shellRoughness: 0.23,
+        shellEnvIntensity: 1.0,
+        gimbalColor: new THREE.Color('#d8cebe'),
+        gimbalRoughness: 0.15,
+        cushionColor: new THREE.Color('#262320'),
+        canopyColor: new THREE.Color('#211e1c'),
+        frameSleeveColor: new THREE.Color('#34302c'),
+        baffleColor: new THREE.Color('#252321'),
+        chamberColor: new THREE.Color('#6e685f'),
+        rimLightColor: new THREE.Color('#f5e5cf')
+      },
+      spaceblack: {
+        name: '深空黑',
+        fullLabel: '深空黑 (Space Black)',
+        desc: '采用高硬度类钻碳 (DLC) 物理气相沉积暗曜黑镀层，深邃哑光金属质感与碳黑慢回弹声学耳罩融为一体，低调中蕴藏锋芒。',
+        shellColor: new THREE.Color('#14161d'),
+        shellMetalness: 0.62,
+        shellRoughness: 0.30,
+        shellEnvIntensity: 0.45,
+        gimbalColor: new THREE.Color('#23262e'),
+        gimbalRoughness: 0.20,
+        cushionColor: new THREE.Color('#0c0d10'),
+        canopyColor: new THREE.Color('#0b0c0f'),
+        frameSleeveColor: new THREE.Color('#14151a'),
+        baffleColor: new THREE.Color('#111216'),
+        chamberColor: new THREE.Color('#20232b'),
+        rimLightColor: new THREE.Color('#8ea8d6')
+      },
+      starlight: {
+        name: '星光银',
+        fullLabel: '星光银 (Starlight Silver)',
+        desc: '高纯度喷砂铂金银阳极氧化钛金属外罩，折射纯净柔和的丝绸金属光泽，配以云雾银灰编织声学耳罩，轻盈且极具未来感。',
+        shellColor: new THREE.Color('#e6e7ec'),
+        shellMetalness: 0.91,
+        shellRoughness: 0.19,
+        shellEnvIntensity: 1.12,
+        gimbalColor: new THREE.Color('#f5f6f8'),
+        gimbalRoughness: 0.12,
+        cushionColor: new THREE.Color('#94969e'),
+        canopyColor: new THREE.Color('#83858e'),
+        frameSleeveColor: new THREE.Color('#bcbec6'),
+        baffleColor: new THREE.Color('#36383f'),
+        chamberColor: new THREE.Color('#a4a7b0'),
+        rimLightColor: new THREE.Color('#ffffff')
+      }
+    };
+
+    let activeFinishKey = 'natural';
+
+    /* ----------------------------------------------------
+       3. PROCEDURAL TEXTURES & SQUIRCLE GEOMETRY BUILDERS
+       ---------------------------------------------------- */
+    function createBrushedMetalTexture() {
+      const c = document.createElement('canvas');
+      c.width = 256;
+      c.height = 256;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#808080';
+      ctx.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 2400; i++) {
+        const y = Math.random() * 256;
+        const x = Math.random() * 256;
+        const len = 14 + Math.random() * 48;
+        const v = 112 + Math.floor(Math.random() * 34);
+        ctx.strokeStyle = `rgba(${v},${v},${v},0.22)`;
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + len, y + (Math.random() - 0.5) * 1.5);
+        ctx.stroke();
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(2, 2);
+      return tex;
+    }
+
+    function createFabricWeaveTexture() {
+      const c = document.createElement('canvas');
+      c.width = 128;
+      c.height = 128;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#707070';
+      ctx.fillRect(0, 0, 128, 128);
+      for (let y = 0; y < 128; y += 4) {
+        for (let x = 0; x < 128; x += 4) {
+          const odd = ((x + y) / 4) % 2 === 0;
+          ctx.fillStyle = odd ? '#969696' : '#525252';
+          ctx.fillRect(x, y, 3, 3);
+        }
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(14, 14);
+      return tex;
+    }
+
+    function createPCBTracesTextures() {
+      const c = document.createElement('canvas');
+      c.width = 512;
+      c.height = 512;
+      const ctx = c.getContext('2d');
+
+      const ec = document.createElement('canvas');
+      ec.width = 512;
+      ec.height = 512;
+      const ectx = ec.getContext('2d');
+
+      ctx.fillStyle = '#07090c';
+      ctx.fillRect(0, 0, 512, 512);
+      ectx.fillStyle = '#000000';
+      ectx.fillRect(0, 0, 512, 512);
+
+      for (let i = 0; i < 32; i++) {
+        const angle = (i / 32) * Math.PI * 2;
+        const r1 = 92;
+        const r2 = 236;
+        [ctx, ectx].forEach((g, idx) => {
+          g.strokeStyle = idx === 0 ? '#cfa866' : '#ffdfa0';
+          g.lineWidth = idx === 0 ? 2.4 : 2.0;
+          g.beginPath();
+          g.moveTo(256 + Math.cos(angle) * r1, 256 + Math.sin(angle) * r1);
+          g.lineTo(256 + Math.cos(angle + 0.055) * 168, 256 + Math.sin(angle + 0.055) * 168);
+          g.lineTo(256 + Math.cos(angle) * r2, 256 + Math.sin(angle) * r2);
+          g.stroke();
+
+          g.fillStyle = idx === 0 ? '#e6c582' : '#ffe6b3';
+          g.beginPath();
+          g.arc(256 + Math.cos(angle) * r2, 256 + Math.sin(angle) * r2, 4.5, 0, Math.PI * 2);
+          g.fill();
+        });
+      }
+
+      const map = new THREE.CanvasTexture(c);
+      map.colorSpace = THREE.SRGBColorSpace;
+      const emissiveMap = new THREE.CanvasTexture(ec);
+      emissiveMap.colorSpace = THREE.SRGBColorSpace;
+      return { map, emissiveMap };
+    }
+
+    function createH3DieTextures() {
+      const c = document.createElement('canvas');
+      c.width = 512;
+      c.height = 512;
+      const ctx = c.getContext('2d');
+
+      const ec = document.createElement('canvas');
+      ec.width = 512;
+      ec.height = 512;
+      const ectx = ec.getContext('2d');
+
+      // Mirror-polished dark obsidian silicon die face
+      const grad = ctx.createLinearGradient(0, 0, 512, 512);
+      grad.addColorStop(0, '#1c1e26');
+      grad.addColorStop(0.5, '#0c0d12');
+      grad.addColorStop(1, '#201e1c');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 512);
+
+      ectx.fillStyle = '#000000';
+      ectx.fillRect(0, 0, 512, 512);
+
+      // Precision laser-etched frame + upright H3 typography
+      [ctx, ectx].forEach((g, idx) => {
+        g.strokeStyle = idx === 0 ? '#dfd0ba' : '#ffe4ba';
+        g.lineWidth = 10;
+        g.strokeRect(28, 28, 456, 456);
+
+        g.strokeStyle = idx === 0 ? 'rgba(223,208,186,0.32)' : 'rgba(255,228,186,0.35)';
+        g.lineWidth = 3;
+        g.strokeRect(52, 52, 408, 408);
+
+        g.fillStyle = idx === 0 ? '#f7efe2' : '#ffebd0';
+        g.font = '700 176px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.fillText('H3', 256, 224);
+
+        g.fillStyle = idx === 0 ? '#c8b89e' : '#e6c99c';
+        g.font = '600 42px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        g.fillText('AETHER DSP', 256, 358);
+      });
+
+      const map = new THREE.CanvasTexture(c);
+      map.colorSpace = THREE.SRGBColorSpace;
+      const emissiveMap = new THREE.CanvasTexture(ec);
+      emissiveMap.colorSpace = THREE.SRGBColorSpace;
+      return { map, emissiveMap };
+    }
+
+    /**
+     * Builds a G2-continuous Apple-style squircle lofted geometry around the X axis
+     * with C-infinity rounded corners and welded seam normals (zero reflection creases).
+     */
+    function createSquircleLoftGeometry(profilePoints, halfZ = 0.56, halfY = 0.74, exp = 2.65, radialSegs = 80) {
+      const p = 2 / exp;
+      const eps = 0.045;
+      const normFactor = Math.pow(1 + eps, (p - 1) * 0.5);
+      const smoothCurve = (val) => (val * Math.pow(val * val + eps, (p - 1) * 0.5)) / normFactor;
+
+      const rows = profilePoints.length;
+      const cols = radialSegs + 1;
+      const positions = new Float32Array(rows * cols * 3);
+      const uvs = new Float32Array(rows * cols * 2);
+      const indices = [];
+
+      let ptr = 0;
+      let uvPtr = 0;
+      for (let r = 0; r < rows; r++) {
+        const [px, scale] = profilePoints[r];
+        const vCoord = r / (rows - 1);
+        for (let c = 0; c <= radialSegs; c++) {
+          const uCoord = c / radialSegs;
+          const theta = uCoord * Math.PI * 2;
+          const uz = smoothCurve(Math.cos(theta)) * halfZ;
+          const uy = smoothCurve(Math.sin(theta)) * halfY;
+
+          positions[ptr++] = px;
+          positions[ptr++] = uy * scale;
+          positions[ptr++] = uz * scale;
+
+          uvs[uvPtr++] = uCoord * 4;
+          uvs[uvPtr++] = vCoord * 2;
+        }
+      }
+
+      for (let r = 0; r < rows - 1; r++) {
+        for (let c = 0; c < radialSegs; c++) {
+          const a = r * cols + c;
+          const b = (r + 1) * cols + c;
+          const d = r * cols + (c + 1);
+          const e = (r + 1) * cols + (c + 1);
+          indices.push(a, d, b);
+          indices.push(b, d, e);
+        }
+      }
+
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+      geo.setIndex(indices);
+      geo.computeVertexNormals();
+
+      // Weld normals smoothly across radial seam (c = 0 and c = radialSegs)
+      const normAttr = geo.getAttribute('normal');
+      for (let r = 0; r < rows; r++) {
+        const i0 = r * cols;
+        const iLast = r * cols + radialSegs;
+        const nx = normAttr.getX(i0) + normAttr.getX(iLast);
+        const ny = normAttr.getY(i0) + normAttr.getY(iLast);
+        const nz = normAttr.getZ(i0) + normAttr.getZ(iLast);
+        const len = Math.hypot(nx, ny, nz) || 1;
+        normAttr.setXYZ(i0, nx / len, ny / len, nz / len);
+        normAttr.setXYZ(iLast, nx / len, ny / len, nz / len);
+      }
+      normAttr.needsUpdate = true;
+      return geo;
+    }
+
+    const pcbTex = createPCBTracesTextures();
+    const h3DieTex = createH3DieTextures();
+    const sharedMaps = {
+      brushed: createBrushedMetalTexture(),
+      fabric: createFabricWeaveTexture(),
+      pcbMap: pcbTex.map,
+      pcbEmissive: pcbTex.emissiveMap,
+      dieMap: h3DieTex.map,
+      dieEmissive: h3DieTex.emissiveMap
+    };
+
+    /* ----------------------------------------------------
+       4. BUILD COMPLETE FLAGSHIP 3D HEADPHONE ASSEMBLY
+       ---------------------------------------------------- */
+    function createHeadphoneInstance() {
+      const root = new THREE.Group();
+      const t0 = FINISH_THEMES[activeFinishKey];
+
+      // Shared dynamic PBR materials for this headphone instance
+      const mats = {
+        shell: new THREE.MeshPhysicalMaterial({
+          color: t0.shellColor.clone(),
+          metalness: t0.shellMetalness,
+          roughness: t0.shellRoughness,
+          envMapIntensity: t0.shellEnvIntensity,
+          bumpMap: sharedMaps.brushed,
+          bumpScale: 0.0028,
+          clearcoat: 0.22,
+          clearcoatRoughness: 0.24,
+          side: THREE.DoubleSide
+        }),
+        gimbal: new THREE.MeshPhysicalMaterial({
+          color: t0.gimbalColor.clone(),
+          metalness: 0.95,
+          roughness: t0.gimbalRoughness,
+          clearcoat: 0.3
+        }),
+        cushion: new THREE.MeshStandardMaterial({
+          color: t0.cushionColor.clone(),
+          metalness: 0.04,
+          roughness: 0.88,
+          bumpMap: sharedMaps.fabric,
+          bumpScale: 0.012,
+          side: THREE.DoubleSide
+        }),
+        innerScrim: new THREE.MeshStandardMaterial({
+          color: new THREE.Color('#141417'),
+          metalness: 0.05,
+          roughness: 0.92,
+          bumpMap: sharedMaps.fabric,
+          bumpScale: 0.008
+        }),
+        canopy: new THREE.MeshStandardMaterial({
+          color: t0.canopyColor.clone(),
+          metalness: 0.08,
+          roughness: 0.82,
+          bumpMap: sharedMaps.fabric,
+          bumpScale: 0.01,
+          side: THREE.DoubleSide
+        }),
+        frameSleeve: new THREE.MeshStandardMaterial({
+          color: t0.frameSleeveColor.clone(),
+          metalness: 0.15,
+          roughness: 0.55
+        }),
+        baffle: new THREE.MeshStandardMaterial({
+          color: t0.baffleColor.clone(),
+          metalness: 0.72,
+          roughness: 0.34,
+          side: THREE.DoubleSide
+        }),
+        diaphragmDome: new THREE.MeshPhysicalMaterial({
+          color: new THREE.Color('#dcd5ff'),
+          metalness: 0.96,
+          roughness: 0.11,
+          iridescence: 0.68,
+          iridescenceIOR: 1.45,
+          clearcoat: 0.65,
+          side: THREE.DoubleSide
+        }),
+        diaphragmSurround: new THREE.MeshStandardMaterial({
+          color: new THREE.Color('#1e1f24'),
+          metalness: 0.25,
+          roughness: 0.58,
+          side: THREE.DoubleSide
+        }),
+        copperVoiceCoil: new THREE.MeshStandardMaterial({
+          color: new THREE.Color('#d98245'),
+          metalness: 0.92,
+          roughness: 0.2
+        }),
+        chamber: new THREE.MeshStandardMaterial({
+          color: t0.chamberColor.clone(),
+          metalness: 0.84,
+          roughness: 0.28,
+          bumpMap: sharedMaps.brushed,
+          bumpScale: 0.002,
+          side: THREE.DoubleSide
+        }),
+        pcbSubstrate: new THREE.MeshStandardMaterial({
+          map: sharedMaps.pcbMap,
+          emissiveMap: sharedMaps.pcbEmissive,
+          emissive: new THREE.Color('#ffdfa0'),
+          emissiveIntensity: 0.12,
+          metalness: 0.45,
+          roughness: 0.36
+        }),
+        h3DieFace: new THREE.MeshPhysicalMaterial({
+          map: sharedMaps.dieMap,
+          emissiveMap: sharedMaps.dieEmissive,
+          emissive: new THREE.Color('#ffe4ba'),
+          emissiveIntensity: 0.18,
+          metalness: 0.75,
+          roughness: 0.14,
+          clearcoat: 0.8,
+          clearcoatRoughness: 0.1
+        }),
+        chipGold: new THREE.MeshStandardMaterial({
+          color: new THREE.Color('#e0be7b'),
+          metalness: 0.95,
+          roughness: 0.18
+        }),
+        waveRing: new THREE.MeshBasicMaterial({
+          color: new THREE.Color('#e8dccb'),
+          transparent: true,
+          opacity: 0.0,
+          side: THREE.DoubleSide
+        })
+      };
+
+      // ---- A. HEADBAND ASSEMBLY (穹顶透气织物头梁) ----
+      const headbandGroup = new THREE.Group();
+
+      // Twin arched spring-titanium rods (front z=+0.15 & back z=-0.15, converging at side stems)
+      [-1, 1].forEach((zSign) => {
+        const zMid = zSign * 0.145;
+        const zEnd = zSign * 0.045;
+        const curve = new THREE.CatmullRomCurve3([
+          new THREE.Vector3(-1.26, 0.50, zEnd),
+          new THREE.Vector3(-1.12, 1.12, zMid * 0.8),
+          new THREE.Vector3(-0.62, 1.66, zMid),
+          new THREE.Vector3(0.0, 1.86, zMid * 1.05),
+          new THREE.Vector3(0.62, 1.66, zMid),
+          new THREE.Vector3(1.12, 1.12, zMid * 0.8),
+          new THREE.Vector3(1.26, 0.50, zEnd)
+        ]);
+        const tubeGeo = new THREE.TubeGeometry(curve, 72, 0.032, 16, false);
+        const tubeMesh = new THREE.Mesh(tubeGeo, mats.gimbal);
+        headbandGroup.add(tubeMesh);
+      });
+
+      // Breathable Canopy Mesh spanning between front & back arches across the apex
+      const canopySegsU = 48;
+      const canopySegsV = 14;
+      const canopyPos = [];
+      const canopyUV = [];
+      const canopyIdx = [];
+      for (let iu = 0; iu <= canopySegsU; iu++) {
+        const u = iu / canopySegsU;
+        const x = (u - 0.5) * 1.68;
+        const archY = 1.855 - Math.pow(Math.abs(x) / 0.84, 1.88) * 0.42;
+        const halfSpanZ = 0.142 * Math.cos((u - 0.5) * Math.PI * 0.72);
+        for (let iv = 0; iv <= canopySegsV; iv++) {
+          const v = iv / canopySegsV;
+          const z = (v - 0.5) * 2 * halfSpanZ;
+          const sagY = Math.cos((v - 0.5) * Math.PI) * 0.028;
+          canopyPos.push(x, archY - 0.015 + sagY, z);
+          canopyUV.push(u * 4, v);
+        }
+      }
+      for (let iu = 0; iu < canopySegsU; iu++) {
+        for (let iv = 0; iv < canopySegsV; iv++) {
+          const a = iu * (canopySegsV + 1) + iv;
+          const b = (iu + 1) * (canopySegsV + 1) + iv;
+          const c = iu * (canopySegsV + 1) + (iv + 1);
+          const d = (iu + 1) * (canopySegsV + 1) + (iv + 1);
+          canopyIdx.push(a, c, b, b, c, d);
+        }
+      }
+      const canopyGeo = new THREE.BufferGeometry();
+      canopyGeo.setAttribute('position', new THREE.Float32BufferAttribute(canopyPos, 3));
+      canopyGeo.setAttribute('uv', new THREE.Float32BufferAttribute(canopyUV, 2));
+      canopyGeo.setIndex(canopyIdx);
+      canopyGeo.computeVertexNormals();
+      headbandGroup.add(new THREE.Mesh(canopyGeo, mats.canopy));
+
+      // Overmolded Side Sleeves where headband meets telescoping stems
+      [-1, 1].forEach((side) => {
+        const sleeveCurve = new THREE.CatmullRomCurve3([
+          new THREE.Vector3(side * 1.27, 0.46, 0),
+          new THREE.Vector3(side * 1.21, 0.78, 0),
+          new THREE.Vector3(side * 1.04, 1.18, 0)
+        ]);
+        const sleeveGeo = new THREE.TubeGeometry(sleeveCurve, 28, 0.056, 18, false);
+        headbandGroup.add(new THREE.Mesh(sleeveGeo, mats.frameSleeve));
+
+        // Machined collar ring
+        const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.064, 0.064, 0.04, 24), mats.gimbal);
+        collar.position.set(side * 1.27, 0.46, 0);
+        collar.rotation.z = side * 0.16;
+        headbandGroup.add(collar);
+      });
+
+      root.add(headbandGroup);
+
+      // ---- B. BUILD SYMMETRIC LEFT & RIGHT EARCUP SUB-ASSEMBLIES ----
+      // Geometries created in canonical +X orientation (inner ear side = -X, outer shell back = +X)
+      const shellProfile = [
+        [-0.06, 0.995], // Chamfered front inner rim
+        [-0.04, 1.015], // Rolled outer edge
+        [0.08, 1.022],  // Sculpted sidewall
+        [0.20, 0.995],  // Curved shoulder
+        [0.28, 0.90],   // Pillowed curve
+        [0.325, 0.68],  // Smooth back dome transition
+        [0.348, 0.34],  // Back center curvature
+        [0.354, 0.001]  // Apex center
+      ];
+      const outerShellGeo = createSquircleLoftGeometry(shellProfile, 0.56, 0.74, 2.65, 72);
+
+      // Plush Magnetic Memory Foam Ear Cushion (closed loop profile around squircle)
+      const cushionProfile = [];
+      const tubeSteps = 22;
+      for (let i = 0; i <= tubeSteps; i++) {
+        const ang = (i / tubeSteps) * Math.PI * 2;
+        const cx = -0.155 + Math.cos(ang) * 0.095;
+        const cr = 0.825 + Math.sin(ang) * 0.175;
+        cushionProfile.push([cx, cr]);
+      }
+      const cushionGeo = createSquircleLoftGeometry(cushionProfile, 0.555, 0.735, 2.65, 68);
+      const innerScrimGeo = createSquircleLoftGeometry([[-0.12, 0.001], [-0.12, 0.72]], 0.52, 0.69, 2.65, 48);
+
+      // CNC Baffle Plate with center circular driver port
+      const baffleGeo = createSquircleLoftGeometry([
+        [-0.055, 0.42],
+        [-0.055, 0.965],
+        [-0.032, 0.965],
+        [-0.032, 0.42],
+        [-0.055, 0.42]
+      ], 0.54, 0.71, 2.65, 64);
+
+      // 40mm Beryllium-Titanium Diaphragm Lathe Profile (revolved around X axis!)
+      const driverLathe2D = [
+        new THREE.Vector2(0.001, -0.055), // Center apex of Beryllium dome (protruding slightly toward ear)
+        new THREE.Vector2(0.09, -0.048),
+        new THREE.Vector2(0.17, -0.025),
+        new THREE.Vector2(0.22, 0.005),   // Dome-to-cone neck (copper coil zone)
+        new THREE.Vector2(0.30, 0.028),   // Titanium cone flare
+        new THREE.Vector2(0.33, 0.010),   // Ribbed suspension inner
+        new THREE.Vector2(0.365, -0.012), // Surround roll peak
+        new THREE.Vector2(0.395, 0.012),  // Outer surround lip
+        new THREE.Vector2(0.425, 0.012),  // Mounting flange
+        new THREE.Vector2(0.425, 0.032),
+        new THREE.Vector2(0.26, 0.035)
+      ];
+      const driverDomeGeo = new THREE.LatheGeometry(driverLathe2D.slice(0, 6), 64);
+      driverDomeGeo.rotateZ(-Math.PI / 2); // Align axis along +X
+
+      const driverSurroundGeo = new THREE.LatheGeometry(driverLathe2D.slice(4), 64);
+      driverSurroundGeo.rotateZ(-Math.PI / 2);
+
+      // Cast Acoustic Chamber Geo
+      const chamberGeo = createSquircleLoftGeometry([
+        [0.02, 0.45],
+        [0.02, 0.86],
+        [0.09, 0.84],
+        [0.14, 0.72],
+        [0.165, 0.35],
+        [0.165, 0.001]
+      ], 0.50, 0.65, 2.6, 56);
+
+      const sides = {};
+      ['left', 'right'].forEach((sideKey) => {
+        const s = sideKey === 'right' ? 1 : -1;
+        const sideRoot = new THREE.Group();
+        root.add(sideRoot);
+
+        // 1) CNC Machined Titanium Gimbal Hinge & Telescoping Piston
+        const gimbalGroup = new THREE.Group();
+        const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.034, 0.034, 0.44, 24), mats.gimbal);
+        stem.position.set(0, 0.20, 0);
+        stem.rotation.z = -0.14;
+        gimbalGroup.add(stem);
+
+        const pivotHousing = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.09, 28), mats.gimbal);
+        pivotHousing.rotation.z = Math.PI / 2;
+        pivotHousing.position.set(0.05, -0.01, 0);
+        gimbalGroup.add(pivotHousing);
+
+        const yokeArm = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.024, 16, 36, Math.PI * 1.15), mats.gimbal);
+        yokeArm.rotation.y = Math.PI / 2;
+        yokeArm.rotation.x = Math.PI * 0.42;
+        yokeArm.position.set(0.11, -0.08, 0);
+        gimbalGroup.add(yokeArm);
+
+        // 2) Magnetic Memory Foam Ear Cushion
+        const cushionGroup = new THREE.Group();
+        cushionGroup.add(new THREE.Mesh(cushionGeo, mats.cushion));
+        cushionGroup.add(new THREE.Mesh(innerScrimGeo, mats.innerScrim));
+
+        // 3) CNC Acoustic Baffle Plate + 8 Micro Torx Screws
+        const baffleGroup = new THREE.Group();
+        baffleGroup.add(new THREE.Mesh(baffleGeo, mats.baffle));
+        const screwGeo = new THREE.CylinderGeometry(0.016, 0.016, 0.018, 12);
+        screwGeo.rotateZ(Math.PI / 2);
+        for (let k = 0; k < 8; k++) {
+          const a = (k / 8) * Math.PI * 2 + 0.2;
+          const sc = new THREE.Mesh(screwGeo, mats.gimbal);
+          sc.position.set(-0.055, Math.sin(a) * 0.56, Math.cos(a) * 0.42);
+          baffleGroup.add(sc);
+        }
+
+        // 4) 40mm Beryllium-Titanium Diaphragm Driver + Neodymium Motor + Acoustic Wave Rings
+        const driverGroup = new THREE.Group();
+        driverGroup.add(new THREE.Mesh(driverDomeGeo, mats.diaphragmDome));
+        driverGroup.add(new THREE.Mesh(driverSurroundGeo, mats.diaphragmSurround));
+
+        const coilRing = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.016, 14, 48), mats.copperVoiceCoil);
+        coilRing.rotation.y = Math.PI / 2;
+        coilRing.position.x = 0.022;
+        driverGroup.add(coilRing);
+
+        const neoMagnet = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.21, 0.09, 40), mats.gimbal);
+        neoMagnet.rotation.z = Math.PI / 2;
+        neoMagnet.position.x = 0.075;
+        driverGroup.add(neoMagnet);
+
+        // Subtle holographic acoustic wave rings (visible when 60% stage highlights)
+        const waveRings = [];
+        for (let wIdx = 0; wIdx < 2; wIdx++) {
+          const wr = new THREE.Mesh(new THREE.RingGeometry(0.22 + wIdx * 0.12, 0.232 + wIdx * 0.12, 48), mats.waveRing);
+          wr.rotation.y = Math.PI / 2;
+          wr.position.x = -0.10 - wIdx * 0.08;
+          driverGroup.add(wr);
+          waveRings.push(wr);
+        }
+
+        // 5) Cast Aluminum Acoustic Reflex Chamber
+        const chamberGroup = new THREE.Group();
+        chamberGroup.add(new THREE.Mesh(chamberGeo, mats.chamber));
+        const portRing = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.018, 12, 36), mats.copperVoiceCoil);
+        portRing.rotation.y = Math.PI / 2;
+        portRing.position.x = 0.166;
+        chamberGroup.add(portRing);
+
+        // 6) Custom Dual-Core H3 Computational Audio SiP Chip Module
+        const chipGroup = new THREE.Group();
+        const pcbBoard = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.024, 8), mats.pcbSubstrate);
+        pcbBoard.rotation.z = Math.PI / 2;
+        pcbBoard.rotation.x = Math.PI / 8;
+        chipGroup.add(pcbBoard);
+
+        const pcbRim = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.012, 10, 8), mats.chipGold);
+        pcbRim.rotation.y = Math.PI / 2;
+        pcbRim.rotation.z = Math.PI / 8;
+        chipGroup.add(pcbRim);
+
+        // Raised H3 Silicon Die Package (upright laser-etched face on +/-X, gold chamfered edges)
+        const dieMaterials = [
+          mats.h3DieFace,
+          mats.h3DieFace,
+          mats.chipGold,
+          mats.chipGold,
+          mats.chipGold,
+          mats.chipGold
+        ];
+        const h3Die = new THREE.Mesh(new THREE.BoxGeometry(0.038, 0.25, 0.25), dieMaterials);
+        h3Die.position.x = -0.014;
+        chipGroup.add(h3Die);
+
+        // SMD Gold Capacitors around H3 Die
+        const smdGeo = new THREE.BoxGeometry(0.024, 0.042, 0.022);
+        for (let m = 0; m < 8; m++) {
+          const ma = (m / 8) * Math.PI * 2;
+          const smd = new THREE.Mesh(smdGeo, mats.chipGold);
+          smd.position.set(-0.018, Math.sin(ma) * 0.24, Math.cos(ma) * 0.24);
+          smd.rotation.x = ma;
+          chipGroup.add(smd);
+        }
+
+        // 7) Outer Grade-5 Titanium Unibody Shell (+ Digital Crown on Right side)
+        const shellGroup = new THREE.Group();
+        shellGroup.add(new THREE.Mesh(outerShellGeo, mats.shell));
+
+        // ANC Beamforming Mic Grille Slot on outer shell
+        const micGrille = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.16, 0.032), mats.innerScrim);
+        micGrille.position.set(0.28, 0.42, 0.26);
+        micGrille.rotation.z = -0.35;
+        shellGroup.add(micGrille);
+
+        if (sideKey === 'right') {
+          // Iconic Knurled Digital Audio Crown on top of Right Earcup
+          const crownGroup = new THREE.Group();
+          const crownBody = new THREE.Mesh(new THREE.CylinderGeometry(0.088, 0.088, 0.068, 32), mats.gimbal);
+          crownGroup.add(crownBody);
+          for (let g = 0; g < 20; g++) {
+            const ga = (g / 20) * Math.PI * 2;
+            const ridge = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.064, 0.012), mats.shell);
+            ridge.position.set(Math.cos(ga) * 0.088, 0, Math.sin(ga) * 0.088);
+            ridge.rotation.y = -ga;
+            crownGroup.add(ridge);
+          }
+          crownGroup.position.set(0.13, 0.745, -0.16);
+          crownGroup.rotation.z = -0.12;
+          shellGroup.add(crownGroup);
+
+          // Noise Control Pill Button
+          const ancBtn = new THREE.Mesh(new THREE.CapsuleGeometry(0.026, 0.085, 8, 16), mats.gimbal);
+          ancBtn.rotation.z = Math.PI / 2;
+          ancBtn.rotation.y = 0.28;
+          ancBtn.position.set(0.14, 0.715, 0.17);
+          shellGroup.add(ancBtn);
+        }
+
+        // Mirror Left side along X so inner side faces +X and outer shell faces -X
+        sideRoot.scale.x = s;
+
+        const earcupTiltGroup = new THREE.Group();
+        earcupTiltGroup.add(cushionGroup, baffleGroup, driverGroup, chamberGroup, chipGroup, shellGroup);
+        sideRoot.add(gimbalGroup, earcupTiltGroup);
+
+        // Precise 3D Callout Anchors on Right Hero Side
+        const anchors = {};
+        if (sideKey === 'right') {
+          anchors.shell = new THREE.Object3D();
+          anchors.shell.position.set(0.26, 0.22, 0.22);
+          shellGroup.add(anchors.shell);
+
+          anchors.gimbal = new THREE.Object3D();
+          anchors.gimbal.position.set(0.06, 0.14, 0.0);
+          gimbalGroup.add(anchors.gimbal);
+
+          anchors.cushion = new THREE.Object3D();
+          anchors.cushion.position.set(-0.16, -0.24, 0.38);
+          cushionGroup.add(anchors.cushion);
+
+          anchors.driver = new THREE.Object3D();
+          anchors.driver.position.set(-0.02, 0.08, 0.14);
+          driverGroup.add(anchors.driver);
+
+          anchors.chamber = new THREE.Object3D();
+          anchors.chamber.position.set(0.12, -0.22, 0.22);
+          chamberGroup.add(anchors.chamber);
+
+          anchors.chip = new THREE.Object3D();
+          anchors.chip.position.set(-0.02, 0.06, 0.06);
+          chipGroup.add(anchors.chip);
+        }
+
+        sides[sideKey] = {
+          sideRoot,
+          gimbalGroup,
+          earcupTiltGroup,
+          cushionGroup,
+          baffleGroup,
+          driverGroup,
+          chamberGroup,
+          chipGroup,
+          shellGroup,
+          waveRings,
+          anchors
+        };
+      });
+
+      /**
+       * Updates axial explosion progress e in [0, 1] seamlessly & reversibly!
+       * When e = 0, every internal layer nests completely inside the watertight Titanium shell.
+       */
+      function setExplosion(e, timeSec = 0, activeStage = 0) {
+        const ease = e * e * (3 - 2 * e); // Smoothstep axial curve
+
+        // 1. Headband lifts smoothly along +Y
+        headbandGroup.position.y = ease * 0.92;
+
+        // 2. Left & Right assemblies explode symmetrically along their physical axes
+        ['left', 'right'].forEach((sideKey) => {
+          const item = sides[sideKey];
+          // Note: sideRoot.scale.x is +1 for right, -1 for left, so +X in local space is ALWAYS "outward away from head"!
+          const baseCupX = 1.24;
+          const baseCupY = -0.24;
+
+          // Ergonomic earcup inward tilt at assembled state (0.17 rad), straightening to 0.0 rad as it explodes!
+          item.earcupTiltGroup.position.set(baseCupX, baseCupY, 0);
+          item.earcupTiltGroup.rotation.z = (1 - ease) * 0.165;
+
+          // Gimbal hinge separates upward & outward between headband and earcup
+          item.gimbalGroup.position.set(
+            1.25 + ease * 0.36,
+            0.26 + ease * 0.46,
+            0
+          );
+          item.gimbalGroup.rotation.z = (1 - ease) * 0.08;
+
+          // Axial Explosion Positions along Local X (from Inner Ear Cushion -> Outer Titanium Shell):
+          // At ease = 0 (Assembled):
+          //   cushion: 0.0, baffle: 0.0, driver: 0.02, chamber: 0.03, chip: 0.19, shell: 0.0 -> 100% enclosed!
+          // At ease = 1 (Full Explosion):
+          //   cushion: -0.66, baffle: 0.02, driver: 0.68, chamber: 1.38, chip: 2.06, shell: 2.74 -> 6 distinct layers!
+          item.cushionGroup.position.x = THREE.MathUtils.lerp(0.0, -0.68, ease);
+          item.baffleGroup.position.x = THREE.MathUtils.lerp(0.0, 0.02, ease);
+          item.driverGroup.position.x = THREE.MathUtils.lerp(0.02, 0.72, ease);
+          item.chamberGroup.position.x = THREE.MathUtils.lerp(0.03, 1.44, ease);
+          item.chipGroup.position.x = THREE.MathUtils.lerp(0.19, 2.32, ease);
+          item.shellGroup.position.x = THREE.MathUtils.lerp(0.0, 3.16, ease);
+
+          // Subtle watchmaker showcase micro-rotation on exploded internal parts
+          item.chipGroup.rotation.x = 0;
+          item.driverGroup.rotation.x = Math.sin(timeSec * 1.6) * 0.03 * ease;
+
+          // Acoustic pulse rings on 40mm Beryllium Diaphragm during Stage 2 (60%)
+          item.waveRings.forEach((wr, idx) => {
+            if (activeStage === 2 && ease > 0.35) {
+              const phase = ((timeSec * 0.85 + idx * 0.5) % 1);
+              wr.scale.setScalar(0.85 + phase * 0.65);
+              wr.position.x = -0.06 - phase * 0.34;
+              mats.waveRing.opacity = (1 - phase) * 0.45;
+            } else {
+              mats.waveRing.opacity *= 0.88;
+            }
+          });
+        });
+
+        // Stage-driven component highlight (subtle emissive rim emphasis)
+        const targetGimbalEmissive = activeStage === 1 ? 0.24 : 0.0;
+        const targetCushionEmissive = activeStage === 1 ? 0.18 : 0.0;
+        const targetDriverEmissive = activeStage === 2 ? 0.36 : 0.03;
+        const targetChamberEmissive = activeStage === 2 ? 0.16 : 0.0;
+        const targetChipEmissive = activeStage === 3 ? 0.88 : 0.14;
+        const targetShellEmissive = activeStage === 0 ? 0.05 : 0.0;
+
+        mats.gimbal.emissive.setHex(0xd4c5b1);
+        mats.gimbal.emissiveIntensity = THREE.MathUtils.lerp(mats.gimbal.emissiveIntensity || 0, targetGimbalEmissive, 0.08);
+
+        mats.cushion.emissive.setHex(0x8e8273);
+        mats.cushion.emissiveIntensity = THREE.MathUtils.lerp(mats.cushion.emissiveIntensity || 0, targetCushionEmissive, 0.08);
+
+        mats.diaphragmDome.emissive.setHex(0xc8beff);
+        mats.diaphragmDome.emissiveIntensity = THREE.MathUtils.lerp(mats.diaphragmDome.emissiveIntensity || 0, targetDriverEmissive, 0.08);
+
+        mats.chamber.emissive.setHex(0xd4c5b1);
+        mats.chamber.emissiveIntensity = THREE.MathUtils.lerp(mats.chamber.emissiveIntensity || 0, targetChamberEmissive, 0.08);
+
+        mats.pcbSubstrate.emissiveIntensity = THREE.MathUtils.lerp(mats.pcbSubstrate.emissiveIntensity || 0.12, targetChipEmissive * 0.65, 0.08);
+        mats.h3DieFace.emissiveIntensity = THREE.MathUtils.lerp(mats.h3DieFace.emissiveIntensity || 0.18, targetChipEmissive, 0.08);
+
+        mats.shell.emissive.setHex(0xd4c5b1);
+        mats.shell.emissiveIntensity = THREE.MathUtils.lerp(mats.shell.emissiveIntensity || 0, targetShellEmissive, 0.08);
+      }
+
+      /**
+       * Smoothly interpolates material finish colors every frame toward activeFinishKey
+       */
+      function updateFinishLerp(dt) {
+        const target = FINISH_THEMES[activeFinishKey];
+        const k = 1 - Math.exp(-7.5 * dt);
+        mats.shell.color.lerp(target.shellColor, k);
+        mats.shell.metalness = THREE.MathUtils.lerp(mats.shell.metalness, target.shellMetalness, k);
+        mats.shell.roughness = THREE.MathUtils.lerp(mats.shell.roughness, target.shellRoughness, k);
+        mats.shell.envMapIntensity = THREE.MathUtils.lerp(mats.shell.envMapIntensity, target.shellEnvIntensity, k);
+
+        mats.gimbal.color.lerp(target.gimbalColor, k);
+        mats.gimbal.roughness = THREE.MathUtils.lerp(mats.gimbal.roughness, target.gimbalRoughness, k);
+        mats.gimbal.envMapIntensity = THREE.MathUtils.lerp(mats.gimbal.envMapIntensity ?? 1.0, target.shellEnvIntensity, k);
+
+        mats.cushion.color.lerp(target.cushionColor, k);
+        mats.canopy.color.lerp(target.canopyColor, k);
+        mats.frameSleeve.color.lerp(target.frameSleeveColor, k);
+        mats.baffle.color.lerp(target.baffleColor, k);
+        mats.chamber.color.lerp(target.chamberColor, k);
+      }
+
+      setExplosion(0, 0, 0);
+      return {
+        root,
+        mats,
+        rightAnchors: sides.right.anchors,
+        setExplosion,
+        updateFinishLerp
+      };
+    }
+
+    /* ----------------------------------------------------
+       5. SETUP STUDIO RENDERER HELPER (PMREM + RIM LIGHTS)
+       ---------------------------------------------------- */
+    function createStudioSceneAndRenderer(container) {
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.18;
+      container.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+      pmrem.dispose();
+
+      // Apple Hardware Photography 3-Point Rim & Key Lighting
+      const keyLight = new THREE.DirectionalLight(0xfff8ef, 2.4);
+      keyLight.position.set(4.5, 6.0, 5.5);
+      scene.add(keyLight);
+
+      const rimLight = new THREE.SpotLight(0xf5e5cf, 5.2, 22, Math.PI * 0.36, 0.65, 1.2);
+      rimLight.position.set(-4.0, 4.2, -4.8);
+      scene.add(rimLight);
+
+      const fillLight = new THREE.DirectionalLight(0x9ab4ff, 1.05);
+      fillLight.position.set(-5.0, -2.5, 3.5);
+      scene.add(fillLight);
+
+      const camera = new THREE.PerspectiveCamera(36, container.clientWidth / container.clientHeight, 0.1, 50);
+      return { renderer, scene, camera, rimLight };
+    }
+
+    /* ----------------------------------------------------
+       6. MAIN STICKY SCROLL-DRIVEN 3D EXPLOSION ENGINE
+       ---------------------------------------------------- */
+    const explosionContainer = document.getElementById('explosion-canvas-container');
+    const explosionCtx = createStudioSceneAndRenderer(explosionContainer);
+    const mainHeadphone = createHeadphoneInstance();
+    explosionCtx.scene.add(mainHeadphone.root);
+
+    const scrollTrack = document.getElementById('acoustic-architecture');
+    const pctReadout = document.getElementById('explode-pct-readout');
+    const navProgressBar = document.getElementById('nav-progress-bar');
+    const calloutCards = Array.from(document.querySelectorAll('.callout-card'));
+    const stageJumpBtns = Array.from(document.querySelectorAll('.stage-jump-btn'));
+
+    // SVG Callout Elements
+    const svgGroup = document.getElementById('svg-leader-group');
+    const polyPrimary = document.getElementById('leader-poly-primary');
+    const ringPrimary = document.getElementById('leader-ring-primary');
+    const dotPrimary = document.getElementById('leader-dot-primary');
+    const polySecondary = document.getElementById('leader-poly-secondary');
+    const dotSecondary = document.getElementById('leader-dot-secondary');
+    const calloutAnchorEl = document.getElementById('callout-card-anchor');
+
+    let targetScrollProgress = 0;
+    let smoothScrollProgress = 0;
+    let explosionVisible = true;
+
+    const expObs = new IntersectionObserver((entries) => {
+      explosionVisible = entries[0].isIntersecting;
+    }, { rootMargin: '200px' });
+    expObs.observe(scrollTrack);
+
+    function computeScrollTargets() {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      navProgressBar.style.width = `${Math.min(100, Math.max(0, (scrollY / docHeight) * 100))}%`;
+
+      const rect = scrollTrack.getBoundingClientRect();
+      const scrollable = Math.max(1, scrollTrack.offsetHeight - window.innerHeight);
+      const raw = -rect.top / scrollable;
+      targetScrollProgress = Math.min(1, Math.max(0, raw));
+
+      // Update active top navbar state
+      const chipSec = document.getElementById('chip-section');
+      const chipTop = chipSec.getBoundingClientRect().top;
+      const navOverview = document.querySelector('[data-nav="overview"]');
+      const navAcoustic = document.querySelector('[data-nav="acoustic"]');
+      const navChip = document.querySelector('[data-nav="chip"]');
+
+      [navOverview, navAcoustic, navChip].forEach((el) => el && el.classList.remove('active'));
+      if (rect.top > window.innerHeight * 0.45) {
+        navOverview?.classList.add('active');
+      } else if (targetScrollProgress >= 0.72 || (chipTop < window.innerHeight * 0.55 && chipTop > -chipSec.offsetHeight)) {
+        navChip?.classList.add('active');
+      } else {
+        navAcoustic?.classList.add('active');
+      }
+    }
+
+    window.addEventListener('scroll', computeScrollTargets, { passive: true });
+    computeScrollTargets();
+
+    // Stage Jump Buttons & Top Nav "芯片" Link
+    function scrollToExplosionProgress(p) {
+      const scrollable = Math.max(1, scrollTrack.offsetHeight - window.innerHeight);
+      const trackTop = scrollTrack.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: trackTop + scrollable * p,
+        behavior: 'smooth'
+      });
+    }
+
+    stageJumpBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const p = parseFloat(btn.dataset.jump || '0');
+        scrollToExplosionProgress(p);
+      });
+    });
+
+    document.getElementById('nav-chip-link')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      scrollToExplosionProgress(0.90);
+    });
+
+    // Helper: Project 3D world position to 2D SVG screen coordinates
+    const tmpVecA = new THREE.Vector3();
+    const tmpVecB = new THREE.Vector3();
+
+    function projectToScreen(obj3D, camera, width, height, outVec) {
+      obj3D.getWorldPosition(outVec);
+      outVec.project(camera);
+      return {
+        x: (outVec.x * 0.5 + 0.5) * width,
+        y: (-outVec.y * 0.5 + 0.5) * height
+      };
+    }
+
+    /* ----------------------------------------------------
+       7. BOTTOM INTERACTIVE 360° COLORWAY STUDIO ENGINE
+       ---------------------------------------------------- */
+    const studioContainer = document.getElementById('studio-canvas-container');
+    const studioCtx = createStudioSceneAndRenderer(studioContainer);
+    const studioHeadphone = createHeadphoneInstance();
+    studioCtx.scene.add(studioHeadphone.root);
+    studioCtx.camera.position.set(0.5, 0.55, 5.15);
+    studioCtx.camera.lookAt(0, 0.35, 0);
+
+    let studioVisible = false;
+    let isStudioDragging = false;
+    let prevPointerX = 0;
+    let prevPointerY = 0;
+    let studioYaw = -0.35;
+    let studioPitch = 0.08;
+    let targetStudioExplode = 0;
+    let currentStudioExplode = 0;
+
+    const studioObs = new IntersectionObserver((entries) => {
+      studioVisible = entries[0].isIntersecting;
+    }, { rootMargin: '150px' });
+    studioObs.observe(studioContainer);
+
+    const dragArea = document.getElementById('studio-drag-area');
+    dragArea.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('button')) return;
+      isStudioDragging = true;
+      prevPointerX = e.clientX;
+      prevPointerY = e.clientY;
+      dragArea.setPointerCapture(e.pointerId);
+    });
+    dragArea.addEventListener('pointermove', (e) => {
+      if (!isStudioDragging) return;
+      const dx = e.clientX - prevPointerX;
+      const dy = e.clientY - prevPointerY;
+      prevPointerX = e.clientX;
+      prevPointerY = e.clientY;
+      studioYaw += dx * 0.0085;
+      studioPitch = Math.max(-0.55, Math.min(0.65, studioPitch + dy * 0.006));
+    });
+    const endDrag = () => { isStudioDragging = false; };
+    dragArea.addEventListener('pointerup', endDrag);
+    dragArea.addEventListener('pointercancel', endDrag);
+
+    const studioExplodeBtn = document.getElementById('studio-explode-btn');
+    studioExplodeBtn.addEventListener('click', () => {
+      targetStudioExplode = targetStudioExplode > 0.1 ? 0 : 0.52;
+      studioExplodeBtn.classList.toggle('active', targetStudioExplode > 0.1);
+      studioExplodeBtn.textContent = targetStudioExplode > 0.1 ? '恢复整机闭合态' : '切换微拆解透视';
+    });
+
+    /* ----------------------------------------------------
+       8. COLORWAY SWITCHING LOGIC & PRE-ORDER MODAL
+       ---------------------------------------------------- */
+    const finishNameEl = document.getElementById('finish-name');
+    const finishDescEl = document.getElementById('finish-desc');
+    const modalSelectedFinishEl = document.getElementById('modal-selected-finish');
+    const modalConfirmFinishEl = document.getElementById('modal-confirm-finish');
+    const allSwatchButtons = document.querySelectorAll('[data-finish]');
+
+    function applyColorway(finishKey) {
+      if (!FINISH_THEMES[finishKey]) return;
+      activeFinishKey = finishKey;
+      const info = FINISH_THEMES[finishKey];
+
+      finishNameEl.textContent = info.name;
+      finishDescEl.textContent = info.desc;
+      modalSelectedFinishEl.textContent = info.fullLabel;
+      modalConfirmFinishEl.textContent = info.name;
+
+      allSwatchButtons.forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.finish === finishKey);
+      });
+    }
+
+    allSwatchButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        applyColorway(btn.dataset.finish);
+      });
+    });
+
+    // Pre-order Modal Controls
+    const modalBackdrop = document.getElementById('preorder-modal-backdrop');
+    const modalSuccessMsg = document.getElementById('modal-success-msg');
+    document.getElementById('open-preorder-modal')?.addEventListener('click', () => {
+      modalSuccessMsg.style.display = 'none';
+      modalBackdrop.classList.add('open');
+    });
+    document.getElementById('close-preorder-modal')?.addEventListener('click', () => {
+      modalBackdrop.classList.remove('open');
+    });
+    modalBackdrop?.addEventListener('click', (e) => {
+      if (e.target === modalBackdrop) modalBackdrop.classList.remove('open');
+    });
+    document.getElementById('confirm-preorder-btn')?.addEventListener('click', () => {
+      modalSuccessMsg.style.display = 'block';
+    });
+
+    /* ----------------------------------------------------
+       9. RESIZE & MASTER ANIMATION LOOP (60/120 FPS)
+       ---------------------------------------------------- */
+    function onWindowResize() {
+      const ew = explosionContainer.clientWidth;
+      const eh = explosionContainer.clientHeight;
+      if (ew > 0 && eh > 0) {
+        explosionCtx.camera.aspect = ew / eh;
+        explosionCtx.camera.updateProjectionMatrix();
+        explosionCtx.renderer.setSize(ew, eh);
+      }
+
+      const sw = studioContainer.clientWidth;
+      const sh = studioContainer.clientHeight;
+      if (sw > 0 && sh > 0) {
+        studioCtx.camera.aspect = sw / sh;
+        studioCtx.camera.updateProjectionMatrix();
+        studioCtx.renderer.setSize(sw, sh);
+      }
+    }
+    window.addEventListener('resize', onWindowResize);
+
+    const clock = new THREE.Clock();
+    const camPosTarget = new THREE.Vector3();
+    const camLookTarget = new THREE.Vector3();
+    const currentCamLook = new THREE.Vector3(0, 0.35, 0);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = Math.min(clock.getDelta(), 0.05);
+      const elapsed = clock.elapsedTime;
+
+      // Smoothly damp scroll progress for liquid 60/120fps explosion & reassembly
+      const damp = 1 - Math.exp(-9.5 * dt);
+      smoothScrollProgress += (targetScrollProgress - smoothScrollProgress) * damp;
+      if (targetScrollProgress === 0 && smoothScrollProgress < 0.0006) {
+        smoothScrollProgress = 0;
+      }
+
+      // Map scroll [0, 1] -> explosion factor [0, 1] with crisp 0% hold at start
+      const explodeFactor = THREE.MathUtils.clamp((smoothScrollProgress - 0.05) / 0.88, 0, 1);
+      const pctInt = Math.round(explodeFactor * 100);
+      pctReadout.textContent = `${String(pctInt).padStart(2, '0')}%`;
+
+      // Determine active stage: 0 (0%), 1 (~30%), 2 (~60%), 3 (~90%)
+      let activeStage = 0;
+      if (explodeFactor >= 0.76) {
+        activeStage = 3;
+      } else if (explodeFactor >= 0.46) {
+        activeStage = 2;
+      } else if (explodeFactor >= 0.16) {
+        activeStage = 1;
+      }
+
+      calloutCards.forEach((card, idx) => {
+        card.classList.toggle('active', idx === activeStage);
+      });
+      stageJumpBtns.forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === activeStage);
+      });
+
+      // ---- Render 1: Sticky Scroll-Driven Explosion Viewport ----
+      if (explosionVisible) {
+        mainHeadphone.updateFinishLerp(dt);
+        explosionCtx.rimLight.color.lerp(FINISH_THEMES[activeFinishKey].rimLightColor, 0.08);
+        mainHeadphone.setExplosion(explodeFactor, elapsed, activeStage);
+
+        // Subtle studio breathing float when assembled, rotating to hero 3/4 front-macro angle as it explodes!
+        const idleSway = (1 - explodeFactor) * Math.sin(elapsed * 1.1) * 0.07;
+        mainHeadphone.root.rotation.y = THREE.MathUtils.lerp(-0.24, 0.46, explodeFactor) + idleSway;
+        mainHeadphone.root.position.y = (1 - explodeFactor) * Math.sin(elapsed * 1.4) * 0.03;
+
+        // Smooth Camera Orbit & Dolly Progression across 0% -> 30% -> 60% -> 90%
+        const isNarrow = explosionContainer.clientWidth < 960;
+        const rightShiftForUI = isNarrow ? 0.0 : 1.05; // Shift lookAt right so exploded stack sits cleanly left of callout card!
+
+        if (explodeFactor < 0.45) {
+          const u = explodeFactor / 0.45;
+          camPosTarget.set(
+            THREE.MathUtils.lerp(0.20, -0.35, u),
+            THREE.MathUtils.lerp(0.50, 0.58, u),
+            THREE.MathUtils.lerp(6.25, 5.45, u)
+          );
+          camLookTarget.set(
+            THREE.MathUtils.lerp(0.52 * (isNarrow ? 0 : 1), 1.45, u) + rightShiftForUI * 0.45,
+            THREE.MathUtils.lerp(0.40, 0.14, u),
+            THREE.MathUtils.lerp(0.0, -0.55, u)
+          );
+        } else {
+          const u = (explodeFactor - 0.45) / 0.55;
+          camPosTarget.set(
+            THREE.MathUtils.lerp(-0.35, -0.45, u),
+            THREE.MathUtils.lerp(0.58, 0.08, u),
+            THREE.MathUtils.lerp(5.45, 5.42, u)
+          );
+          camLookTarget.set(
+            THREE.MathUtils.lerp(1.45, 2.84, u) + rightShiftForUI * 0.78,
+            THREE.MathUtils.lerp(0.14, -0.18, u),
+            THREE.MathUtils.lerp(-0.55, -1.28, u)
+          );
+        }
+
+        explosionCtx.camera.position.lerp(camPosTarget, damp);
+        currentCamLook.lerp(camLookTarget, damp);
+        explosionCtx.camera.lookAt(currentCamLook);
+        explosionCtx.camera.updateMatrixWorld();
+
+        explosionCtx.renderer.render(explosionCtx.scene, explosionCtx.camera);
+
+        // Update Dynamic SVG Precision Leader Lines locked to exact 3D part anchors!
+        const vw = explosionContainer.clientWidth;
+        const vh = explosionContainer.clientHeight;
+        const activeCardEl = calloutCards[activeStage];
+        const cardRect = activeCardEl.getBoundingClientRect();
+        const stageRect = explosionContainer.getBoundingClientRect();
+
+        const anchors = mainHeadphone.rightAnchors;
+        let primaryAnchor = anchors.shell;
+        let secondaryAnchor = null;
+
+        if (activeStage === 1) {
+          primaryAnchor = anchors.gimbal;
+          secondaryAnchor = anchors.cushion;
+        } else if (activeStage === 2) {
+          primaryAnchor = anchors.driver;
+          secondaryAnchor = anchors.chamber;
+        } else if (activeStage === 3) {
+          primaryAnchor = anchors.chip;
+        }
+
+        const p1 = projectToScreen(primaryAnchor, explosionCtx.camera, vw, vh, tmpVecA);
+
+        if (!isNarrow && cardRect.width > 0) {
+          svgGroup.setAttribute('opacity', '1');
+          const endX = cardRect.left - stageRect.left;
+          const endY = (cardRect.top - stageRect.top) + 46;
+          const elbowX = Math.min(endX - 36, Math.max(p1.x + 38, (p1.x + endX) * 0.56));
+          const elbowY = endY;
+
+          ringPrimary.setAttribute('cx', p1.x.toFixed(1));
+          ringPrimary.setAttribute('cy', p1.y.toFixed(1));
+          ringPrimary.setAttribute('r', (8 + Math.sin(elapsed * 3.5) * 1.8).toFixed(1));
+
+          dotPrimary.setAttribute('cx', p1.x.toFixed(1));
+          dotPrimary.setAttribute('cy', p1.y.toFixed(1));
+          polyPrimary.setAttribute('points', `${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${elbowX.toFixed(1)},${elbowY.toFixed(1)} ${endX.toFixed(1)},${endY.toFixed(1)}`);
+
+          if (secondaryAnchor) {
+            const p2 = projectToScreen(secondaryAnchor, explosionCtx.camera, vw, vh, tmpVecB);
+            dotSecondary.setAttribute('opacity', '0.8');
+            polySecondary.setAttribute('opacity', '1');
+            dotSecondary.setAttribute('cx', p2.x.toFixed(1));
+            dotSecondary.setAttribute('cy', p2.y.toFixed(1));
+            polySecondary.setAttribute('points', `${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${elbowX.toFixed(1)},${(elbowY + 26).toFixed(1)} ${endX.toFixed(1)},${(endY + 26).toFixed(1)}`);
+          } else {
+            dotSecondary.setAttribute('opacity', '0');
+            polySecondary.setAttribute('opacity', '0');
+          }
+        } else {
+          svgGroup.setAttribute('opacity', '0');
+        }
+      }
+
+      // ---- Render 2: Bottom Interactive 360° Colorway Studio ----
+      if (studioVisible) {
+        studioHeadphone.updateFinishLerp(dt);
+        studioCtx.rimLight.color.lerp(FINISH_THEMES[activeFinishKey].rimLightColor, 0.08);
+
+        if (!isStudioDragging) {
+          studioYaw += dt * 0.28; // Gentle showroom turntable spin when idle
+        }
+        currentStudioExplode += (targetStudioExplode - currentStudioExplode) * damp;
+        studioHeadphone.setExplosion(currentStudioExplode, elapsed, currentStudioExplode > 0.2 ? 2 : 0);
+
+        studioHeadphone.root.rotation.y = studioYaw;
+        studioHeadphone.root.rotation.x = studioPitch;
+        studioHeadphone.root.position.y = -0.12 + Math.sin(elapsed * 1.5) * 0.025;
+
+        const targetZ = currentStudioExplode > 0.1 ? 7.65 : 5.55;
+        studioCtx.camera.position.z = THREE.MathUtils.lerp(studioCtx.camera.position.z, targetZ, damp);
+        studioCtx.camera.lookAt(0, 0.34, 0);
+
+        studioCtx.renderer.render(studioCtx.scene, studioCtx.camera);
+      }
+    }
+
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

@@ -1,0 +1,4239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>AETERNA PRISM · 全息镭射集换式卡牌开包与 3D 殿堂检视器</title>
+<style>
+  :root {
+    --holo-intensity: 1;
+    --ambient-r: 255;
+    --ambient-g: 250;
+    --ambient-b: 244;
+    --ambient-rgb: 255, 250, 244;
+    --ambient-hex: #fffaf4;
+    --kelvin-tint-strength: 0.28;
+    --card-w: clamp(248px, 21.5vw, 316px);
+    --card-h: calc(var(--card-w) * 1.4);
+    --card-radius: 18px;
+    --tex-grain: none;
+    --tex-brushed: none;
+    --tex-diamond-a: none;
+    --tex-diamond-b: none;
+    --tex-ssr-etch: none;
+    --card-back-img: none;
+    --font-serif: "Cinzel", "Playfair Display", "Songti SC", "Noto Serif SC", "STSong", Georgia, serif;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #05060b;
+    color: #f3efe6;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ================= AMBIENT SANCTUM BACKDROP ================= */
+  #sanctum-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 68% 56% at 50% 46%, rgba(var(--ambient-rgb), 0.11) 0%, rgba(22, 24, 42, 0.38) 48%, rgba(5, 6, 11, 0.98) 100%),
+      radial-gradient(circle at 20% 85%, rgba(62, 38, 108, 0.16), transparent 52%),
+      radial-gradient(circle at 82% 18%, rgba(28, 78, 118, 0.14), transparent 50%),
+      #05060b;
+    transition: background 0.25s ease;
+  }
+
+  #sanctum-grid {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.28;
+    background-image:
+      radial-gradient(circle at 50% 50%, transparent 0%, #05060b 82%),
+      linear-gradient(rgba(255, 225, 168, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 225, 168, 0.045) 1px, transparent 1px);
+    background-size: 100% 100%, 56px 56px, 56px 56px;
+    background-position: center center;
+  }
+
+  #ambient-spotlight {
+    position: fixed;
+    left: 50%;
+    top: 48%;
+    width: 780px;
+    height: 780px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    background: radial-gradient(circle, rgba(var(--ambient-rgb), 0.22) 0%, rgba(var(--ambient-rgb), 0.06) 38%, transparent 70%);
+    filter: blur(28px);
+    opacity: 0.65;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+  }
+
+  body.inspect-mode #ambient-spotlight {
+    opacity: 1;
+    transform: translate(calc(-50% - 135px), -50%) scale(1.12);
+  }
+
+  @media (max-width: 1080px) {
+    body.inspect-mode #ambient-spotlight {
+      transform: translate(-50%, -56%) scale(1.05);
+    }
+  }
+
+  #fx-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 35;
+    pointer-events: none;
+  }
+
+  /* ================= TOP HEADER HUD ================= */
+  #top-hud {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 68px;
+    padding: 0 clamp(16px, 3vw, 40px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
+    background: linear-gradient(180deg, rgba(5, 6, 12, 0.84) 0%, rgba(5, 6, 12, 0) 100%);
+    pointer-events: none;
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    pointer-events: auto;
+  }
+
+  .brand-crest {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #ffe299 0%, #b88328 48%, #5be2ff 100%);
+    padding: 1.5px;
+    box-shadow: 0 0 18px rgba(255, 206, 108, 0.32);
+  }
+
+  .brand-crest-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 7.5px;
+    background: #0b0d18;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 16px;
+    color: #ffe29a;
+  }
+
+  .brand-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .brand-main {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    background: linear-gradient(90deg, #fff6df, #ffd479 52%, #a8eeff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .brand-sub {
+    font-size: 11.5px;
+    color: rgba(226, 224, 238, 0.66);
+    letter-spacing: 0.06em;
+  }
+
+  .hud-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: auto;
+  }
+
+  .hud-pill {
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: #efe9dc;
+    background: rgba(18, 21, 36, 0.72);
+    border: 1px solid rgba(255, 217, 142, 0.24);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.22s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  .hud-pill:hover {
+    background: rgba(34, 39, 66, 0.88);
+    border-color: rgba(255, 217, 142, 0.58);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(255, 198, 92, 0.18);
+  }
+
+  .hud-pill.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px);
+  }
+
+  .status-badge {
+    padding: 6px 13px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: #ffd98e;
+    background: rgba(255, 204, 102, 0.09);
+    border: 1px solid rgba(255, 204, 102, 0.25);
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 720px) {
+    .status-badge, .brand-sub { display: none; }
+  }
+
+  /* ================= BOOSTER PACK RITUAL STAGE ================= */
+  #pack-stage {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    perspective: 1200px;
+    transition: opacity 0.55s ease, visibility 0.55s ease;
+  }
+
+  #pack-stage.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .pack-wrapper {
+    position: relative;
+    width: min(308px, 72vw);
+    height: min(476px, 65vh);
+    aspect-ratio: 308 / 476;
+    transform-style: preserve-3d;
+    cursor: grab;
+  }
+
+  .pack-wrapper:active {
+    cursor: grabbing;
+  }
+
+  .pack-aura {
+    position: absolute;
+    inset: -36px;
+    border-radius: 36px;
+    background: conic-gradient(
+      from 0deg,
+      rgba(255, 194, 82, 0.28),
+      rgba(94, 231, 255, 0.24),
+      rgba(198, 108, 255, 0.26),
+      rgba(255, 92, 148, 0.24),
+      rgba(255, 194, 82, 0.28)
+    );
+    filter: blur(34px);
+    opacity: 0.65;
+    animation: packAuraSpin 9s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes packAuraSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  .pack-3d {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--pack-rx, 0deg)) rotateY(var(--pack-ry, 0deg));
+    filter: drop-shadow(0 28px 46px rgba(0, 0, 0, 0.78));
+  }
+
+  /* Internal blinding light leak behind seam as user cuts */
+  .pack-inner-core {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    top: 42px;
+    height: 90px;
+    background: radial-gradient(ellipse at center, #ffffff 0%, #ffe694 35%, #ff55aa 68%, transparent 100%);
+    filter: blur(12px);
+    opacity: var(--cut-progress, 0);
+    transform: scaleY(calc(0.3 + var(--cut-progress, 0) * 1.6));
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* Detachable Top Crimp Cap */
+  #pack-top-cap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    z-index: 6;
+    transform-origin: 92% 100%;
+    transition: none;
+    overflow: hidden;
+    clip-path: polygon(
+      0% 8%, 4% 0%, 8% 8%, 12% 0%, 16% 8%, 20% 0%, 24% 8%, 28% 0%,
+      32% 8%, 36% 0%, 40% 8%, 44% 0%, 48% 8%, 52% 0%, 56% 8%, 60% 0%,
+      64% 8%, 68% 0%, 72% 8%, 76% 0%, 80% 8%, 84% 0%, 88% 8%, 92% 0%,
+      96% 8%, 100% 0%, 100% 100%, 0% 100%
+    );
+    background:
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.20) 0px,
+        rgba(255, 255, 255, 0.03) 2px,
+        rgba(0, 0, 0, 0.42) 4px,
+        rgba(255, 224, 150, 0.16) 6px
+      ),
+      linear-gradient(180deg, #545b72 0%, #242838 55%, #171a26 88%, #473922 100%);
+    border-bottom: 1px solid rgba(255, 219, 138, 0.48);
+  }
+
+  #pack-top-cap::after {
+    content: "1ST EDITION · SEALED ARCANUM";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 8px;
+    font-family: var(--font-serif);
+    font-size: 9.5px;
+    letter-spacing: 0.26em;
+    color: rgba(255, 234, 186, 0.65);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+
+  .pack-cap-sheen, .pack-body-sheen {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        calc(115deg + var(--pack-sheen-angle, 0deg)),
+        transparent 12%,
+        rgba(255, 235, 190, 0.12) 32%,
+        rgba(255, 255, 255, 0.62) 47%,
+        rgba(125, 232, 255, 0.36) 53%,
+        rgba(232, 132, 255, 0.22) 60%,
+        transparent 78%
+      );
+    background-size: 240% 240%;
+    background-position: var(--pack-bg-x, 50%) var(--pack-bg-y, 50%);
+    mix-blend-mode: overlay;
+  }
+
+  /* Main Booster Body */
+  #pack-body {
+    position: absolute;
+    top: 69px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 4;
+    overflow: hidden;
+    clip-path: polygon(
+      0% 0%, 100% 0%,
+      100% 98%, 96% 100%, 92% 98%, 88% 100%, 84% 98%, 80% 100%,
+      76% 98%, 72% 100%, 68% 98%, 64% 100%, 60% 98%, 56% 100%,
+      52% 98%, 48% 100%, 44% 98%, 40% 100%, 36% 98%, 32% 100%,
+      28% 98%, 24% 100%, 20% 98%, 16% 100%, 12% 98%, 8% 100%,
+      4% 98%, 0% 100%
+    );
+    background:
+      radial-gradient(circle at 50% 42%, rgba(255, 206, 104, 0.22) 0%, rgba(44, 30, 78, 0.55) 45%, #0e101c 88%),
+      linear-gradient(135deg, #1d2134 0%, #0d0f1a 50%, #1d172c 100%);
+    border-left: 1px solid rgba(255, 226, 168, 0.28);
+    border-right: 1px solid rgba(255, 226, 168, 0.28);
+    box-shadow:
+      inset 14px 0 22px -10px rgba(255, 255, 255, 0.24),
+      inset -14px 0 22px -10px rgba(0, 0, 0, 0.72);
+  }
+
+  /* Metallic vertical pillow side-folds */
+  #pack-body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--tex-grain);
+    opacity: 0.22;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+
+  .pack-bottom-crimp {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 36px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.18) 0px,
+        rgba(255, 255, 255, 0.02) 2px,
+        rgba(0, 0, 0, 0.45) 4px,
+        rgba(255, 218, 144, 0.15) 6px
+      ),
+      linear-gradient(0deg, #3c4256 0%, #191c2a 100%);
+    border-top: 1px solid rgba(255, 214, 134, 0.34);
+  }
+
+  .pack-holo-foil {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.56;
+    background:
+      repeating-linear-gradient(
+        125deg,
+        rgba(255, 72, 142, 0.26) 0%,
+        rgba(255, 198, 72, 0.26) 14%,
+        rgba(92, 255, 184, 0.24) 28%,
+        rgba(78, 206, 255, 0.28) 42%,
+        rgba(176, 98, 255, 0.26) 56%,
+        rgba(255, 72, 142, 0.26) 70%
+      );
+    background-size: 260% 260%;
+    background-position: var(--pack-bg-x, 50%) var(--pack-bg-y, 50%);
+    mix-blend-mode: color-dodge;
+  }
+
+  .pack-art-content {
+    position: absolute;
+    inset: 0 0 36px 0;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .pack-series-tag {
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    white-space: nowrap;
+    color: #ffd98d;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 214, 134, 0.42);
+    background: rgba(10, 12, 22, 0.62);
+  }
+
+  .pack-emblem-wrap {
+    position: relative;
+    width: 186px;
+    height: 186px;
+    display: grid;
+    place-items: center;
+  }
+
+  .pack-emblem-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 18px rgba(255, 204, 102, 0.42));
+  }
+
+  .pack-title-block {
+    text-align: center;
+  }
+
+  .pack-title-en {
+    font-family: var(--font-serif);
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    background: linear-gradient(180deg, #fffdf7 0%, #ffe094 48%, #c5892b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.85));
+  }
+
+  .pack-title-zh {
+    margin-top: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    color: #e8e2d5;
+  }
+
+  .pack-odds-note {
+    margin-top: 8px;
+    font-size: 9.8px;
+    white-space: nowrap;
+    color: rgba(218, 222, 240, 0.78);
+    letter-spacing: 0.04em;
+  }
+
+  /* Interactive Tear Seam Overlay */
+  #tear-zone {
+    position: absolute;
+    left: -18px;
+    right: -18px;
+    top: 36px;
+    height: 68px;
+    z-index: 12;
+    display: flex;
+    align-items: center;
+    cursor: ew-resize;
+  }
+
+  .tear-guide-line {
+    position: relative;
+    width: 100%;
+    height: 3px;
+    margin: 0 18px;
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(255, 222, 148, 0.88) 0px,
+      rgba(255, 222, 148, 0.88) 7px,
+      transparent 7px,
+      transparent 13px
+    );
+    box-shadow: 0 0 12px rgba(255, 204, 96, 0.65);
+  }
+
+  .tear-active-cut {
+    position: absolute;
+    left: 0;
+    top: -2px;
+    bottom: -2px;
+    width: calc(var(--cut-progress, 0) * 100%);
+    background: linear-gradient(90deg, #ffaa33, #fffbe8 65%, #70f3ff 100%);
+    box-shadow:
+      0 0 16px #ffe382,
+      0 0 32px #ff73c6;
+    border-radius: 4px;
+  }
+
+  .tear-notch {
+    position: absolute;
+    left: calc(var(--cut-progress, 0) * 100%);
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fffdf5 0%, #ffd573 58%, rgba(255, 166, 48, 0) 100%);
+    border: 1.5px solid #fff3cf;
+    box-shadow: 0 0 20px rgba(255, 210, 106, 0.95);
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    color: #18140d;
+    font-weight: 800;
+    animation: notchPulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes notchPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.16); }
+  }
+
+  .pack-hint-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    z-index: 15;
+  }
+
+  .pack-hint-main {
+    padding: 9px 20px;
+    border-radius: 999px;
+    background: rgba(18, 21, 35, 0.78);
+    border: 1px solid rgba(255, 214, 134, 0.36);
+    backdrop-filter: blur(10px);
+    color: #fff2d2;
+    font-size: 13.5px;
+    letter-spacing: 0.08em;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .pack-hint-main:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 224, 152, 0.8);
+  }
+
+  .pack-hint-sub {
+    font-size: 12px;
+    color: rgba(206, 210, 232, 0.62);
+    letter-spacing: 0.06em;
+  }
+
+  /* ================= 3-CARD GALLERY & 3D STAGE ================= */
+  #cards-stage {
+    position: fixed;
+    inset: 0;
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(18px, 3vw, 44px);
+    padding: 72px 24px 48px;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease;
+  }
+
+  #cards-stage.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  body.inspect-mode #cards-stage {
+    pointer-events: auto;
+  }
+
+  .card-slot {
+    position: relative;
+    width: var(--card-w);
+    height: var(--card-h);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    will-change: transform, opacity, filter;
+  }
+
+  .card-slot.inspected {
+    z-index: 30;
+  }
+
+  body.inspect-mode .card-slot:not(.inspected) {
+    filter: blur(5px) brightness(0.32) saturate(0.65);
+    opacity: 0.28 !important;
+    pointer-events: none;
+  }
+
+  .card-perspective {
+    width: 100%;
+    height: 100%;
+    perspective: 1150px;
+    cursor: pointer;
+  }
+
+  body.inspect-mode .card-slot.inspected .card-perspective {
+    cursor: grab;
+  }
+
+  body.inspect-mode .card-slot.inspected .card-perspective:active {
+    cursor: grabbing;
+  }
+
+  /* Core 3D Rotator: NO overflow:hidden or filter here so preserve-3d stays 100% true! */
+  .card-rotator {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    will-change: transform;
+  }
+
+  /* Dynamic drop shadow beneath card */
+  .card-ground-shadow {
+    position: absolute;
+    inset: 5%;
+    border-radius: 22px;
+    background: rgba(0, 0, 0, 0.82);
+    filter: blur(24px);
+    transform: translate3d(calc(var(--px, 0) * -18px), calc(22px + var(--py, 0) * -14px), -36px);
+    pointer-events: none;
+    transition: background 0.3s ease;
+  }
+
+  .rarity-ssr .card-ground-shadow {
+    background: radial-gradient(circle, rgba(255, 192, 68, 0.42) 0%, rgba(0, 0, 0, 0.88) 72%);
+  }
+
+  .rarity-sr .card-ground-shadow {
+    background: radial-gradient(circle, rgba(84, 228, 255, 0.34) 0%, rgba(0, 0, 0, 0.88) 72%);
+  }
+
+  .rarity-r .card-ground-shadow {
+    background: radial-gradient(circle, rgba(182, 208, 255, 0.28) 0%, rgba(0, 0, 0, 0.88) 72%);
+  }
+
+  /* Gilded Physical Cardstock Edge Thickness */
+  .card-edge-slice {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--card-radius);
+    pointer-events: none;
+  }
+
+  .rarity-r .card-edge-slice {
+    background: linear-gradient(135deg, #d8e6ff, #6d7f9e 45%, #eef5ff 75%, #4b5975);
+  }
+  .rarity-sr .card-edge-slice {
+    background: linear-gradient(135deg, #dffbff, #4ec8f0 45%, #e5c6ff 75%, #2b6f9e);
+  }
+  .rarity-ssr .card-edge-slice {
+    background: linear-gradient(135deg, #fff5c0, #d89624 42%, #ffdf78 72%, #8c5508);
+  }
+
+  .card-edge-slice.e1 { transform: translateZ(-0.8px); }
+  .card-edge-slice.e2 { transform: translateZ(0px); }
+  .card-edge-slice.e3 { transform: translateZ(0.8px); }
+
+  /* Card Front & Back Faces */
+  .card-face {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--card-radius);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .card-front {
+    transform: rotateY(0deg) translateZ(1.7px);
+    transform-style: preserve-3d;
+  }
+
+  .card-back {
+    transform: rotateY(180deg) translateZ(1.7px);
+    overflow: hidden;
+    isolation: isolate;
+    background: #0a0c16;
+    box-shadow: inset 0 0 0 2px rgba(255, 214, 130, 0.55);
+  }
+
+  /* Isolated Optical Clip Container for Front Face Art + Multi-Blend Holo */
+  .card-front-clip {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    isolation: isolate;
+    background: #090b14;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* Genuine 3D Pop-Out Floating Crest above Card Surface */
+  .card-popout-badge {
+    position: absolute;
+    top: 11px;
+    right: 12px;
+    z-index: 25;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    transform: translateZ(18px) translate3d(calc(var(--px, 0) * 5px), calc(var(--py, 0) * 5px), 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    pointer-events: none;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.65);
+  }
+
+  .rarity-r .card-popout-badge {
+    background: linear-gradient(135deg, #f5f9ff 0%, #98aecf 55%, #dce8ff 100%);
+    color: #101829;
+    border: 1px solid #ffffff;
+  }
+
+  .rarity-sr .card-popout-badge {
+    background: linear-gradient(135deg, #e8fdff 0%, #5ce1ff 48%, #d79bff 100%);
+    color: #081828;
+    border: 1px solid #ffffff;
+  }
+
+  .rarity-ssr .card-popout-badge {
+    background: linear-gradient(135deg, #fffbe0 0%, #ffc947 45%, #ff6aa8 78%, #ffe588 100%);
+    color: #210d04;
+    border: 1px solid #fff8d6;
+    box-shadow: 0 8px 18px rgba(255, 180, 48, 0.55);
+  }
+
+  /* ================= MULTI-LAYER 3D PARALLAX ART WINDOW ================= */
+  .art-portal {
+    position: absolute;
+    inset: 8px;
+    border-radius: 13px;
+    overflow: hidden;
+    background: #060812;
+  }
+
+  .rarity-ssr .art-portal {
+    inset: 5px;
+    border-radius: 14px;
+  }
+
+  .parallax-layer {
+    position: absolute;
+    inset: -9%;
+    width: 118%;
+    height: 118%;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .parallax-layer img,
+  .parallax-layer svg,
+  .parallax-layer canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* Deep sky / nebula moves opposite to tilt -> deep sunken portal illusion */
+  .layer-bg {
+    transform: translate3d(calc(var(--px, 0) * -19px), calc(var(--py, 0) * -19px), 0) scale(1.06);
+  }
+
+  /* Selective Background Holo Underlay (glows behind hero like authentic SAR/UR cards!) */
+  .layer-bg-holo {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: color-dodge;
+    opacity: calc(0.32 * var(--holo-intensity, 1) * var(--holo-active, 0.35));
+    background:
+      repeating-linear-gradient(
+        calc(115deg + var(--holo-angle, 0deg)),
+        #000 0%,
+        #3f6899 8%,
+        #8f4299 16%,
+        #997833 24%,
+        #2d8a78 32%,
+        #000 40%
+      );
+    background-size: 260% 260%;
+    background-position: var(--bg-x, 50%) var(--bg-y, 50%);
+  }
+
+  /* Sacred Geometry / Architecture Midground */
+  .layer-mid {
+    transform: translate3d(calc(var(--px, 0) * -9px), calc(var(--py, 0) * -9px), 0) scale(1.03);
+  }
+
+  /* Dynamic Hero Cast Shadow onto Midground */
+  .layer-hero-shadow {
+    transform: translate3d(calc(var(--px, 0) * -2px), calc(var(--py, 0) * -2px + 8px), 0) scale(1.02);
+    filter: brightness(0) blur(8px);
+    opacity: 0.58;
+  }
+
+  /* Main Hero Subject pops forward */
+  .layer-hero {
+    transform: translate3d(calc(var(--px, 0) * 10px), calc(var(--py, 0) * 10px), 0) scale(1.03);
+  }
+
+  /* Foreground Shards / Embers / Feathers closest to glass */
+  .layer-fg {
+    transform: translate3d(calc(var(--px, 0) * 21px), calc(var(--py, 0) * 21px), 0) scale(1.06);
+  }
+
+  /* Inner Shadowbox Depth Vignette */
+  .portal-depth-shadow {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 0 26px rgba(0, 0, 0, 0.88),
+      inset 0 2px 8px rgba(0, 0, 0, 0.75);
+    pointer-events: none;
+  }
+
+  /* ================= ORNATE TCG CARD FRAME & LORE ================= */
+  .card-frame-ui {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 11px 12px 11px;
+    transform: translate3d(calc(var(--px, 0) * 2.5px), calc(var(--py, 0) * 2.5px), 0);
+  }
+
+  /* Metallic Outer Frame Border SVG */
+  .frame-border-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .card-header-bar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 52px 5px 9px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, rgba(8, 11, 22, 0.88) 0%, rgba(14, 18, 34, 0.74) 78%, rgba(14, 18, 34, 0.25) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .rarity-ssr .card-header-bar {
+    border-color: rgba(255, 214, 112, 0.58);
+    background: linear-gradient(90deg, rgba(24, 12, 8, 0.86) 0%, rgba(38, 22, 10, 0.68) 76%, rgba(38, 22, 10, 0.18) 100%);
+  }
+
+  .mana-orb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-serif);
+    font-size: 11.5px;
+    font-weight: 800;
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.75), 0 2px 6px rgba(0, 0, 0, 0.6);
+  }
+
+  .rarity-r .mana-orb {
+    background: radial-gradient(circle at 35% 30%, #ffffff, #7aa2d8 58%, #24385c);
+    color: #091224;
+  }
+  .rarity-sr .mana-orb {
+    background: radial-gradient(circle at 35% 30%, #ffffff, #38dcff 55%, #12487e);
+    color: #041629;
+  }
+  .rarity-ssr .mana-orb {
+    background: radial-gradient(circle at 35% 30%, #fffef2, #ffbe3b 55%, #8c2f08);
+    color: #260b00;
+  }
+
+  .card-name-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .card-name-zh {
+    font-family: var(--font-serif);
+    font-size: clamp(12px, 1.05vw, 14px);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #fff9ed;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+  }
+
+  .card-type-line {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: rgba(232, 228, 218, 0.76);
+  }
+
+  .card-lore-box {
+    position: relative;
+    z-index: 2;
+    padding: 8px 10px 7px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(8, 10, 20, 0.80) 0%, rgba(5, 7, 15, 0.92) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    backdrop-filter: blur(7px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.65);
+  }
+
+  .rarity-sr .card-lore-box {
+    border-color: rgba(126, 232, 255, 0.38);
+  }
+
+  .rarity-ssr .card-lore-box {
+    border-color: rgba(255, 212, 106, 0.55);
+    background: linear-gradient(180deg, rgba(22, 12, 10, 0.78) 0%, rgba(12, 7, 10, 0.91) 100%);
+  }
+
+  .card-skill-text {
+    font-size: 10.2px;
+    line-height: 1.44;
+    color: rgba(244, 240, 232, 0.92);
+    letter-spacing: 0.02em;
+  }
+
+  .card-skill-tag {
+    font-weight: 700;
+    color: #ffd982;
+  }
+
+  .rarity-r .card-skill-tag { color: #c7dfff; }
+  .rarity-sr .card-skill-tag { color: #7ef0ff; }
+
+  .card-footer-meta {
+    margin-top: 6px;
+    padding-top: 5px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 9px;
+    color: rgba(210, 214, 230, 0.72);
+  }
+
+  .card-stats {
+    font-family: var(--font-serif);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #fff3d6;
+  }
+
+  /* Tiny Corner Anti-Counterfeit Laser Security Stamp */
+  .holo-security-stamp {
+    width: 15px;
+    height: 11px;
+    border-radius: 3px;
+    background: conic-gradient(
+      from calc(var(--holo-angle, 0deg) * 2),
+      #ff6b9d, #ffd966, #6bffb8, #6bd4ff, #c47aff, #ff6b9d
+    );
+    box-shadow: 0 0 6px rgba(255, 224, 150, 0.6);
+    opacity: 0.9;
+  }
+
+  /* =====================================================================
+     HALL-OF-FAME HOLOGRAPHIC DIFFRACTION & GLARE SHADER STACK (REQUIREMENT 2)
+     ===================================================================== */
+  .holo-layer {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--card-radius);
+    pointer-events: none;
+    z-index: 14;
+  }
+
+  /* -------- 1. [R · 银闪] Brushed Sterling Silver & Lunar Chrome Foil -------- */
+  .rarity-r .holo-foil-main {
+    mix-blend-mode: color-dodge;
+    opacity: clamp(0, calc((0.18 + var(--holo-active, 0.25) * 0.58) * var(--holo-intensity, 1)), 1);
+    background-image:
+      var(--tex-brushed),
+      repeating-linear-gradient(
+        calc(108deg + var(--holo-angle, 0deg) * 0.5),
+        #05070c 0%,
+        #364863 7%,
+        #8eb5e8 14%,
+        #d6e8ff 18%,
+        #5c7aa6 23%,
+        #121926 31%,
+        #4c6c8c 39%,
+        #b8d6f5 45%,
+        #05070c 54%
+      ),
+      radial-gradient(
+        farthest-corner circle at var(--mx, 50%) var(--my, 50%),
+        rgba(220, 238, 255, 0.82) 0%,
+        rgba(104, 154, 220, 0.34) 36%,
+        rgba(10, 14, 24, 0.1) 75%
+      );
+    background-size: 180px 180px, 280% 280%, 160% 160%;
+    background-position: center center, var(--bg-x, 50%) var(--bg-y, 50%), center center;
+    background-blend-mode: overlay, screen, normal;
+    filter: brightness(0.92) contrast(1.25);
+  }
+
+  .rarity-r .holo-foil-prism {
+    mix-blend-mode: overlay;
+    opacity: clamp(0, calc((0.15 + var(--holo-active, 0.25) * 0.48) * var(--holo-intensity, 1)), 1);
+    background-image:
+      var(--tex-grain),
+      linear-gradient(
+        calc(130deg - var(--holo-angle, 0deg)),
+        transparent 18%,
+        rgba(168, 212, 255, 0.52) 40%,
+        rgba(255, 255, 255, 0.85) 50%,
+        rgba(182, 168, 255, 0.46) 60%,
+        transparent 82%
+      );
+    background-size: 140px 140px, 240% 240%;
+    background-position: 0 0, var(--bg-x, 50%) var(--bg-y, 50%);
+    background-blend-mode: soft-light, normal;
+  }
+
+  /* -------- 2. [SR · 碎钻闪] True Voronoi Shattered-Diamond Prism Foil -------- */
+  .rarity-sr .holo-foil-main {
+    mix-blend-mode: color-dodge;
+    opacity: clamp(0, calc((0.22 + var(--holo-active, 0.3) * 0.72) * var(--holo-intensity, 1)), 1);
+    background-image:
+      var(--tex-diamond-a),
+      repeating-linear-gradient(
+        calc(122deg + var(--holo-angle, 0deg) * 0.75),
+        #080c14 0%,
+        #1a7fa8 8%,
+        #5cf2ff 15%,
+        #d17aff 22%,
+        #ff6ec7 29%,
+        #58ffc9 36%,
+        #4895ff 43%,
+        #080c14 50%
+      ),
+      radial-gradient(
+        farthest-corner circle at var(--mx, 50%) var(--my, 50%),
+        rgba(235, 252, 255, 0.95) 0%,
+        rgba(72, 216, 255, 0.45) 38%,
+        rgba(12, 18, 36, 0.08) 78%
+      );
+    background-size: 210px 210px, 320% 320%, 150% 150%;
+    background-position:
+      calc(var(--px, 0) * 18px) calc(var(--py, 0) * 18px),
+      var(--bg-x, 50%) var(--bg-y, 50%),
+      center center;
+    background-blend-mode: hard-light, screen, normal;
+    filter: contrast(1.48) saturate(1.35) brightness(0.88);
+  }
+
+  /* Counter-shifting Voronoi Facet Scintillation Layer -> individual diamond shards flash! */
+  .rarity-sr .holo-foil-prism {
+    mix-blend-mode: color-dodge;
+    opacity: clamp(0, calc((0.14 + var(--holo-active, 0.3) * 0.68) * var(--holo-intensity, 1)), 1);
+    background-image:
+      var(--tex-diamond-b),
+      var(--tex-diamond-a),
+      conic-gradient(
+        from calc(var(--holo-angle, 0deg) * 1.5) at var(--mx, 50%) var(--my, 50%),
+        #00d9ff, #9d4edd, #ff3d9a, #ffea70, #00f5b8, #00d9ff
+      );
+    background-size: 210px 210px, 155px 155px, 180% 180%;
+    background-position:
+      calc(var(--bg-x, 50%) * 0.55) calc(var(--bg-y, 50%) * 0.55),
+      calc(100% - var(--bg-x, 50%) * 0.45) calc(100% - var(--bg-y, 50%) * 0.45),
+      center center;
+    background-blend-mode: difference, multiply, normal;
+    filter: contrast(2.35) brightness(0.76) saturate(1.5);
+  }
+
+  /* -------- 3. [SSR · 彩虹全息金闪] Full-Spectrum Rainbow Diffraction + 24K Etched Gold -------- */
+  .rarity-ssr .holo-foil-main {
+    mix-blend-mode: color-dodge;
+    opacity: clamp(0, calc((0.28 + var(--holo-active, 0.36) * 0.74) * var(--holo-intensity, 1)), 1);
+    background-image:
+      var(--tex-ssr-etch),
+      repeating-linear-gradient(
+        calc(115deg + var(--holo-angle, 0deg)),
+        #170d04 0%,
+        #c9365e 6.5%,
+        #db7f1d 13%,
+        #d4be22 19.5%,
+        #22bf78 26%,
+        #1fa8d9 32.5%,
+        #6e44d9 39%,
+        #d435a2 45.5%,
+        #170d04 52%
+      ),
+      repeating-linear-gradient(
+        calc(28deg - var(--holo-angle, 0deg) * 0.65),
+        rgba(255, 208, 88, 0.45) 0%,
+        rgba(0, 0, 0, 0.55) 7%,
+        rgba(255, 92, 168, 0.36) 14%,
+        rgba(68, 232, 255, 0.38) 21%,
+        rgba(255, 208, 88, 0.45) 28%
+      ),
+      radial-gradient(
+        farthest-corner circle at var(--mx, 50%) var(--my, 50%),
+        rgba(255, 246, 198, 0.96) 0%,
+        rgba(255, 190, 68, 0.52) 34%,
+        rgba(64, 24, 88, 0.16) 76%
+      );
+    background-size: 100% 100%, 300% 300%, 240% 240%, 150% 150%;
+    background-position:
+      center center,
+      var(--bg-x, 50%) var(--bg-y, 50%),
+      calc(100% - var(--bg-x, 50%)) var(--bg-y, 50%),
+      center center;
+    background-blend-mode: overlay, exclusion, screen, normal;
+    filter: contrast(1.36) saturate(1.55) brightness(0.9);
+  }
+
+  .rarity-ssr .holo-foil-prism {
+    mix-blend-mode: overlay;
+    opacity: clamp(0, calc((0.24 + var(--holo-active, 0.36) * 0.64) * var(--holo-intensity, 1)), 1);
+    background-image:
+      var(--tex-grain),
+      conic-gradient(
+        from calc(var(--holo-angle, 0deg) * 1.8) at var(--mx, 50%) var(--my, 50%),
+        rgba(255, 214, 92, 0.88),
+        rgba(255, 68, 138, 0.78),
+        rgba(92, 255, 208, 0.78),
+        rgba(82, 168, 255, 0.78),
+        rgba(218, 102, 255, 0.78),
+        rgba(255, 232, 128, 0.92),
+        rgba(255, 214, 92, 0.88)
+      );
+    background-size: 130px 130px, 160% 160%;
+    background-position: 0 0, center center;
+    background-blend-mode: soft-light, normal;
+    filter: saturate(1.45);
+  }
+
+  /* -------- 4. Diagonal Specular Sweep Glare (斜向高光扫光) -------- */
+  .holo-sweep-beam {
+    z-index: 16;
+    mix-blend-mode: overlay;
+    opacity: calc(0.28 + var(--glare-op, 0.25) * 0.72);
+    background:
+      linear-gradient(
+        calc(118deg + var(--px, 0) * 26deg),
+        transparent 0%,
+        transparent calc(var(--sweep-pos, 50%) - 26%),
+        rgba(var(--ambient-rgb), 0.12) calc(var(--sweep-pos, 50%) - 13%),
+        rgba(var(--ambient-rgb), 0.86) var(--sweep-pos, 50%),
+        rgba(255, 255, 255, 0.96) calc(var(--sweep-pos, 50%) + 1.8%),
+        rgba(var(--ambient-rgb), 0.14) calc(var(--sweep-pos, 50%) + 14%),
+        transparent calc(var(--sweep-pos, 50%) + 28%),
+        transparent 100%
+      );
+  }
+
+  /* Point-Light Specular Hotspot + Ambient Kelvin Surface Tint */
+  .holo-hotspot {
+    z-index: 17;
+    mix-blend-mode: soft-light;
+    opacity: calc(0.45 + var(--glare-op, 0.25) * 0.55);
+    background:
+      radial-gradient(
+        farthest-corner circle at var(--mx, 50%) var(--my, 50%),
+        rgba(var(--ambient-rgb), 0.92) 0%,
+        rgba(var(--ambient-rgb), 0.36) 28%,
+        rgba(0, 0, 0, 0.28) 84%
+      );
+  }
+
+  .holo-kelvin-cast {
+    z-index: 18;
+    mix-blend-mode: color;
+    opacity: var(--kelvin-tint-strength, 0.16);
+    background: rgb(var(--ambient-rgb));
+  }
+
+  /* Inner Rim Specular Bevel */
+  .card-rim-bevel {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--card-radius);
+    z-index: 20;
+    pointer-events: none;
+    box-shadow:
+      inset 0 0 0 1.5px rgba(var(--ambient-rgb), 0.42),
+      inset 0 1px 3px rgba(255, 255, 255, 0.55);
+  }
+
+  /* ================= ORNATE CARD BACK CREST & FOIL ================= */
+  .card-back-art {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: var(--card-back-img);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .card-back-foil {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    mix-blend-mode: color-dodge;
+    opacity: clamp(0, calc((0.22 + var(--holo-active, 0.3) * 0.56) * var(--holo-intensity, 1)), 1);
+    background-image:
+      var(--tex-grain),
+      repeating-linear-gradient(
+        calc(125deg - var(--holo-angle, 0deg)),
+        #0c0a06 0%,
+        #8f6218 10%,
+        #ffe082 18%,
+        #4ecbff 26%,
+        #c86bff 34%,
+        #ffcf66 42%,
+        #0c0a06 52%
+      );
+    background-size: 140px 140px, 280% 280%;
+    background-position: 0 0, calc(100% - var(--bg-x, 50%)) var(--bg-y, 50%);
+    filter: contrast(1.3) brightness(0.88);
+  }
+
+  .card-back-glare {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    background:
+      radial-gradient(
+        farthest-corner circle at calc(100% - var(--mx, 50%)) var(--my, 50%),
+        rgba(var(--ambient-rgb), 0.85) 0%,
+        rgba(var(--ambient-rgb), 0.22) 34%,
+        transparent 74%
+      ),
+      linear-gradient(
+        calc(62deg - var(--px, 0) * 26deg),
+        transparent calc(100% - var(--sweep-pos, 50%) - 22%),
+        rgba(var(--ambient-rgb), 0.65) calc(100% - var(--sweep-pos, 50%)),
+        transparent calc(100% - var(--sweep-pos, 50%) + 22%)
+      );
+  }
+
+  /* Gallery Card Pedestal Caption */
+  .card-caption {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+    pointer-events: none;
+  }
+
+  body.inspect-mode .card-caption {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .caption-rarity-pill {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 2px 10px;
+    border-radius: 999px;
+  }
+
+  .rarity-r .caption-rarity-pill {
+    color: #d9e8ff;
+    background: rgba(132, 168, 224, 0.18);
+    border: 1px solid rgba(168, 202, 255, 0.42);
+  }
+  .rarity-sr .caption-rarity-pill {
+    color: #9bf3ff;
+    background: rgba(68, 212, 255, 0.16);
+    border: 1px solid rgba(102, 232, 255, 0.48);
+  }
+  .rarity-ssr .caption-rarity-pill {
+    color: #ffe28a;
+    background: rgba(255, 192, 68, 0.18);
+    border: 1px solid rgba(255, 212, 108, 0.56);
+  }
+
+  .caption-hint {
+    font-size: 11.5px;
+    color: rgba(210, 214, 232, 0.58);
+    letter-spacing: 0.04em;
+    transition: color 0.2s ease;
+  }
+
+  .card-slot:hover .caption-hint {
+    color: #ffe29a;
+  }
+
+  /* ================= APPRECIATION MODE INSPECTOR DOCK (REQUIREMENT 3) ================= */
+  #inspect-backdrop-catcher {
+    position: fixed;
+    inset: 0;
+    z-index: 24;
+    background: rgba(4, 5, 10, 0.58);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.38s ease, visibility 0.38s ease;
+  }
+
+  body.inspect-mode #inspect-backdrop-catcher {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #inspector-dock {
+    position: fixed;
+    right: clamp(20px, 4.5vw, 68px);
+    top: 50%;
+    transform: translate(36px, -50%);
+    width: min(356px, 90vw);
+    z-index: 45;
+    padding: 22px 22px 20px;
+    border-radius: 22px;
+    background: linear-gradient(165deg, rgba(19, 22, 38, 0.86) 0%, rgba(10, 12, 22, 0.92) 100%);
+    border: 1px solid rgba(255, 218, 146, 0.28);
+    box-shadow:
+      0 24px 60px rgba(0, 0, 0, 0.75),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.36s ease, transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.36s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  body.inspect-mode #inspector-dock {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate(0, -50%);
+  }
+
+  @media (max-width: 1080px) {
+    #inspector-dock {
+      right: 50%;
+      top: auto;
+      bottom: 14px;
+      width: min(520px, 94vw);
+      padding: 15px 18px;
+      gap: 11px;
+      transform: translate(50%, 28px);
+    }
+    body.inspect-mode #inspector-dock {
+      transform: translate(50%, 0);
+    }
+  }
+
+  .dock-top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .dock-rarity-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #ffd884;
+    text-transform: uppercase;
+  }
+
+  .dock-card-title {
+    margin-top: 3px;
+    font-family: var(--font-serif);
+    font-size: 19px;
+    font-weight: 700;
+    color: #fff8eb;
+    letter-spacing: 0.04em;
+  }
+
+  .dock-close-btn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.07);
+    color: #ece8de;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .dock-close-btn:hover {
+    background: rgba(255, 210, 120, 0.2);
+    border-color: rgba(255, 210, 120, 0.6);
+  }
+
+  .dock-gesture-tip {
+    padding: 8px 12px;
+    border-radius: 11px;
+    background: rgba(255, 214, 130, 0.07);
+    border: 1px solid rgba(255, 214, 130, 0.18);
+    font-size: 11.5px;
+    color: #e6decb;
+    line-height: 1.45;
+  }
+
+  .dock-btn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+
+  .dock-action-btn {
+    padding: 9px 12px;
+    border-radius: 11px;
+    border: 1px solid rgba(255, 218, 144, 0.3);
+    background: rgba(30, 35, 58, 0.78);
+    color: #fff4dc;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .dock-action-btn:hover {
+    background: rgba(52, 60, 96, 0.92);
+    border-color: rgba(255, 218, 144, 0.68);
+  }
+
+  .dock-action-btn.active {
+    background: linear-gradient(135deg, rgba(255, 200, 88, 0.28), rgba(98, 216, 255, 0.24));
+    border-color: #ffd982;
+    color: #ffe9ad;
+    box-shadow: 0 0 16px rgba(255, 202, 92, 0.24);
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .control-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12.5px;
+    color: #e8e4da;
+    font-weight: 500;
+  }
+
+  .control-val {
+    font-family: var(--font-serif);
+    font-size: 12px;
+    color: #ffd988;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .kelvin-swatch {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: rgb(var(--ambient-rgb));
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 0 8px rgb(var(--ambient-rgb));
+  }
+
+  /* Custom Styled Range Sliders */
+  input[type="range"].prism-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 7px;
+    border-radius: 999px;
+    outline: none;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  #slider-angle {
+    background: linear-gradient(90deg, #323954 0%, #7382b8 50%, #323954 100%);
+  }
+
+  #slider-holo {
+    background: linear-gradient(90deg, #1e2233 0%, #ff5e9c 32%, #ffe066 56%, #56f0ff 80%, #c875ff 100%);
+  }
+
+  #slider-kelvin {
+    background: linear-gradient(90deg, #ff8a2b 0%, #ffc978 25%, #fffaf4 50%, #cde4ff 76%, #75b4ff 100%);
+  }
+
+  input[type="range"].prism-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fffdf7;
+    border: 2px solid #d49b35;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.75), 0 0 10px rgba(255, 214, 128, 0.65);
+    transition: transform 0.15s ease;
+  }
+
+  input[type="range"].prism-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.18);
+  }
+
+  .dock-bottom-nav {
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-switch-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mini-btn {
+    padding: 5px 11px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.06);
+    color: #ddd8cc;
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+
+  .mini-btn:hover {
+    background: rgba(255, 214, 134, 0.18);
+    border-color: rgba(255, 214, 134, 0.5);
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<div id="sanctum-bg"></div>
+<div id="sanctum-grid"></div>
+<div id="ambient-spotlight"></div>
+<canvas id="fx-canvas"></canvas>
+
+<!-- Top Header Bar -->
+<header id="top-hud">
+  <div class="brand-group">
+    <div class="brand-crest"><div class="brand-crest-inner">✦</div></div>
+    <div class="brand-titles">
+      <div class="brand-main">AETERNA PRISM</div>
+      <div class="brand-sub">全息镭射集换式卡牌 · 3D 光学检视馆</div>
+    </div>
+  </div>
+  <div class="hud-actions">
+    <span id="stage-status" class="status-badge">仪式阶段 · 密封神秘补充包</span>
+    <button id="btn-reopen" class="hud-pill hidden" type="button">✨ 再开一包</button>
+    <button id="btn-sound" class="hud-pill" type="button">🔊 礼仪音效: 开</button>
+  </div>
+</header>
+
+<!-- Stage 1: Metallic Booster Pack Opening Ritual -->
+<section id="pack-stage">
+  <div class="pack-wrapper" id="pack-wrapper">
+    <div class="pack-aura"></div>
+    <div class="pack-3d" id="pack-3d">
+      <div class="pack-inner-core" id="pack-inner-core"></div>
+
+      <!-- Top Detachable Crimp Seal -->
+      <div id="pack-top-cap">
+        <div class="pack-cap-sheen"></div>
+      </div>
+
+      <!-- Interactive Swipe / Click Tear Seam -->
+      <div id="tear-zone" title="横向划开封口，或点击直接撕开">
+        <div class="tear-guide-line">
+          <div class="tear-active-cut"></div>
+          <div class="tear-notch">✂</div>
+        </div>
+      </div>
+
+      <!-- Booster Pack Foil Body -->
+      <div id="pack-body">
+        <div class="pack-art-content">
+          <div class="pack-series-tag">CHRONICLES OF GENESIS · VOL.I</div>
+
+          <div class="pack-emblem-wrap">
+            <svg class="pack-emblem-svg" viewBox="0 0 200 200">
+              <defs>
+                <linearGradient id="packGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#fff8d8"/>
+                  <stop offset="45%" stop-color="#ffd066"/>
+                  <stop offset="100%" stop-color="#9e6414"/>
+                </linearGradient>
+                <linearGradient id="packPrism" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#5ce8ff"/>
+                  <stop offset="50%" stop-color="#ffd76e"/>
+                  <stop offset="100%" stop-color="#ff6bb5"/>
+                </linearGradient>
+              </defs>
+              <circle cx="100" cy="100" r="88" fill="none" stroke="url(#packGold)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.8"/>
+              <circle cx="100" cy="100" r="76" fill="rgba(10,12,24,0.65)" stroke="url(#packGold)" stroke-width="2"/>
+              <g stroke="url(#packGold)" stroke-width="1.2" fill="none" opacity="0.85">
+                <polygon points="100,24 166,138 34,138"/>
+                <polygon points="100,176 166,62 34,62"/>
+                <polygon points="100,32 148,100 100,168 52,100"/>
+              </g>
+              <circle cx="100" cy="100" r="42" fill="rgba(16,18,35,0.9)" stroke="url(#packPrism)" stroke-width="2"/>
+              <path d="M100 62 L111 89 L138 100 L111 111 L100 138 L89 111 L62 100 L89 89 Z" fill="url(#packPrism)"/>
+              <circle cx="100" cy="100" r="10" fill="#fffdf4"/>
+            </svg>
+          </div>
+
+          <div class="pack-title-block">
+            <div class="pack-title-en">AETERNA PRISM</div>
+            <div class="pack-title-zh">万象神冕 · 典藏全息卡包</div>
+            <div class="pack-odds-note">内含 3 张必出闪卡（R 银闪 / SR 碎钻闪 / SSR 金闪）</div>
+          </div>
+        </div>
+        <div class="pack-holo-foil"></div>
+        <div class="pack-body-sheen"></div>
+        <div class="pack-bottom-crimp"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pack-hint-box">
+    <button type="button" class="pack-hint-main" id="btn-quick-rip">
+      ✦ 横向划过封口虚线 · 或点击此处撕开卡包 ✦
+    </button>
+    <div class="pack-hint-sub">移动鼠标可观察金属包装袋流光 · 撕开见证三阶稀有度全息奇幻卡牌</div>
+  </div>
+</section>
+
+<!-- Backdrop click catcher for exiting Appreciation Mode -->
+<div id="inspect-backdrop-catcher"></div>
+
+<!-- Stage 2: 3-Card Showcase & 3D Perspective Stage -->
+<main id="cards-stage"></main>
+
+<!-- Stage 3: Appreciation Mode Optical & 360° Inspector Dock -->
+<aside id="inspector-dock" aria-label="卡牌鉴赏控制台">
+  <div class="dock-top-row">
+    <div>
+      <div class="dock-rarity-label" id="dock-rarity">SSR · 彩虹全息金闪</div>
+      <div class="dock-card-title" id="dock-title">万象神冕·炽阳创世龙皇</div>
+    </div>
+    <button type="button" class="dock-close-btn" id="btn-exit-inspect">✕ 返回卡阵</button>
+  </div>
+
+  <div class="dock-gesture-tip">
+    🖱️ <b>悬浮移动</b>检视多层视差与全息衍射；<b>按住左右拖拽卡牌</b>可进行无极 <b>360° 翻转</b>细赏卡背纹章与金边切口。
+  </div>
+
+  <div class="dock-btn-row">
+    <button type="button" class="dock-action-btn" id="btn-flip-180">🔄 翻转正/卡背 (180°)</button>
+    <button type="button" class="dock-action-btn" id="btn-turntable">🎡 360° 自动环绕</button>
+  </div>
+
+  <div class="control-group">
+    <div class="control-header">
+      <span>360° 空间翻转角度</span>
+      <span class="control-val" id="val-angle">正面 · 0°</span>
+    </div>
+    <input type="range" id="slider-angle" class="prism-slider" min="0" max="360" step="1" value="0" />
+  </div>
+
+  <div class="control-group">
+    <div class="control-header">
+      <span>🌈 全息镭射衍射强度</span>
+      <span class="control-val" id="val-holo">100%</span>
+    </div>
+    <input type="range" id="slider-holo" class="prism-slider" min="0" max="200" step="1" value="100" />
+  </div>
+
+  <div class="control-group">
+    <div class="control-header">
+      <span>🌡️ 环境光色温调节</span>
+      <span class="control-val"><span class="kelvin-swatch"></span><span id="val-kelvin">6500K · 标准日光</span></span>
+    </div>
+    <input type="range" id="slider-kelvin" class="prism-slider" min="2000" max="12000" step="100" value="6500" />
+  </div>
+
+  <div class="dock-bottom-nav">
+    <div class="nav-switch-group">
+      <button type="button" class="mini-btn" id="btn-prev-card">◀ 上一张</button>
+      <button type="button" class="mini-btn" id="btn-next-card">下一张 ▶</button>
+    </div>
+    <button type="button" class="mini-btn" id="btn-reset-optics">重置光学参数</button>
+  </div>
+</aside>
+
+<script>
+(() => {
+  "use strict";
+
+  /* =========================================================================
+     1. PROCEDURAL WEB AUDIO FOLEY & SYNTHESIZER (Zero External Assets)
+     ========================================================================= */
+  const SoundFX = (() => {
+    let ctx = null;
+    let enabled = true;
+
+    function ensureCtx() {
+      if (!enabled) return null;
+      if (!ctx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) ctx = new AC();
+      }
+      if (ctx && ctx.state === "suspended") ctx.resume();
+      return ctx;
+    }
+
+    function playCrinkle(intensity = 0.25) {
+      const ac = ensureCtx();
+      if (!ac) return;
+      const dur = 0.045;
+      const buf = ac.createBuffer(1, Math.floor(ac.sampleRate * dur), ac.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (data.length * 0.4));
+      }
+      const src = ac.createBufferSource();
+      src.buffer = buf;
+      const bp = ac.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.frequency.value = 3200 + Math.random() * 2800;
+      bp.Q.value = 2.4;
+      const gain = ac.createGain();
+      gain.gain.value = Math.min(0.12, intensity * 0.09);
+      src.connect(bp).connect(gain).connect(ac.destination);
+      src.start();
+    }
+
+    function playRipAndBurst() {
+      const ac = ensureCtx();
+      if (!ac) return;
+      const now = ac.currentTime;
+
+      // Foil tear noise sweep
+      const dur = 0.36;
+      const buf = ac.createBuffer(1, Math.floor(ac.sampleRate * dur), ac.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) {
+        const env = Math.sin((i / d.length) * Math.PI);
+        d[i] = (Math.random() * 2 - 1) * env;
+      }
+      const noise = ac.createBufferSource();
+      noise.buffer = buf;
+      const filter = ac.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(1400, now);
+      filter.frequency.exponentialRampToValueAtTime(6800, now + dur);
+      filter.Q.value = 1.6;
+      const nGain = ac.createGain();
+      nGain.gain.setValueAtTime(0.24, now);
+      nGain.gain.exponentialRampToValueAtTime(0.005, now + dur);
+      noise.connect(filter).connect(nGain).connect(ac.destination);
+      noise.start(now);
+
+      // Celestial reveal arpeggio chord
+      const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5, 1567.98];
+      notes.forEach((freq, idx) => {
+        const osc = ac.createOscillator();
+        const g = ac.createGain();
+        osc.type = idx % 2 === 0 ? "triangle" : "sine";
+        const t0 = now + 0.14 + idx * 0.065;
+        osc.frequency.setValueAtTime(freq, t0);
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.linearRampToValueAtTime(0.075 / (1 + idx * 0.15), t0 + 0.03);
+        g.gain.exponentialRampToValueAtTime(0.0008, t0 + 1.35);
+        osc.connect(g).connect(ac.destination);
+        osc.start(t0);
+        osc.stop(t0 + 1.4);
+      });
+    }
+
+    function playCardFly(pitchOffset = 0) {
+      const ac = ensureCtx();
+      if (!ac) return;
+      const now = ac.currentTime;
+      const osc = ac.createOscillator();
+      const g = ac.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(220 + pitchOffset, now);
+      osc.frequency.exponentialRampToValueAtTime(620 + pitchOffset * 1.4, now + 0.19);
+      g.gain.setValueAtTime(0.06, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+      osc.connect(g).connect(ac.destination);
+      osc.start(now);
+      osc.stop(now + 0.24);
+    }
+
+    function playChime(high = true) {
+      const ac = ensureCtx();
+      if (!ac) return;
+      const now = ac.currentTime;
+      const osc = ac.createOscillator();
+      const g = ac.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(high ? 880 : 587.33, now);
+      osc.frequency.exponentialRampToValueAtTime(high ? 1318.5 : 440, now + 0.18);
+      g.gain.setValueAtTime(0.05, now);
+      g.gain.exponentialRampToValueAtTime(0.0008, now + 0.26);
+      osc.connect(g).connect(ac.destination);
+      osc.start(now);
+      osc.stop(now + 0.28);
+    }
+
+    return {
+      toggle() { enabled = !enabled; return enabled; },
+      playCrinkle,
+      playRipAndBurst,
+      playCardFly,
+      playChime
+    };
+  })();
+
+  /* =========================================================================
+     2. PROCEDURAL TEXTURE FORGE (Voronoi Diamond, Brushed Silver, SSR Guilloché)
+     ========================================================================= */
+  function buildProceduralTextures() {
+    const rootStyle = document.documentElement.style;
+
+    // 2.1 Fine Metallic Micro-Grain (128x128)
+    {
+      const c = document.createElement("canvas");
+      c.width = c.height = 128;
+      const ctx = c.getContext("2d");
+      const img = ctx.createImageData(128, 128);
+      const d = img.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const v = 95 + Math.floor(Math.random() * 130);
+        d[i] = v;
+        d[i + 1] = v;
+        d[i + 2] = Math.min(255, v + 10);
+        d[i + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      rootStyle.setProperty("--tex-grain", `url(${c.toDataURL()})`);
+    }
+
+    // 2.2 [R] Brushed Sterling Silver Texture (180x180)
+    {
+      const S = 180;
+      const c = document.createElement("canvas");
+      c.width = c.height = S;
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "#7a8599";
+      ctx.fillRect(0, 0, S, S);
+      for (let y = 0; y < S; y++) {
+        const lum = 110 + Math.sin(y * 0.45) * 28 + (Math.random() - 0.5) * 75;
+        ctx.fillStyle = `rgba(${lum},${lum + 6},${Math.min(255, lum + 18)},0.55)`;
+        ctx.fillRect(0, y, S, 1);
+      }
+      ctx.strokeStyle = "rgba(230,242,255,0.22)";
+      ctx.lineWidth = 0.8;
+      for (let i = -S; i < S * 2; i += 12) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + S * 0.35, S);
+        ctx.stroke();
+      }
+      rootStyle.setProperty("--tex-brushed", `url(${c.toDataURL()})`);
+    }
+
+    // 2.3 [SR] Seamless Periodic Voronoi Crushed-Diamond Maps A & B (220x220)
+    function createVoronoiDiamondMap(seedOffset) {
+      const S = 220;
+      const GRID = 7;
+      const cellSize = S / GRID;
+      const seeds = [];
+      let s = 1337 + seedOffset * 997;
+      const rand = () => {
+        s = (s * 1664525 + 1013904223) >>> 0;
+        return s / 4294967296;
+      };
+
+      for (let gy = 0; gy < GRID; gy++) {
+        seeds[gy] = [];
+        for (let gx = 0; gx < GRID; gx++) {
+          seeds[gy][gx] = {
+            x: (gx + 0.14 + rand() * 0.72) * cellSize,
+            y: (gy + 0.14 + rand() * 0.72) * cellSize,
+            r: Math.floor(40 + rand() * 215),
+            g: Math.floor(40 + rand() * 215),
+            b: Math.floor(65 + rand() * 190),
+            lum: rand()
+          };
+        }
+      }
+
+      const c = document.createElement("canvas");
+      c.width = c.height = S;
+      const ctx = c.getContext("2d");
+      const img = ctx.createImageData(S, S);
+      const d = img.data;
+
+      for (let y = 0; y < S; y++) {
+        const gy0 = Math.floor(y / cellSize);
+        for (let x = 0; x < S; x++) {
+          const gx0 = Math.floor(x / cellSize);
+          let d1 = 1e9, d2 = 1e9, best = null;
+          for (let dy = -1; dy <= 1; dy++) {
+            const wy = (gy0 + dy + GRID) % GRID;
+            const oy = (gy0 + dy) * cellSize - wy * cellSize;
+            for (let dx = -1; dx <= 1; dx++) {
+              const wx = (gx0 + dx + GRID) % GRID;
+              const ox = (gx0 + dx) * cellSize - wx * cellSize;
+              const pt = seeds[wy][wx];
+              const px = pt.x + ox - x;
+              const py = pt.y + oy - y;
+              const dist = Math.hypot(px, py);
+              if (dist < d1) {
+                d2 = d1;
+                d1 = dist;
+                best = pt;
+              } else if (dist < d2) {
+                d2 = dist;
+              }
+            }
+          }
+          const edge = (d2 - d1) < 1.35 ? 1.35 : 1.0;
+          const idx = (y * S + x) * 4;
+          const base = best.lum > 0.62 ? 235 : best.lum > 0.32 ? 128 : 38;
+          d[idx]     = Math.min(255, Math.floor((base * 0.65 + best.r * 0.35) * edge));
+          d[idx + 1] = Math.min(255, Math.floor((base * 0.65 + best.g * 0.35) * edge));
+          d[idx + 2] = Math.min(255, Math.floor((base * 0.65 + best.b * 0.35) * edge));
+          d[idx + 3] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+      return c.toDataURL();
+    }
+
+    rootStyle.setProperty("--tex-diamond-a", `url(${createVoronoiDiamondMap(1)})`);
+    rootStyle.setProperty("--tex-diamond-b", `url(${createVoronoiDiamondMap(2)})`);
+
+    // 2.4 [SSR] Tactile Radial Guilloché Wave Micro-Engraving (280x392)
+    {
+      const W = 280, H = 392;
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const ctx = c.getContext("2d");
+      const img = ctx.createImageData(W, H);
+      const d = img.data;
+      const cx = W * 0.5, cy = H * 0.38;
+      for (let y = 0; y < H; y++) {
+        for (let x = 0; x < W; x++) {
+          const dx = x - cx, dy = y - cy;
+          const r = Math.hypot(dx, dy);
+          const ang = Math.atan2(dy, dx);
+          const wave1 = Math.sin(r * 0.34 + Math.sin(ang * 12) * 2.2);
+          const wave2 = Math.cos(ang * 24 + r * 0.08);
+          const val = 128 + wave1 * 68 + wave2 * 42;
+          const idx = (y * W + x) * 4;
+          d[idx] = Math.max(0, Math.min(255, val + 12));
+          d[idx + 1] = Math.max(0, Math.min(255, val + 4));
+          d[idx + 2] = Math.max(0, Math.min(255, val - 8));
+          d[idx + 3] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+      rootStyle.setProperty("--tex-ssr-etch", `url(${c.toDataURL()})`);
+    }
+  }
+
+  /* =========================================================================
+     3. GENERATIVE FANTASY ILLUSTRATION STUDIO (Multi-Layer Canvas + SVG)
+     ========================================================================= */
+  const ArtStudio = (() => {
+    const W = 600, H = 840;
+
+    function makeCanvas() {
+      const c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
+      return c;
+    }
+
+    function drawStarfield(ctx, count, seed, colorTint = "#ffffff") {
+      let s = seed;
+      const rnd = () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+      for (let i = 0; i < count; i++) {
+        const x = rnd() * W;
+        const y = rnd() * H;
+        const r = rnd() < 0.9 ? rnd() * 1.4 + 0.3 : rnd() * 2.6 + 1.1;
+        const alpha = 0.25 + rnd() * 0.75;
+        ctx.fillStyle = colorTint;
+        ctx.globalAlpha = alpha;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        if (r > 2.1) {
+          ctx.strokeStyle = colorTint;
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(x - r * 3.2, y); ctx.lineTo(x + r * 3.2, y);
+          ctx.moveTo(x, y - r * 3.2); ctx.lineTo(x, y + r * 3.2);
+          ctx.stroke();
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function drawFourPointStar(ctx, x, y, rOuter, rInner, fill) {
+      ctx.fillStyle = fill;
+      ctx.beginPath();
+      for (let i = 0; i < 8; i++) {
+        const a = (i * Math.PI) / 4;
+        const r = i % 2 === 0 ? rOuter : rInner;
+        const px = x + Math.cos(a) * r;
+        const py = y + Math.sin(a) * r;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    /* ---------------- CARD 1 [R · 银闪]: 月蚀守望·银翼星枭 ---------------- */
+    function generateCardR() {
+      // Layer BG: Nocturnal Nebula + Colossal Eclipsed Silver Moon
+      const bg = makeCanvas();
+      const bctx = bg.getContext("2d");
+      const sky = bctx.createLinearGradient(0, 0, 0, H);
+      sky.addColorStop(0, "#050916");
+      sky.addColorStop(0.45, "#0d1a38");
+      sky.addColorStop(0.8, "#162447");
+      sky.addColorStop(1, "#090e1d");
+      bctx.fillStyle = sky;
+      bctx.fillRect(0, 0, W, H);
+
+      // Nebula clouds
+      for (let i = 0; i < 9; i++) {
+        const gx = W * (0.15 + (i * 0.19) % 0.75);
+        const gy = H * (0.14 + (i * 0.13) % 0.68);
+        const rad = 140 + (i % 3) * 80;
+        const g = bctx.createRadialGradient(gx, gy, 8, gx, gy, rad);
+        g.addColorStop(0, i % 2 === 0 ? "rgba(116, 168, 255, 0.18)" : "rgba(130, 112, 232, 0.14)");
+        g.addColorStop(1, "rgba(10, 16, 36, 0)");
+        bctx.fillStyle = g;
+        bctx.fillRect(0, 0, W, H);
+      }
+      drawStarfield(bctx, 190, 4242, "#dcebff");
+
+      // Giant Eclipsed Silver Moon
+      const mx = W * 0.5, my = H * 0.29, mr = 146;
+      const corona = bctx.createRadialGradient(mx, my, mr * 0.72, mx, my, mr * 1.95);
+      corona.addColorStop(0, "rgba(235, 245, 255, 0.92)");
+      corona.addColorStop(0.24, "rgba(165, 206, 255, 0.45)");
+      corona.addColorStop(0.6, "rgba(86, 134, 214, 0.12)");
+      corona.addColorStop(1, "rgba(10, 18, 40, 0)");
+      bctx.fillStyle = corona;
+      bctx.beginPath();
+      bctx.arc(mx, my, mr * 1.95, 0, Math.PI * 2);
+      bctx.fill();
+
+      // Moon lit silver rim + lunar surface
+      const moonGrad = bctx.createRadialGradient(mx - 42, my - 38, 18, mx, my, mr);
+      moonGrad.addColorStop(0, "#ffffff");
+      moonGrad.addColorStop(0.45, "#d6e5ff");
+      moonGrad.addColorStop(0.82, "#7f9bc7");
+      moonGrad.addColorStop(1, "#41567d");
+      bctx.fillStyle = moonGrad;
+      bctx.beginPath();
+      bctx.arc(mx, my, mr, 0, Math.PI * 2);
+      bctx.fill();
+
+      // Partial umbral shadow for lunar eclipse
+      const umbra = bctx.createRadialGradient(mx + 38, my + 24, 15, mx + 30, my + 20, mr * 1.05);
+      umbra.addColorStop(0, "rgba(10, 17, 38, 0.92)");
+      umbra.addColorStop(0.72, "rgba(18, 29, 60, 0.72)");
+      umbra.addColorStop(1, "rgba(18, 29, 60, 0)");
+      bctx.fillStyle = umbra;
+      bctx.beginPath();
+      bctx.arc(mx, my, mr, 0, Math.PI * 2);
+      bctx.fill();
+
+      // Diamond ring flare on moon edge
+      drawFourPointStar(bctx, mx - mr * 0.76, my - mr * 0.63, 42, 6, "#ffffff");
+
+      // Midground SVG: Sacred Silver Astrolabe & Distant Gothic Cathedral Spires
+      const midSvg = `
+        <svg viewBox="0 0 600 840" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#b8d4ff" fill="none" opacity="0.52">
+            <circle cx="300" cy="245" r="196" stroke-width="1.4" stroke-dasharray="6 4"/>
+            <circle cx="300" cy="245" r="222" stroke-width="1"/>
+            <circle cx="300" cy="245" r="168" stroke-width="0.9"/>
+            <polygon points="300,49 470,343 130,343" stroke-width="1"/>
+            <polygon points="300,441 470,147 130,147" stroke-width="1"/>
+            <line x1="60" y1="245" x2="540" y2="245" stroke-width="0.8" stroke-dasharray="3 5"/>
+            <line x1="300" y1="15" x2="300" y2="495" stroke-width="0.8" stroke-dasharray="3 5"/>
+          </g>
+          <!-- Gothic Cathedral Spires Silhouette -->
+          <path d="M0,840 L0,590 L38,590 L55,465 L72,590 L105,590 L126,410 L148,590 L195,590 L220,660 L380,660 L412,575 L438,395 L464,575 L498,575 L522,455 L544,575 L600,595 L600,840 Z"
+                fill="#080f22" stroke="#5372a6" stroke-width="1.2" opacity="0.88"/>
+        </svg>`;
+
+      // Layer Hero: Armored Silverwing Astral Owl Guardian + Spire Perch + Lunar Halberd
+      const hero = makeCanvas();
+      const hctx = hero.getContext("2d");
+
+      // Foreground Gothic Gargoyle Spire Perch
+      const spireGrad = hctx.createLinearGradient(220, 560, 380, 840);
+      spireGrad.addColorStop(0, "#384c70");
+      spireGrad.addColorStop(0.5, "#19243b");
+      spireGrad.addColorStop(1, "#090d18");
+      hctx.fillStyle = spireGrad;
+      hctx.beginPath();
+      hctx.moveTo(300, 548);
+      hctx.lineTo(395, 720);
+      hctx.lineTo(355, 840);
+      hctx.lineTo(245, 840);
+      hctx.lineTo(205, 720);
+      hctx.closePath();
+      hctx.fill();
+      hctx.strokeStyle = "#9ec0f0";
+      hctx.lineWidth = 1.6;
+      hctx.stroke();
+
+      // Spread Silver-Plated Wings (Left & Right Symmetrical Feathered Fans)
+      for (const dir of [-1, 1]) {
+        hctx.save();
+        hctx.translate(300, 412);
+        hctx.scale(dir, 1);
+
+        // Outer Primary Metallic Flight Feathers (14 blades)
+        for (let i = 0; i < 14; i++) {
+          const t = i / 13;
+          const ang = -1.18 + t * 1.28;
+          const len = 285 - Math.pow(t - 0.22, 2) * 210;
+          const w = 22 - t * 6;
+          hctx.save();
+          hctx.rotate(ang);
+          const fg = hctx.createLinearGradient(0, -w, len, w);
+          fg.addColorStop(0, "#1d2c4a");
+          fg.addColorStop(0.45, "#7898c9");
+          fg.addColorStop(0.82, "#e4f0ff");
+          fg.addColorStop(1, "#ffffff");
+          hctx.fillStyle = fg;
+          hctx.beginPath();
+          hctx.moveTo(18, 0);
+          hctx.quadraticCurveTo(len * 0.52, -w, len, -2);
+          hctx.quadraticCurveTo(len * 0.62, w * 0.95, 18, 8);
+          hctx.closePath();
+          hctx.fill();
+          hctx.strokeStyle = "rgba(18, 30, 56, 0.72)";
+          hctx.lineWidth = 1.2;
+          hctx.stroke();
+
+          // Silver feather rachis vein
+          hctx.strokeStyle = "rgba(255,255,255,0.8)";
+          hctx.lineWidth = 1;
+          hctx.beginPath();
+          hctx.moveTo(26, 1);
+          hctx.lineTo(len * 0.92, -1);
+          hctx.stroke();
+          hctx.restore();
+        }
+
+        // Secondary Armored Covert Feathers
+        for (let i = 0; i < 9; i++) {
+          const t = i / 8;
+          const ang = -0.98 + t * 1.08;
+          const len = 165 - t * 42;
+          hctx.save();
+          hctx.rotate(ang);
+          const cg = hctx.createLinearGradient(0, 0, len, 0);
+          cg.addColorStop(0, "#15223d");
+          cg.addColorStop(0.65, "#5472a3");
+          cg.addColorStop(1, "#d8e9ff");
+          hctx.fillStyle = cg;
+          hctx.beginPath();
+          hctx.moveTo(12, 0);
+          hctx.quadraticCurveTo(len * 0.55, -15, len, 0);
+          hctx.quadraticCurveTo(len * 0.55, 15, 12, 6);
+          hctx.closePath();
+          hctx.fill();
+          hctx.strokeStyle = "#a9c9f5";
+          hctx.lineWidth = 0.9;
+          hctx.stroke();
+          hctx.restore();
+        }
+        hctx.restore();
+      }
+
+      // Owl Guardian Torso & Midnight-Silver Gothic Cuirass Armor
+      const bodyGrad = hctx.createRadialGradient(300, 425, 10, 300, 460, 118);
+      bodyGrad.addColorStop(0, "#5c79ab");
+      bodyGrad.addColorStop(0.45, "#233457");
+      bodyGrad.addColorStop(0.85, "#10192e");
+      bodyGrad.addColorStop(1, "#080d1a");
+      hctx.fillStyle = bodyGrad;
+      hctx.beginPath();
+      hctx.moveTo(300, 356);
+      hctx.quadraticCurveTo(372, 392, 362, 478);
+      hctx.quadraticCurveTo(346, 548, 300, 566);
+      hctx.quadraticCurveTo(254, 548, 238, 478);
+      hctx.quadraticCurveTo(228, 392, 300, 356);
+      hctx.closePath();
+      hctx.fill();
+      hctx.strokeStyle = "#c9e0ff";
+      hctx.lineWidth = 2.2;
+      hctx.stroke();
+
+      // Layered Silver Pauldrons (Shoulder Armor)
+      for (const dir of [-1, 1]) {
+        const pg = hctx.createLinearGradient(300 + dir * 24, 372, 300 + dir * 92, 426);
+        pg.addColorStop(0, "#e6f2ff");
+        pg.addColorStop(0.55, "#6382b5");
+        pg.addColorStop(1, "#182542");
+        hctx.fillStyle = pg;
+        hctx.beginPath();
+        hctx.moveTo(300 + dir * 26, 374);
+        hctx.quadraticCurveTo(300 + dir * 82, 376, 300 + dir * 94, 418);
+        hctx.quadraticCurveTo(300 + dir * 62, 434, 300 + dir * 32, 412);
+        hctx.closePath();
+        hctx.fill();
+        hctx.strokeStyle = "#eef6ff";
+        hctx.lineWidth = 1.4;
+        hctx.stroke();
+      }
+
+      // Tail Feathers Fan
+      for (let i = -3; i <= 3; i++) {
+        hctx.save();
+        hctx.translate(300, 542);
+        hctx.rotate(i * 0.11);
+        const tg = hctx.createLinearGradient(0, 0, 0, 125);
+        tg.addColorStop(0, "#14203b");
+        tg.addColorStop(0.7, "#6c8ec2");
+        tg.addColorStop(1, "#eff6ff");
+        hctx.fillStyle = tg;
+        hctx.beginPath();
+        hctx.moveTo(-12, 0);
+        hctx.lineTo(-16, 110);
+        hctx.lineTo(0, 128);
+        hctx.lineTo(16, 110);
+        hctx.lineTo(12, 0);
+        hctx.closePath();
+        hctx.fill();
+        hctx.restore();
+      }
+
+      // Gothic V-Ribbed Silver Cuirass Filigree
+      hctx.strokeStyle = "rgba(218, 236, 255, 0.78)";
+      hctx.lineWidth = 1.6;
+      for (let r = 0; r < 4; r++) {
+        const y0 = 442 + r * 22;
+        hctx.beginPath();
+        hctx.moveTo(256 + r * 5, y0 - 8);
+        hctx.lineTo(300, y0 + 12);
+        hctx.lineTo(344 - r * 5, y0 - 8);
+        hctx.stroke();
+      }
+
+      // Chest Moonstone Gem
+      const gemG = hctx.createRadialGradient(300, 418, 2, 300, 418, 24);
+      gemG.addColorStop(0, "#ffffff");
+      gemG.addColorStop(0.45, "#6be6ff");
+      gemG.addColorStop(1, "#123663");
+      hctx.fillStyle = gemG;
+      hctx.beginPath();
+      hctx.moveTo(300, 392);
+      hctx.lineTo(318, 418);
+      hctx.lineTo(300, 444);
+      hctx.lineTo(282, 418);
+      hctx.closePath();
+      hctx.fill();
+      hctx.strokeStyle = "#ffffff";
+      hctx.lineWidth = 1.8;
+      hctx.stroke();
+
+      // Regal Armored Owl Helm & Fierce Horned Crest
+      const helmG = hctx.createRadialGradient(300, 326, 8, 300, 340, 56);
+      helmG.addColorStop(0, "#8eadde");
+      helmG.addColorStop(0.55, "#273b63");
+      helmG.addColorStop(1, "#0f182c");
+      hctx.fillStyle = helmG;
+      hctx.beginPath();
+      hctx.arc(300, 340, 50, 0, Math.PI * 2);
+      hctx.fill();
+      hctx.strokeStyle = "#d9ebff";
+      hctx.lineWidth = 1.8;
+      hctx.stroke();
+
+      // Swept Valkyrie Silver Wing-Horns
+      for (const dir of [-1, 1]) {
+        const hg = hctx.createLinearGradient(300, 330, 300 + dir * 88, 244);
+        hg.addColorStop(0, "#23365c");
+        hg.addColorStop(0.55, "#adcbf5");
+        hg.addColorStop(1, "#ffffff");
+        hctx.fillStyle = hg;
+        hctx.beginPath();
+        hctx.moveTo(300 + dir * 16, 318);
+        hctx.quadraticCurveTo(300 + dir * 56, 286, 300 + dir * 88, 242);
+        hctx.quadraticCurveTo(300 + dir * 64, 318, 300 + dir * 36, 344);
+        hctx.closePath();
+        hctx.fill();
+        hctx.strokeStyle = "#ffffff";
+        hctx.lineWidth = 1.2;
+        hctx.stroke();
+      }
+
+      // Fierce Angular Facial Shield & Glowing Astral Eyes
+      for (const dir of [-1, 1]) {
+        hctx.fillStyle = "#121d36";
+        hctx.beginPath();
+        hctx.moveTo(300 + dir * 6, 344);
+        hctx.lineTo(300 + dir * 38, 328);
+        hctx.lineTo(300 + dir * 34, 356);
+        hctx.lineTo(300 + dir * 10, 360);
+        hctx.closePath();
+        hctx.fill();
+
+        const ex = 300 + dir * 22;
+        const eg = hctx.createRadialGradient(ex, 344, 1.5, ex, 344, 13);
+        eg.addColorStop(0, "#ffffff");
+        eg.addColorStop(0.45, "#66f3ff");
+        eg.addColorStop(1, "rgba(14, 77, 138, 0)");
+        hctx.fillStyle = eg;
+        hctx.beginPath();
+        hctx.moveTo(300 + dir * 9, 347);
+        hctx.lineTo(300 + dir * 34, 335);
+        hctx.lineTo(300 + dir * 28, 352);
+        hctx.closePath();
+        hctx.fill();
+      }
+
+      // Sculpted Silver Helm Brow & Raptor Beak Guard
+      hctx.fillStyle = "#e6f2ff";
+      hctx.beginPath();
+      hctx.moveTo(300, 326);
+      hctx.lineTo(312, 352);
+      hctx.lineTo(300, 378);
+      hctx.lineTo(288, 352);
+      hctx.closePath();
+      hctx.fill();
+
+      hctx.strokeStyle = "#ffffff";
+      hctx.lineWidth = 2.6;
+      hctx.beginPath();
+      hctx.arc(300, 305, 16, 0.2 * Math.PI, 0.8 * Math.PI, true);
+      hctx.stroke();
+
+      // Diagonal Lunar Crescent Halberd held across talons
+      hctx.save();
+      hctx.translate(300, 520);
+      hctx.rotate(-0.34);
+      const shaftG = hctx.createLinearGradient(-220, 0, 240, 0);
+      shaftG.addColorStop(0, "#7b96c4");
+      shaftG.addColorStop(0.5, "#ffffff");
+      shaftG.addColorStop(1, "#89a8d9");
+      hctx.strokeStyle = shaftG;
+      hctx.lineWidth = 5.5;
+      hctx.beginPath();
+      hctx.moveTo(-210, 0);
+      hctx.lineTo(220, 0);
+      hctx.stroke();
+
+      // Crescent Halberd Blade on Right End
+      const bladeG = hctx.createLinearGradient(165, -65, 245, 65);
+      bladeG.addColorStop(0, "#ffffff");
+      bladeG.addColorStop(0.5, "#92c5ff");
+      bladeG.addColorStop(1, "#eef7ff");
+      hctx.fillStyle = bladeG;
+      hctx.beginPath();
+      hctx.arc(195, 0, 56, -Math.PI * 0.62, Math.PI * 0.62);
+      hctx.arc(174, 0, 46, Math.PI * 0.52, -Math.PI * 0.52, true);
+      hctx.closePath();
+      hctx.fill();
+      hctx.restore();
+
+      // Layer FG: Drifting Silver Feathers & Lunar Slash Arcs
+      const fg = makeCanvas();
+      const fctx = fg.getContext("2d");
+      fctx.strokeStyle = "rgba(210, 236, 255, 0.72)";
+      fctx.lineWidth = 2.4;
+      fctx.beginPath();
+      fctx.arc(300, 420, 238, -0.85, 0.35);
+      fctx.stroke();
+
+      const featherSpots = [
+        [92, 220, 0.6, 1.1], [512, 250, -0.5, 1.0],
+        [78, 595, 0.9, 1.35], [518, 580, -0.8, 1.25], [175, 690, 0.4, 0.9]
+      ];
+      for (const [fx, fy, rot, sc] of featherSpots) {
+        fctx.save();
+        fctx.translate(fx, fy);
+        fctx.rotate(rot);
+        fctx.scale(sc, sc);
+        const g = fctx.createLinearGradient(-24, 0, 28, 0);
+        g.addColorStop(0, "rgba(130, 175, 235, 0.2)");
+        g.addColorStop(0.6, "rgba(225, 240, 255, 0.88)");
+        g.addColorStop(1, "#ffffff");
+        fctx.fillStyle = g;
+        fctx.beginPath();
+        fctx.moveTo(-26, 0);
+        fctx.quadraticCurveTo(0, -10, 28, 0);
+        fctx.quadraticCurveTo(0, 10, -26, 0);
+        fctx.fill();
+        fctx.restore();
+      }
+      drawFourPointStar(fctx, 472, 438, 26, 4, "#e8f6ff");
+      drawFourPointStar(fctx, 118, 390, 20, 3, "#a8dcff");
+
+      return {
+        bgUrl: bg.toDataURL(),
+        midSvg,
+        heroUrl: hero.toDataURL(),
+        fgUrl: fg.toDataURL()
+      };
+    }
+
+    /* ---------------- CARD 2 [SR · 碎钻闪]: 凛冬圣咏·碎晶冰凰 ---------------- */
+    function generateCardSR() {
+      // Layer BG: Glacial Abyss + Sweeping Aurora Borealis Curtains
+      const bg = makeCanvas();
+      const bctx = bg.getContext("2d");
+      const sky = bctx.createLinearGradient(0, 0, 0, H);
+      sky.addColorStop(0, "#020b18");
+      sky.addColorStop(0.45, "#06233d");
+      sky.addColorStop(0.8, "#0c3b5e");
+      sky.addColorStop(1, "#041324");
+      bctx.fillStyle = sky;
+      bctx.fillRect(0, 0, W, H);
+      drawStarfield(bctx, 150, 7777, "#d9faff");
+
+      // Aurora Borealis Ribbons
+      for (let band = 0; band < 3; band++) {
+        bctx.save();
+        bctx.globalCompositeOperation = "screen";
+        for (let x = 0; x < W; x += 5) {
+          const waveY = 175 + band * 68 + Math.sin(x * 0.013 + band * 1.7) * 48 + Math.cos(x * 0.029) * 22;
+          const h = 135 + Math.sin(x * 0.02 + band) * 45;
+          const ag = bctx.createLinearGradient(x, waveY - h * 0.3, x, waveY + h);
+          ag.addColorStop(0, "rgba(0,0,0,0)");
+          ag.addColorStop(0.35, band === 1 ? "rgba(186, 104, 255, 0.22)" : "rgba(64, 242, 255, 0.25)");
+          ag.addColorStop(0.7, "rgba(56, 255, 198, 0.16)");
+          ag.addColorStop(1, "rgba(0,0,0,0)");
+          bctx.fillStyle = ag;
+          bctx.fillRect(x, waveY - h * 0.3, 6, h * 1.3);
+        }
+        bctx.restore();
+      }
+
+      // Distant Iceberg Peaks
+      const iceMount = bctx.createLinearGradient(0, 500, 0, H);
+      iceMount.addColorStop(0, "#3ec8f0");
+      iceMount.addColorStop(0.45, "#0d4a78");
+      iceMount.addColorStop(1, "#04162b");
+      bctx.fillStyle = iceMount;
+      bctx.beginPath();
+      bctx.moveTo(0, H);
+      bctx.lineTo(0, 610);
+      bctx.lineTo(95, 485);
+      bctx.lineTo(175, 590);
+      bctx.lineTo(270, 515);
+      bctx.lineTo(355, 605);
+      bctx.lineTo(485, 465);
+      bctx.lineTo(600, 585);
+      bctx.lineTo(600, H);
+      bctx.closePath();
+      bctx.fill();
+
+      // Midground SVG: Six-Fold Crystalline Snowflake Mandala
+      let hexArms = "";
+      for (let i = 0; i < 6; i++) {
+        const deg = i * 60;
+        hexArms += `
+          <g transform="rotate(${deg} 300 355)">
+            <line x1="300" y1="355" x2="300" y2="128" stroke="#8cf4ff" stroke-width="1.8"/>
+            <polygon points="300,115 312,148 300,175 288,148" fill="rgba(160,248,255,0.35)" stroke="#d9fcff" stroke-width="1.2"/>
+            <polyline points="272,202 300,226 328,202" fill="none" stroke="#8cf4ff" stroke-width="1.4"/>
+            <polyline points="260,256 300,284 340,256" fill="none" stroke="#8cf4ff" stroke-width="1.4"/>
+          </g>`;
+      }
+      const midSvg = `
+        <svg viewBox="0 0 600 840" xmlns="http://www.w3.org/2000/svg">
+          <g opacity="0.62">
+            <circle cx="300" cy="355" r="205" fill="none" stroke="#6ce8ff" stroke-width="1.3" stroke-dasharray="5 5"/>
+            <polygon points="300,150 477,252 477,458 300,560 123,458 123,252" fill="rgba(28,112,168,0.14)" stroke="#aef8ff" stroke-width="1.3"/>
+            ${hexArms}
+          </g>
+        </svg>`;
+
+      // Layer Hero: Shattered-Prism Frost Phoenix
+      const hero = makeCanvas();
+      const hctx = hero.getContext("2d");
+
+      // Radiant Cryo Core Aura
+      const aura = hctx.createRadialGradient(300, 365, 12, 300, 365, 220);
+      aura.addColorStop(0, "rgba(255, 255, 255, 0.92)");
+      aura.addColorStop(0.28, "rgba(92, 240, 255, 0.45)");
+      aura.addColorStop(0.65, "rgba(156, 98, 255, 0.16)");
+      aura.addColorStop(1, "rgba(0, 0, 0, 0)");
+      hctx.fillStyle = aura;
+      hctx.fillRect(0, 0, W, H);
+
+      // Sweeping Faceted Crystal Phoenix Wings
+      for (const dir of [-1, 1]) {
+        hctx.save();
+        hctx.translate(300, 378);
+        hctx.scale(dir, 1);
+
+        // 16 Crystalline Prism Wing Shards
+        for (let i = 0; i < 16; i++) {
+          const t = i / 15;
+          const ang = -1.32 + t * 1.38;
+          const len = 298 - Math.pow(t - 0.18, 2) * 230;
+          const w = 25 - t * 9;
+          hctx.save();
+          hctx.rotate(ang);
+
+          const pg = hctx.createLinearGradient(15, -w, len, w);
+          pg.addColorStop(0, "rgba(18, 92, 168, 0.92)");
+          pg.addColorStop(0.45, i % 3 === 0 ? "rgba(198, 142, 255, 0.92)" : "rgba(74, 232, 255, 0.94)");
+          pg.addColorStop(0.82, "#e5fdff");
+          pg.addColorStop(1, "#ffffff");
+
+          hctx.fillStyle = pg;
+          hctx.beginPath();
+          hctx.moveTo(14, 0);
+          hctx.lineTo(len * 0.48, -w);
+          hctx.lineTo(len, -3);
+          hctx.lineTo(len * 0.64, w * 0.88);
+          hctx.closePath();
+          hctx.fill();
+
+          // Internal crystal facet ridge
+          hctx.strokeStyle = "#ffffff";
+          hctx.lineWidth = 1.25;
+          hctx.stroke();
+          hctx.beginPath();
+          hctx.moveTo(16, 0);
+          hctx.lineTo(len, -3);
+          hctx.stroke();
+          hctx.restore();
+        }
+        hctx.restore();
+      }
+
+      // 5 Luminous Aurora Ribbon Tail Plumes
+      const tailConfigs = [
+        [-95, 560, -155, 760],
+        [-42, 575, -68, 795],
+        [15, 585, 8, 815],
+        [68, 565, 92, 790],
+        [118, 540, 170, 745]
+      ];
+      tailConfigs.forEach(([cx1, cy1, ex, ey], idx) => {
+        const tg = hctx.createLinearGradient(300, 445, 300 + ex, ey);
+        tg.addColorStop(0, "#ffffff");
+        tg.addColorStop(0.35, idx % 2 === 0 ? "#5cf2ff" : "#c78aff");
+        tg.addColorStop(0.8, "rgba(42, 168, 255, 0.55)");
+        tg.addColorStop(1, "rgba(42, 168, 255, 0)");
+        hctx.strokeStyle = tg;
+        hctx.lineWidth = 13 - idx * 1.1;
+        hctx.lineCap = "round";
+        hctx.beginPath();
+        hctx.moveTo(300, 448);
+        hctx.bezierCurveTo(300 + cx1, cy1, 300 + ex * 0.55, (cy1 + ey) * 0.5, 300 + ex, ey);
+        hctx.stroke();
+
+        // Diamond nodes along tail ribbons
+        const dx = 300 + ex * 0.72, dy = (448 + ey) * 0.54 + idx * 10;
+        drawFourPointStar(hctx, dx, dy, 16, 4, "#ffffff");
+      });
+
+      // Phoenix Crystalline Sculpted Body, Graceful S-Neck & Fierce Profile Head
+      const phoenixBody = hctx.createLinearGradient(255, 210, 345, 480);
+      phoenixBody.addColorStop(0, "#e6fdff");
+      phoenixBody.addColorStop(0.32, "#39c9f5");
+      phoenixBody.addColorStop(0.72, "#0e4682");
+      phoenixBody.addColorStop(1, "#071e40");
+      hctx.fillStyle = phoenixBody;
+      hctx.beginPath();
+      hctx.moveTo(304, 212);
+      hctx.bezierCurveTo(334, 236, 318, 288, 344, 356);
+      hctx.quadraticCurveTo(348, 422, 300, 480);
+      hctx.quadraticCurveTo(252, 422, 256, 356);
+      hctx.bezierCurveTo(276, 294, 268, 242, 304, 212);
+      hctx.closePath();
+      hctx.fill();
+      hctx.strokeStyle = "#d9fcff";
+      hctx.lineWidth = 2.2;
+      hctx.stroke();
+
+      // Sculpted Phoenix Head & Sharp Crystalline Beak (Facing Right-Upward)
+      hctx.fillStyle = "#dffcff";
+      hctx.beginPath();
+      hctx.moveTo(286, 222);
+      hctx.quadraticCurveTo(312, 196, 348, 206);
+      hctx.lineTo(322, 224);
+      hctx.lineTo(336, 232);
+      hctx.quadraticCurveTo(306, 238, 286, 222);
+      hctx.closePath();
+      hctx.fill();
+
+      // Glowing Sapphire-White Phoenix Eye
+      hctx.fillStyle = "#082952";
+      hctx.beginPath();
+      hctx.arc(311, 214, 4.5, 0, Math.PI * 2);
+      hctx.fill();
+      hctx.fillStyle = "#ffffff";
+      hctx.beginPath();
+      hctx.arc(312, 213, 2.2, 0, Math.PI * 2);
+      hctx.fill();
+
+      // Swept Three-Plumed Diamond Phoenix Crown Crest
+      for (const [ang, hLen] of [[-0.78, 86], [-0.52, 106], [-0.26, 78]]) {
+        hctx.save();
+        hctx.translate(294, 214);
+        hctx.rotate(ang);
+        const cg = hctx.createLinearGradient(0, 0, 0, -hLen);
+        cg.addColorStop(0, "#42d4ff");
+        cg.addColorStop(0.6, "#d9b8ff");
+        cg.addColorStop(1, "#ffffff");
+        hctx.fillStyle = cg;
+        hctx.beginPath();
+        hctx.moveTo(0, 0);
+        hctx.lineTo(-7, -hLen * 0.62);
+        hctx.lineTo(0, -hLen);
+        hctx.lineTo(7, -hLen * 0.62);
+        hctx.closePath();
+        hctx.fill();
+        hctx.restore();
+      }
+
+      // Faceted Cryo-Diamond Core on Chest
+      hctx.fillStyle = "#0a2d5c";
+      hctx.beginPath();
+      hctx.moveTo(300, 330);
+      hctx.lineTo(326, 368);
+      hctx.lineTo(300, 406);
+      hctx.lineTo(274, 368);
+      hctx.closePath();
+      hctx.fill();
+      hctx.strokeStyle = "#9ef6ff";
+      hctx.lineWidth = 1.8;
+      hctx.stroke();
+      drawFourPointStar(hctx, 300, 368, 34, 8, "#ffffff");
+
+      // Layer FG: Foreground Faceted Ice Crystal Clusters + Diamond Glints
+      const fg = makeCanvas();
+      const fctx = fg.getContext("2d");
+      const shards = [
+        [0, 840, 42, 615, 128, 840],
+        [65, 840, 125, 675, 195, 840],
+        [600, 840, 555, 605, 468, 840],
+        [535, 840, 470, 680, 405, 840]
+      ];
+      shards.forEach(([x1, y1, x2, y2, x3, y3], i) => {
+        const sg = fctx.createLinearGradient(x2, y2, (x1 + x3) * 0.5, y1);
+        sg.addColorStop(0, "rgba(235, 253, 255, 0.92)");
+        sg.addColorStop(0.45, i % 2 === 0 ? "rgba(82, 232, 255, 0.72)" : "rgba(182, 138, 255, 0.68)");
+        sg.addColorStop(1, "rgba(10, 42, 82, 0.85)");
+        fctx.fillStyle = sg;
+        fctx.beginPath();
+        fctx.moveTo(x1, y1);
+        fctx.lineTo(x2, y2);
+        fctx.lineTo(x3, y3);
+        fctx.closePath();
+        fctx.fill();
+        fctx.strokeStyle = "#ffffff";
+        fctx.lineWidth = 1.6;
+        fctx.stroke();
+      });
+
+      [
+        [108, 275, 26], [496, 262, 28], [148, 520, 22], [462, 515, 24], [300, 152, 22]
+      ].forEach(([sx, sy, sr]) => drawFourPointStar(fctx, sx, sy, sr, 4, "#ffffff"));
+
+      return {
+        bgUrl: bg.toDataURL(),
+        midSvg,
+        heroUrl: hero.toDataURL(),
+        fgUrl: fg.toDataURL()
+      };
+    }
+
+    /* ---------------- CARD 3 [SSR · 彩虹全息金闪]: 万象神冕·炽阳创世龙皇 ---------------- */
+    function generateCardSSR() {
+      // Layer BG: Royal Crimson-Obsidian Supernova + Dark Eclipse Corona Sun (High-Contrast Foil Base!)
+      const bg = makeCanvas();
+      const bctx = bg.getContext("2d");
+      const cosmos = bctx.createRadialGradient(300, 255, 35, 300, 380, 560);
+      cosmos.addColorStop(0, "#591632");
+      cosmos.addColorStop(0.28, "#380d2e");
+      cosmos.addColorStop(0.62, "#190724");
+      cosmos.addColorStop(1, "#07030d");
+      bctx.fillStyle = cosmos;
+      bctx.fillRect(0, 0, W, H);
+
+      // Volumetric Solar God-Rays
+      bctx.save();
+      bctx.translate(300, 255);
+      for (let i = 0; i < 24; i++) {
+        bctx.rotate((Math.PI * 2) / 24);
+        const rg = bctx.createLinearGradient(75, 0, 500, 0);
+        rg.addColorStop(0, "rgba(255, 208, 92, 0.34)");
+        rg.addColorStop(0.5, "rgba(214, 72, 118, 0.12)");
+        rg.addColorStop(1, "rgba(255, 178, 56, 0)");
+        bctx.fillStyle = rg;
+        bctx.beginPath();
+        bctx.moveTo(70, -6);
+        bctx.lineTo(500, -22);
+        bctx.lineTo(500, 22);
+        bctx.lineTo(70, 6);
+        bctx.closePath();
+        bctx.fill();
+      }
+      bctx.restore();
+
+      // Golden Eclipse Corona Ring + Dark Umbral Core (frames the Dragon Head with razor silhouette!)
+      const coronaRing = bctx.createRadialGradient(300, 255, 86, 300, 255, 168);
+      coronaRing.addColorStop(0, "#140510");
+      coronaRing.addColorStop(0.52, "#1c0716");
+      coronaRing.addColorStop(0.64, "#ffe680");
+      coronaRing.addColorStop(0.76, "rgba(255, 158, 44, 0.55)");
+      coronaRing.addColorStop(1, "rgba(255, 92, 138, 0)");
+      bctx.fillStyle = coronaRing;
+      bctx.beginPath();
+      bctx.arc(300, 255, 168, 0, Math.PI * 2);
+      bctx.fill();
+
+      drawStarfield(bctx, 210, 9999, "#ffe9a8");
+
+      // Midground SVG: 12-Fold 24K Gold Celestial Dyson-Mandala & Genesis Sun Ring
+      let sunSpikes = "";
+      for (let i = 0; i < 12; i++) {
+        sunSpikes += `<polygon points="300,48 313,98 287,98" fill="rgba(255,214,102,0.75)" transform="rotate(${i * 30} 300 255)"/>`;
+      }
+      const midSvg = `
+        <svg viewBox="0 0 600 840" xmlns="http://www.w3.org/2000/svg">
+          <g opacity="0.86">
+            ${sunSpikes}
+            <circle cx="300" cy="255" r="206" fill="none" stroke="#ffd86b" stroke-width="2" stroke-dasharray="8 5"/>
+            <circle cx="300" cy="255" r="172" fill="none" stroke="#fff2bd" stroke-width="1.6"/>
+            <rect x="178" y="133" width="244" height="244" fill="none" stroke="#ffcf5c" stroke-width="1.4" transform="rotate(45 300 255)"/>
+            <rect x="178" y="133" width="244" height="244" fill="none" stroke="#ffcf5c" stroke-width="1.4"/>
+            <circle cx="300" cy="255" r="106" fill="none" stroke="#ffe588" stroke-width="2.4"/>
+          </g>
+        </svg>`;
+
+      // Layer Hero: Sovereign Solar Genesis Dragon (6 Seraphic Golden Wings + Tapered Armored Dragon + Fierce Head)
+      const hero = makeCanvas();
+      const hctx = hero.getContext("2d");
+
+      // Six Radiant Seraphim Obsidian-Gold Wings
+      for (const dir of [-1, 1]) {
+        hctx.save();
+        hctx.translate(300, 310);
+        hctx.scale(dir, 1);
+        for (let tier = 0; tier < 3; tier++) {
+          const baseAng = -1.14 + tier * 0.43;
+          for (let f = 0; f < 7; f++) {
+            const ang = baseAng + f * 0.082;
+            const len = (296 - tier * 34) - f * 12;
+            hctx.save();
+            hctx.rotate(ang);
+            const wg = hctx.createLinearGradient(18, 0, len, 0);
+            wg.addColorStop(0, "#24080e");
+            wg.addColorStop(0.42, "#9e3b14");
+            wg.addColorStop(0.78, "#ffcf54");
+            wg.addColorStop(1, "#fff8d9");
+            hctx.fillStyle = wg;
+            hctx.beginPath();
+            hctx.moveTo(20, 0);
+            hctx.quadraticCurveTo(len * 0.56, -18, len, -2);
+            hctx.quadraticCurveTo(len * 0.62, 15, 20, 8);
+            hctx.closePath();
+            hctx.fill();
+            hctx.strokeStyle = "#2b090d";
+            hctx.lineWidth = 1.2;
+            hctx.stroke();
+            hctx.restore();
+          }
+        }
+        hctx.restore();
+      }
+
+      // Blazing Genesis World-Orb held in center coils
+      const orbG = hctx.createRadialGradient(300, 455, 4, 300, 455, 64);
+      orbG.addColorStop(0, "#ffffff");
+      orbG.addColorStop(0.35, "#ffe47a");
+      orbG.addColorStop(0.72, "#e05319");
+      orbG.addColorStop(1, "rgba(180, 24, 68, 0)");
+      hctx.fillStyle = orbG;
+      hctx.beginPath();
+      hctx.arc(300, 455, 64, 0, Math.PI * 2);
+      hctx.fill();
+
+      // Smooth Tapered Sinuous Dragon Body Envelope (No beaded circles — sleek armored dragon silhouette!)
+      const spine = [];
+      const N = 80;
+      for (let i = 0; i <= N; i++) {
+        const t = i / N; // 0 = lower tail tip, 1 = neck behind head
+        const y = 760 - t * 505;
+        const x = 300 + Math.sin(t * Math.PI * 2.15 - 0.35) * (136 * (1 - t * 0.42));
+        const r = 6 + Math.pow(Math.sin(t * Math.PI * 0.86), 0.75) * 34;
+        spine.push({ x, y, r, t });
+      }
+
+      const leftPts = [], rightPts = [];
+      for (let i = 0; i <= N; i++) {
+        const p = spine[i];
+        const prev = spine[Math.max(0, i - 1)];
+        const next = spine[Math.min(N, i + 1)];
+        const tx = next.x - prev.x, ty = next.y - prev.y;
+        const tl = Math.hypot(tx, ty) || 1;
+        const nx = -ty / tl, ny = tx / tl;
+        leftPts.push({ x: p.x + nx * p.r, y: p.y + ny * p.r });
+        rightPts.push({ x: p.x - nx * p.r, y: p.y - ny * p.r });
+
+        // Sharp Imperial Dorsal Gold Spines along outer curve
+        if (i > 5 && i < N - 4 && i % 4 === 0) {
+          const side = Math.cos(p.t * Math.PI * 2.15 - 0.35) >= 0 ? 1 : -1;
+          const sx = p.x + nx * side * (p.r + 28);
+          const sy = p.y + ny * side * (p.r + 28) - 8;
+          hctx.fillStyle = "#ffe27a";
+          hctx.strokeStyle = "#4a1208";
+          hctx.lineWidth = 1.2;
+          hctx.beginPath();
+          hctx.moveTo(p.x + nx * side * (p.r * 0.7), p.y + ny * side * (p.r * 0.7));
+          hctx.lineTo(sx, sy);
+          hctx.lineTo(next.x + nx * side * (p.r * 0.6), next.y + ny * side * (p.r * 0.6));
+          hctx.closePath();
+          hctx.fill();
+          hctx.stroke();
+        }
+      }
+
+      // Fill sleek continuous Dragon Body with Obsidian-Crimson & 24K Molten Gold Gradient
+      const bodyGrad = hctx.createLinearGradient(160, 260, 440, 740);
+      bodyGrad.addColorStop(0, "#ffe484");
+      bodyGrad.addColorStop(0.28, "#c96d12");
+      bodyGrad.addColorStop(0.55, "#420e17");
+      bodyGrad.addColorStop(0.82, "#d98218");
+      bodyGrad.addColorStop(1, "#260710");
+      hctx.fillStyle = bodyGrad;
+      hctx.beginPath();
+      hctx.moveTo(leftPts[0].x, leftPts[0].y);
+      for (let i = 1; i <= N; i++) hctx.lineTo(leftPts[i].x, leftPts[i].y);
+      for (let i = N; i >= 0; i--) hctx.lineTo(rightPts[i].x, rightPts[i].y);
+      hctx.closePath();
+      hctx.fill();
+      hctx.strokeStyle = "#ffe588";
+      hctx.lineWidth = 2.4;
+      hctx.stroke();
+
+      // Golden Belly Scale Plates & Center Ridge Line along Dragon Spine
+      hctx.strokeStyle = "rgba(255, 236, 160, 0.78)";
+      hctx.lineWidth = 1.5;
+      for (let i = 6; i < N - 2; i += 3) {
+        const p = spine[i];
+        hctx.beginPath();
+        hctx.arc(p.x, p.y, p.r * 0.64, 0.15 * Math.PI, 0.85 * Math.PI);
+        hctx.stroke();
+      }
+
+      // Five-Clawed Imperial Dragon Limbs & Talons
+      for (const [bx, by, dir] of [[218, 430, -1], [382, 468, 1]]) {
+        hctx.save();
+        hctx.translate(bx, by);
+        hctx.scale(dir, 1);
+        hctx.strokeStyle = "#2b080e";
+        hctx.lineWidth = 14;
+        hctx.lineCap = "round";
+        hctx.beginPath();
+        hctx.moveTo(-28, -22);
+        hctx.quadraticCurveTo(8, 2, 26, 16);
+        hctx.stroke();
+
+        hctx.strokeStyle = "#ffd666";
+        hctx.lineWidth = 8;
+        hctx.stroke();
+
+        // Sharp White-Gold Dragon Claws
+        hctx.strokeStyle = "#fff9de";
+        hctx.lineWidth = 3.5;
+        for (const [cx, cy] of [[42, 4], [46, 20], [38, 34], [20, 36]]) {
+          hctx.beginPath();
+          hctx.moveTo(24, 16);
+          hctx.quadraticCurveTo((24 + cx) * 0.5, cy - 6, cx, cy);
+          hctx.stroke();
+        }
+        hctx.restore();
+      }
+
+      // Fierce Sovereign Horned Dragon Head centered inside the Dark Eclipse Ring (300, 248)
+      hctx.save();
+      hctx.translate(300, 248);
+
+      // Crimson-Gold Mane Flames framing dark obsidian skull
+      for (let m = -7; m <= 7; m++) {
+        const ang = m * 0.21 - Math.PI * 0.5;
+        hctx.fillStyle = m % 2 === 0 ? "#cf4619" : "#ffb833";
+        hctx.beginPath();
+        hctx.moveTo(0, 4);
+        hctx.lineTo(Math.cos(ang - 0.11) * 92, Math.sin(ang - 0.11) * 86);
+        hctx.lineTo(Math.cos(ang + 0.11) * 70, Math.sin(ang + 0.11) * 66);
+        hctx.closePath();
+        hctx.fill();
+      }
+
+      // Grand Branched Imperial Gold Antler-Horns
+      for (const dir of [-1, 1]) {
+        const hg = hctx.createLinearGradient(0, -16, dir * 118, -126);
+        hg.addColorStop(0, "#6e250b");
+        hg.addColorStop(0.5, "#ffd563");
+        hg.addColorStop(1, "#ffffff");
+        hctx.fillStyle = hg;
+        hctx.beginPath();
+        hctx.moveTo(dir * 16, -26);
+        hctx.quadraticCurveTo(dir * 78, -54, dir * 116, -126);
+        hctx.lineTo(dir * 86, -74);
+        hctx.lineTo(dir * 112, -82);
+        hctx.quadraticCurveTo(dir * 68, -48, dir * 36, -12);
+        hctx.closePath();
+        hctx.fill();
+        hctx.strokeStyle = "#2b090c";
+        hctx.lineWidth = 1.6;
+        hctx.stroke();
+      }
+
+      // Armored Obsidian-Gold Dragon Skull, Brow Plates & Roaring Jaws
+      const headG = hctx.createLinearGradient(0, -52, 0, 66);
+      headG.addColorStop(0, "#ffe896");
+      headG.addColorStop(0.36, "#b85614");
+      headG.addColorStop(0.75, "#3b0c14");
+      headG.addColorStop(1, "#1c050a");
+      hctx.fillStyle = headG;
+      hctx.beginPath();
+      hctx.moveTo(0, -52);
+      hctx.lineTo(48, -18);
+      hctx.lineTo(40, 22);
+      hctx.lineTo(26, 62);
+      hctx.lineTo(0, 72);
+      hctx.lineTo(-26, 62);
+      hctx.lineTo(-40, 22);
+      hctx.lineTo(-48, -18);
+      hctx.closePath();
+      hctx.fill();
+      hctx.strokeStyle = "#ffe588";
+      hctx.lineWidth = 2.4;
+      hctx.stroke();
+
+      // Roaring Molten Maw & Sharp White-Gold Fangs
+      hctx.fillStyle = "#ff5126";
+      hctx.beginPath();
+      hctx.moveTo(-18, 34);
+      hctx.lineTo(18, 34);
+      hctx.lineTo(12, 58);
+      hctx.lineTo(-12, 58);
+      hctx.closePath();
+      hctx.fill();
+
+      hctx.fillStyle = "#fffdf2";
+      for (const fx of [-14, -6, 6, 14]) {
+        hctx.beginPath();
+        hctx.moveTo(fx - 3, 34);
+        hctx.lineTo(fx, 45);
+        hctx.lineTo(fx + 3, 34);
+        hctx.closePath();
+        hctx.fill();
+      }
+
+      // Piercing Blazing Solar Eyes & Flowing Divine Whiskers
+      for (const dir of [-1, 1]) {
+        hctx.fillStyle = "#ffffff";
+        hctx.shadowColor = "#ffe666";
+        hctx.shadowBlur = 12;
+        hctx.beginPath();
+        hctx.moveTo(dir * 10, 4);
+        hctx.lineTo(dir * 34, -8);
+        hctx.lineTo(dir * 27, 11);
+        hctx.closePath();
+        hctx.fill();
+        hctx.shadowBlur = 0;
+
+        hctx.strokeStyle = "#ffe88a";
+        hctx.lineWidth = 2.8;
+        hctx.beginPath();
+        hctx.moveTo(dir * 24, 28);
+        hctx.bezierCurveTo(dir * 92, 12, dir * 124, 68, dir * 176, 38);
+        hctx.stroke();
+      }
+
+      // Forehead Crown Diamond Sun-Crest
+      drawFourPointStar(hctx, 0, -24, 20, 5, "#ffffff");
+      hctx.restore();
+
+      // Layer FG: Molten Gold Embers, Divine Plasma Ribbons & Cross Star Flares
+      const fg = makeCanvas();
+      const fctx = fg.getContext("2d");
+
+      const arcG = fctx.createLinearGradient(60, 680, 540, 220);
+      arcG.addColorStop(0, "rgba(255, 198, 68, 0)");
+      arcG.addColorStop(0.35, "rgba(255, 224, 108, 0.85)");
+      arcG.addColorStop(0.65, "rgba(255, 105, 168, 0.72)");
+      arcG.addColorStop(1, "rgba(102, 236, 255, 0)");
+      fctx.strokeStyle = arcG;
+      fctx.lineWidth = 4.5;
+      fctx.beginPath();
+      fctx.moveTo(42, 705);
+      fctx.bezierCurveTo(135, 645, 215, 495, 555, 375);
+      fctx.stroke();
+
+      fctx.lineWidth = 2.8;
+      fctx.beginPath();
+      fctx.moveTo(558, 700);
+      fctx.bezierCurveTo(435, 620, 365, 520, 58, 355);
+      fctx.stroke();
+
+      const flares = [
+        [300, 96, 32], [105, 215, 24], [498, 215, 24],
+        [88, 565, 26], [512, 555, 26], [300, 455, 38]
+      ];
+      flares.forEach(([x, y, r]) => drawFourPointStar(fctx, x, y, r, 5, "#fffbe3"));
+
+      return {
+        bgUrl: bg.toDataURL(),
+        midSvg,
+        heroUrl: hero.toDataURL(),
+        fgUrl: fg.toDataURL()
+      };
+    }
+
+    /* ---------------- ORNATE CARD BACK CREST (精美的卡背纹章) ---------------- */
+    function generateCardBack() {
+      const c = makeCanvas();
+      const ctx = c.getContext("2d");
+
+      // Deep Royal Obsidian-Indigo Enamel Base
+      const base = ctx.createRadialGradient(W / 2, H / 2, 24, W / 2, H / 2, H * 0.62);
+      base.addColorStop(0, "#1c1836");
+      base.addColorStop(0.55, "#0d0f21");
+      base.addColorStop(1, "#05060e");
+      ctx.fillStyle = base;
+      ctx.fillRect(0, 0, W, H);
+
+      // Ornate Double Gold Border & Corner Baroque Scrollwork
+      const gold = ctx.createLinearGradient(0, 0, W, H);
+      gold.addColorStop(0, "#fff5c2");
+      gold.addColorStop(0.35, "#eab246");
+      gold.addColorStop(0.68, "#9c6514");
+      gold.addColorStop(1, "#ffe596");
+
+      ctx.strokeStyle = gold;
+      ctx.lineWidth = 6;
+      ctx.strokeRect(24, 24, W - 48, H - 48);
+      ctx.lineWidth = 2;
+      ctx.strokeRect(38, 38, W - 76, H - 76);
+
+      // Corner Ornaments
+      const corners = [[38, 38, 1, 1], [W - 38, 38, -1, 1], [38, H - 38, 1, -1], [W - 38, H - 38, -1, -1]];
+      corners.forEach(([cx, cy, sx, sy]) => {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.scale(sx, sy);
+        ctx.strokeStyle = gold;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(0, 56);
+        ctx.quadraticCurveTo(28, 28, 56, 0);
+        ctx.moveTo(12, 78);
+        ctx.quadraticCurveTo(44, 44, 78, 12);
+        ctx.stroke();
+        drawFourPointStar(ctx, 26, 26, 13, 3.5, "#ffe89e");
+        ctx.restore();
+      });
+
+      // Mathematical Guilloché Rose-Engine Sacred Crest at Center
+      ctx.save();
+      ctx.translate(W / 2, H / 2);
+
+      // Outer 24-Pointed Compass Ring
+      for (let i = 0; i < 24; i++) {
+        ctx.save();
+        ctx.rotate((i * Math.PI) / 12);
+        ctx.fillStyle = i % 2 === 0 ? "#ffd875" : "rgba(234, 178, 70, 0.48)";
+        ctx.beginPath();
+        ctx.moveTo(0, -212);
+        ctx.lineTo(10, -168);
+        ctx.lineTo(-10, -168);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Spirograph Guilloché Curves
+      ctx.strokeStyle = "rgba(255, 220, 132, 0.46)";
+      ctx.lineWidth = 1.25;
+      ctx.beginPath();
+      const R = 148, r = 52, d = 78;
+      for (let a = 0; a <= Math.PI * 26; a += 0.03) {
+        const x = (R - r) * Math.cos(a) + d * Math.cos(((R - r) / r) * a);
+        const y = (R - r) * Math.sin(a) - d * Math.sin(((R - r) / r) * a);
+        if (a === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Concentric Runic Rings
+      for (const rad of [216, 168, 118, 76]) {
+        ctx.strokeStyle = gold;
+        ctx.lineWidth = rad === 168 ? 3 : 1.8;
+        ctx.beginPath();
+        ctx.arc(0, 0, rad, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Upper & Lower Winged Lunar/Solar Crests
+      for (const vDir of [-1, 1]) {
+        ctx.save();
+        ctx.scale(1, vDir);
+        ctx.strokeStyle = gold;
+        ctx.lineWidth = 2.2;
+        for (let w = 1; w <= 5; w++) {
+          ctx.beginPath();
+          ctx.moveTo(0, 218);
+          ctx.quadraticCurveTo(w * 28, 255 + w * 10, w * 38, 315 - w * 8);
+          ctx.moveTo(0, 218);
+          ctx.quadraticCurveTo(-w * 28, 255 + w * 10, -w * 38, 315 - w * 8);
+          ctx.stroke();
+        }
+        drawFourPointStar(ctx, 0, 296, 26, 6, "#ffe99e");
+        ctx.restore();
+      }
+
+      // Central Faceted Prismatic Philosopher's Gem
+      const gem = ctx.createRadialGradient(-12, -14, 4, 0, 0, 58);
+      gem.addColorStop(0, "#ffffff");
+      gem.addColorStop(0.32, "#7cf4ff");
+      gem.addColorStop(0.68, "#7e3ff2");
+      gem.addColorStop(1, "#1e0c42");
+      ctx.fillStyle = gem;
+      ctx.beginPath();
+      for (let i = 0; i < 8; i++) {
+        const a = (i * Math.PI) / 4 + Math.PI / 8;
+        const px = Math.cos(a) * 54;
+        const py = Math.sin(a) * 54;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = "#fff6cf";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      drawFourPointStar(ctx, 0, 0, 38, 7, "#fffdf2");
+      ctx.restore();
+
+      // Top & Bottom Inscription
+      ctx.fillStyle = "#ffe59c";
+      ctx.font = "bold 16px Georgia, serif";
+      ctx.textAlign = "center";
+      ctx.fillText("✦  A E T E R N A   P R I S M  ✦", W / 2, 76);
+      ctx.fillText("✦  S A N C T U M   A R C A N A  ✦", W / 2, H - 64);
+
+      document.documentElement.style.setProperty("--card-back-img", `url(${c.toDataURL()})`);
+    }
+
+    return {
+      generateAll() {
+        generateCardBack();
+        return {
+          r: generateCardR(),
+          sr: generateCardSR(),
+          ssr: generateCardSSR()
+        };
+      }
+    };
+  })();
+
+  /* =========================================================================
+     4. FULL-SCREEN PARTICLE & SHOCKWAVE ENGINE (FX Canvas)
+     ========================================================================= */
+  const FXEngine = (() => {
+    const canvas = document.getElementById("fx-canvas");
+    const ctx = canvas.getContext("2d");
+    let W = 0, H = 0, dpr = 1;
+    const particles = [];
+    const rings = [];
+    const ambientMotes = [];
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    for (let i = 0; i < 36; i++) {
+      ambientMotes.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.28,
+        vy: -0.18 - Math.random() * 0.35,
+        r: 0.8 + Math.random() * 1.8,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+
+    function spawnSparks(x, y, count = 10) {
+      const palette = ["#fffbe6", "#ffd86b", "#6bf2ff", "#ff73c6"];
+      for (let i = 0; i < count; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const spd = 1.6 + Math.random() * 5.2;
+        particles.push({
+          x, y,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd - 1.2,
+          size: 1.8 + Math.random() * 3.2,
+          life: 1,
+          decay: 0.028 + Math.random() * 0.025,
+          color: palette[i % palette.length],
+          diamond: i % 3 === 0
+        });
+      }
+    }
+
+    function spawnPackExplosion(cx, cy) {
+      rings.push({ x: cx, y: cy, r: 12, maxR: Math.max(W, H) * 0.62, alpha: 0.95, color: "#ffe48f", width: 8 });
+      rings.push({ x: cx, y: cy, r: 4, maxR: Math.max(W, H) * 0.42, alpha: 0.85, color: "#6ef3ff", width: 4 });
+
+      const palette = ["#fffdf0", "#ffd55e", "#5cf2ff", "#ff5eb8", "#b978ff", "#6bffb8"];
+      for (let i = 0; i < 210; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const spd = 2.5 + Math.pow(Math.random(), 0.65) * 16.5;
+        particles.push({
+          x: cx,
+          y: cy,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd - 1.5,
+          size: 2.2 + Math.random() * 5.6,
+          life: 1,
+          decay: 0.009 + Math.random() * 0.015,
+          color: palette[i % palette.length],
+          diamond: i % 2 === 0
+        });
+      }
+    }
+
+    function spawnRarityFlare(cx, cy, color) {
+      rings.push({ x: cx, y: cy, r: 10, maxR: 290, alpha: 0.85, color, width: 4.5 });
+      spawnSparks(cx, cy, 34);
+    }
+
+    function render(now) {
+      ctx.clearRect(0, 0, W, H);
+
+      // Subtle floating sanctum dust
+      for (const m of ambientMotes) {
+        m.x += m.vx;
+        m.y += m.vy;
+        if (m.y < -10) m.y = H + 10;
+        if (m.x < -10) m.x = W + 10;
+        if (m.x > W + 10) m.x = -10;
+        const a = 0.16 + Math.sin(now * 0.002 + m.phase) * 0.12;
+        ctx.fillStyle = `rgba(255, 228, 168, ${Math.max(0.03, a)})`;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Expanding shockwave rings
+      for (let i = rings.length - 1; i >= 0; i--) {
+        const rg = rings[i];
+        rg.r += (rg.maxR - rg.r) * 0.085;
+        rg.alpha *= 0.93;
+        if (rg.alpha < 0.015) {
+          rings.splice(i, 1);
+          continue;
+        }
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        ctx.strokeStyle = rg.color;
+        ctx.globalAlpha = rg.alpha;
+        ctx.lineWidth = rg.width * rg.alpha;
+        ctx.beginPath();
+        ctx.arc(rg.x, rg.y, rg.r, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Burst particles & shards
+      if (particles.length > 0) {
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.968;
+          p.vy = p.vy * 0.968 + 0.09;
+          p.life -= p.decay;
+          if (p.life <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+          ctx.globalAlpha = Math.min(1, p.life * 1.25);
+          ctx.fillStyle = p.color;
+          const sz = p.size * p.life;
+          if (p.diamond) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y - sz * 1.45);
+            ctx.lineTo(p.x + sz, p.y);
+            ctx.lineTo(p.x, p.y + sz * 1.45);
+            ctx.lineTo(p.x - sz, p.y);
+            ctx.closePath();
+            ctx.fill();
+          } else {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, sz, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+      }
+    }
+
+    return { render, spawnSparks, spawnPackExplosion, spawnRarityFlare };
+  })();
+
+  /* =========================================================================
+     5. CARD DEFINITIONS & DOM BUILDER
+     ========================================================================= */
+  function createFrameBorderSVG(rarity) {
+    const stroke = rarity === "ssr" ? "#ffd86b" : rarity === "sr" ? "#7ceeff" : "#c8dcff";
+    return `
+      <svg class="frame-border-svg" viewBox="0 0 300 420" preserveAspectRatio="none">
+        <rect x="5" y="5" width="290" height="410" rx="14" ry="14" fill="none" stroke="${stroke}" stroke-width="1.6" opacity="0.72"/>
+        <rect x="9" y="9" width="282" height="402" rx="11" ry="11" fill="none" stroke="#ffffff" stroke-width="0.6" opacity="0.35"/>
+      </svg>`;
+  }
+
+  function buildCardsDOM(artAssets) {
+    const CARDS = [
+      {
+        id: "card-r",
+        rarity: "r",
+        badge: "R · 银闪",
+        rarityFull: "RARE · 拉丝秘银闪 (Silver Brushed Foil)",
+        cost: "4",
+        name: "月蚀守望·银翼星枭",
+        typeLine: "☾ 星界守望者 · 秘银圣卫",
+        skillTag: "【静寂月蚀】",
+        skillDesc: "展开秘银星盘双翼折射寒月辉光，令黑夜凝结为不可贯穿的星界护盾。",
+        stats: "ATK 2400 / DEF 2800",
+        serial: "AGY-014 · R",
+        flareColor: "#b8d8ff",
+        art: artAssets.r
+      },
+      {
+        id: "card-ssr",
+        rarity: "ssr",
+        badge: "SSR · 金闪",
+        rarityFull: "SECRET SSR · 彩虹全息金闪 (Prismatic Gold Foil)",
+        cost: "10",
+        name: "万象神冕·炽阳创世龙皇",
+        typeLine: "☀ 创世龙神 · 至高日冕主宰",
+        skillTag: "【万象归源】",
+        skillDesc: "执掌恒星炉心与七彩全息衍射法则，六翼张开之时重塑诸界星辰秩序。",
+        stats: "ATK 4500 / DEF 4000",
+        serial: "AGY-099 · SSR",
+        flareColor: "#ffd866",
+        art: artAssets.ssr
+      },
+      {
+        id: "card-sr",
+        rarity: "sr",
+        badge: "SR · 碎钻闪",
+        rarityFull: "SUPER RARE · 极光碎钻闪 (Shattered Diamond Foil)",
+        cost: "7",
+        name: "凛冬圣咏·碎晶冰凰",
+        typeLine: "❄ 极冰幻神兽 · 棱镜圣咏者",
+        skillTag: "【零度碎钻】",
+        skillDesc: "振落万千多面切工冰晶棱镜，冻结时空长河并折射璀璨极光圣裁。",
+        stats: "ATK 3100 / DEF 2600",
+        serial: "AGY-042 · SR",
+        flareColor: "#66f0ff",
+        art: artAssets.sr
+      }
+    ];
+
+    const stage = document.getElementById("cards-stage");
+    stage.innerHTML = "";
+
+    const cardStates = CARDS.map((c, index) => {
+      const slot = document.createElement("div");
+      slot.className = `card-slot rarity-${c.rarity}`;
+      slot.dataset.index = index;
+
+      slot.innerHTML = `
+        <div class="card-perspective">
+          <div class="card-rotator">
+            <div class="card-ground-shadow"></div>
+            <div class="card-edge-slice e1"></div>
+            <div class="card-edge-slice e2"></div>
+            <div class="card-edge-slice e3"></div>
+
+            <!-- FRONT FACE -->
+            <div class="card-face card-front">
+              <div class="card-front-clip">
+                <div class="art-portal">
+                  <div class="parallax-layer layer-bg"><img src="${c.art.bgUrl}" alt="" draggable="false"/></div>
+                  <div class="parallax-layer layer-bg-holo"></div>
+                  <div class="parallax-layer layer-mid">${c.art.midSvg}</div>
+                  <div class="parallax-layer layer-hero-shadow"><img src="${c.art.heroUrl}" alt="" draggable="false"/></div>
+                  <div class="parallax-layer layer-hero"><img src="${c.art.heroUrl}" alt="${c.name}" draggable="false"/></div>
+                  <div class="parallax-layer layer-fg"><img src="${c.art.fgUrl}" alt="" draggable="false"/></div>
+                  <div class="portal-depth-shadow"></div>
+                </div>
+
+                <div class="card-frame-ui">
+                  ${createFrameBorderSVG(c.rarity)}
+                  <div class="card-header-bar">
+                    <div class="mana-orb">${c.cost}</div>
+                    <div class="card-name-group">
+                      <div class="card-name-zh">${c.name}</div>
+                      <div class="card-type-line">${c.typeLine}</div>
+                    </div>
+                  </div>
+
+                  <div class="card-lore-box">
+                    <div class="card-skill-text">
+                      <span class="card-skill-tag">${c.skillTag}</span>${c.skillDesc}
+                    </div>
+                    <div class="card-footer-meta">
+                      <span>${c.serial}</span>
+                      <span class="card-stats">${c.stats}</span>
+                      <span class="holo-security-stamp" title="全息防伪认证印记"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Multi-Layer Holographic Diffraction & Specular Sweep Shaders -->
+                <div class="holo-layer holo-foil-main"></div>
+                <div class="holo-layer holo-foil-prism"></div>
+                <div class="holo-layer holo-sweep-beam"></div>
+                <div class="holo-layer holo-hotspot"></div>
+                <div class="holo-layer holo-kelvin-cast"></div>
+                <div class="card-rim-bevel"></div>
+              </div>
+
+              <!-- Genuine 3D Pop-Out Floating Rarity Emblem -->
+              <div class="card-popout-badge">${c.badge}</div>
+            </div>
+
+            <!-- BACK FACE (精美的卡背纹章) -->
+            <div class="card-face card-back">
+              <div class="card-back-art"></div>
+              <div class="card-back-foil"></div>
+              <div class="card-back-glare"></div>
+              <div class="card-rim-bevel"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-caption">
+          <span class="caption-rarity-pill">${c.badge}</span>
+          <span class="caption-hint">点击放大 · 360° 殿堂鉴赏</span>
+        </div>
+      `;
+
+      stage.appendChild(slot);
+
+      return {
+        meta: c,
+        index,
+        slot,
+        perspectiveEl: slot.querySelector(".card-perspective"),
+        rotatorEl: slot.querySelector(".card-rotator"),
+        hovered: false,
+        // Damped spring state for tilt & pointer
+        tx: 0, ty: 0, vx: 0, vy: 0,
+        targetTx: 0, targetTy: 0,
+        mx: 50, my: 50, targetMx: 50, targetMy: 50,
+        glareOp: 0.22, targetGlareOp: 0.22,
+        // 360° continuous flip angle (degrees)
+        flipY: 540, vFlip: 0, targetFlipY: 540,
+        // Entrance & Inspect slot transforms
+        slotX: 0, slotY: 260, slotScale: 0.22, slotOp: 0,
+        targetSlotX: 0, targetSlotY: 260, targetSlotScale: 0.22, targetSlotOp: 0,
+        revealed: false
+      };
+    });
+
+    return cardStates;
+  }
+
+  /* =========================================================================
+     6. KELVIN AMBIENT COLOR TEMPERATURE SOLVER (2000K ~ 12000K)
+     ========================================================================= */
+  function kelvinToRGB(kelvin) {
+    const temp = kelvin / 100;
+    let r, g, b;
+    if (temp <= 66) {
+      r = 255;
+      g = 99.4708025861 * Math.log(temp) - 161.1195681661;
+      b = temp <= 19 ? 0 : 138.5177312231 * Math.log(temp - 10) - 305.0447927307;
+    } else {
+      r = 329.698727446 * Math.pow(temp - 60, -0.1332047592);
+      g = 288.1221695283 * Math.pow(temp - 60, -0.0755148492);
+      b = 255;
+    }
+    return [
+      Math.round(Math.max(0, Math.min(255, r))),
+      Math.round(Math.max(0, Math.min(255, g))),
+      Math.round(Math.max(0, Math.min(255, b)))
+    ];
+  }
+
+  function describeKelvin(k) {
+    if (k <= 2800) return `${k}K · 烛火暖金`;
+    if (k <= 4200) return `${k}K · 琥珀暖光`;
+    if (k <= 5800) return `${k}K · 柔和晨光`;
+    if (k <= 7200) return `${k}K · 标准日光`;
+    if (k <= 9500) return `${k}K · 冰川冷白`;
+    return `${k}K · 极地星蓝`;
+  }
+
+  /* =========================================================================
+     7. MAIN APPLICATION CONTROLLER (Pack Ritual + Damped 3D Physics + Inspector)
+     ========================================================================= */
+  buildProceduralTextures();
+  const artAssets = ArtStudio.generateAll();
+  const cards = buildCardsDOM(artAssets);
+
+  const packStage = document.getElementById("pack-stage");
+  const packWrapper = document.getElementById("pack-wrapper");
+  const pack3d = document.getElementById("pack-3d");
+  const packTopCap = document.getElementById("pack-top-cap");
+  const packBody = document.getElementById("pack-body");
+  const tearZone = document.getElementById("tear-zone");
+  const cardsStage = document.getElementById("cards-stage");
+  const stageStatus = document.getElementById("stage-status");
+  const btnReopen = document.getElementById("btn-reopen");
+  const btnSound = document.getElementById("btn-sound");
+  const btnQuickRip = document.getElementById("btn-quick-rip");
+
+  // Inspector UI elements
+  const backdropCatcher = document.getElementById("inspect-backdrop-catcher");
+  const dockRarity = document.getElementById("dock-rarity");
+  const dockTitle = document.getElementById("dock-title");
+  const btnExitInspect = document.getElementById("btn-exit-inspect");
+  const btnFlip180 = document.getElementById("btn-flip-180");
+  const btnTurntable = document.getElementById("btn-turntable");
+  const sliderAngle = document.getElementById("slider-angle");
+  const sliderHolo = document.getElementById("slider-holo");
+  const sliderKelvin = document.getElementById("slider-kelvin");
+  const valAngle = document.getElementById("val-angle");
+  const valHolo = document.getElementById("val-holo");
+  const valKelvin = document.getElementById("val-kelvin");
+  const btnPrevCard = document.getElementById("btn-prev-card");
+  const btnNextCard = document.getElementById("btn-next-card");
+  const btnResetOptics = document.getElementById("btn-reset-optics");
+
+  let appState = "pack"; // 'pack' | 'opening' | 'gallery' | 'inspect'
+  let inspectedIndex = -1;
+  let autoTurntable = false;
+
+  // Pack Damped Tilt & Cut State
+  let packRx = 0, packRy = 0, targetPackRx = 0, targetPackRy = 0;
+  let packBgX = 50, packBgY = 50;
+  let cutProgress = 0;
+  let isSwipingPack = false;
+  let swipeStartX = 0, swipeStartTime = 0, totalDragDist = 0;
+
+  btnSound.addEventListener("click", () => {
+    const on = SoundFX.toggle();
+    btnSound.textContent = on ? "🔊 礼仪音效: 开" : "🔇 礼仪音效: 关";
+  });
+
+  // Pack 3D Metallic Foil Hover
+  packWrapper.addEventListener("pointermove", (e) => {
+    if (appState !== "pack") return;
+    const rect = packWrapper.getBoundingClientRect();
+    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+    targetPackRy = nx * 16;
+    targetPackRx = -ny * 13;
+    packBgX = 50 + nx * 38;
+    packBgY = 50 + ny * 38;
+
+    if (isSwipingPack) {
+      const dx = Math.abs(e.clientX - swipeStartX);
+      totalDragDist = Math.max(totalDragDist, dx);
+      const nextCut = Math.min(1, dx / (rect.width * 0.62));
+      if (nextCut > cutProgress + 0.03) {
+        SoundFX.playCrinkle(nextCut);
+        FXEngine.spawnSparks(e.clientX, rect.top + 68, 4);
+      }
+      cutProgress = Math.max(cutProgress, nextCut);
+      packWrapper.style.setProperty("--cut-progress", cutProgress.toFixed(3));
+      packTopCap.style.transform = `rotate(${-cutProgress * 11}deg) translateY(${-cutProgress * 10}px)`;
+      if (cutProgress >= 0.96) {
+        isSwipingPack = false;
+        triggerPackOpen();
+      }
+    }
+  });
+
+  packWrapper.addEventListener("pointerleave", () => {
+    targetPackRx = 0;
+    targetPackRy = 0;
+  });
+
+  function onPackPointerDown(e) {
+    if (appState !== "pack") return;
+    isSwipingPack = true;
+    swipeStartX = e.clientX;
+    swipeStartTime = performance.now();
+    totalDragDist = 0;
+    SoundFX.playCrinkle(0.35);
+  }
+
+  packWrapper.addEventListener("pointerdown", onPackPointerDown);
+  tearZone.addEventListener("pointerdown", onPackPointerDown);
+
+  window.addEventListener("pointerup", () => {
+    if (!isSwipingPack || appState !== "pack") return;
+    isSwipingPack = false;
+    const elapsed = performance.now() - swipeStartTime;
+    // Support both click-to-rip and partial swipe!
+    if (totalDragDist < 16 && elapsed < 450) {
+      animateAutoSlashAndOpen();
+    } else if (cutProgress > 0.38) {
+      triggerPackOpen();
+    } else {
+      cutProgress = 0;
+      packWrapper.style.setProperty("--cut-progress", "0");
+      packTopCap.style.transform = "";
+    }
+  });
+
+  btnQuickRip.addEventListener("click", () => {
+    if (appState === "pack") animateAutoSlashAndOpen();
+  });
+
+  function animateAutoSlashAndOpen() {
+    if (appState !== "pack") return;
+    appState = "opening";
+    const rect = packWrapper.getBoundingClientRect();
+    const start = performance.now();
+    const dur = 340;
+
+    function step(now) {
+      const t = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      cutProgress = eased;
+      packWrapper.style.setProperty("--cut-progress", eased.toFixed(3));
+      packTopCap.style.transform = `rotate(${-eased * 12}deg) translateY(${-eased * 12}px)`;
+      FXEngine.spawnSparks(rect.left + rect.width * eased, rect.top + 68, 5);
+      if (t < 1) {
+        requestAnimationFrame(step);
+      } else {
+        appState = "pack";
+        triggerPackOpen();
+      }
+    }
+    SoundFX.playCrinkle(0.6);
+    requestAnimationFrame(step);
+  }
+
+  function triggerPackOpen() {
+    if (appState !== "pack") return;
+    appState = "opening";
+    stageStatus.textContent = "全息降临 · 三阶奇幻闪卡现世";
+
+    const rect = packWrapper.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height * 0.42;
+
+    SoundFX.playRipAndBurst();
+    FXEngine.spawnPackExplosion(cx, cy);
+
+    // Fly off top foil cap & dissolve booster body
+    packTopCap.style.transition = "transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s ease";
+    packTopCap.style.transform = "translate3d(160px, -190px, 120px) rotate(38deg)";
+    packTopCap.style.opacity = "0";
+
+    packBody.style.transition = "transform 0.62s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.52s ease";
+    packBody.style.transform = "translate3d(0, 180px, -80px) scale(0.86)";
+    packBody.style.opacity = "0";
+
+    setTimeout(() => {
+      packStage.classList.add("hidden");
+      cardsStage.classList.add("active");
+      launchCardsReveal();
+    }, 210);
+  }
+
+  function launchCardsReveal() {
+    // Reveal order: Left (R) -> Right (SR) -> Center Climax (SSR)!
+    const order = [0, 2, 1];
+    const stageCenterX = window.innerWidth / 2;
+    const stageCenterY = window.innerHeight / 2;
+
+    // Reset card positions to pack origin in center before launching
+    cards.forEach((c) => {
+      const r = c.slot.getBoundingClientRect();
+      const slotCx = r.left + r.width / 2;
+      const slotCy = r.top + r.height / 2;
+      c.slotX = stageCenterX - slotCx;
+      c.slotY = stageCenterY - slotCy + 60;
+      c.slotScale = 0.25;
+      c.slotOp = 0;
+      c.targetSlotX = c.slotX;
+      c.targetSlotY = c.slotY;
+      c.targetSlotScale = 0.25;
+      c.targetSlotOp = 0;
+      c.flipY = 540;
+      c.targetFlipY = 540;
+      c.revealed = false;
+    });
+
+    order.forEach((cardIdx, seqIdx) => {
+      setTimeout(() => {
+        const c = cards[cardIdx];
+        c.targetSlotX = 0;
+        c.targetSlotY = 0;
+        c.targetSlotScale = 1;
+        c.targetSlotOp = 1;
+        c.targetFlipY = 0; // Spins 540° -> 0° face-up!
+        c.revealed = true;
+        SoundFX.playCardFly(seqIdx * 140);
+
+        setTimeout(() => {
+          const r = c.slot.getBoundingClientRect();
+          FXEngine.spawnRarityFlare(r.left + r.width / 2, r.top + r.height / 2, c.meta.flareColor);
+        }, 280);
+      }, seqIdx * 210);
+    });
+
+    setTimeout(() => {
+      appState = "gallery";
+      stageStatus.textContent = "卡阵陈列 · 移动鼠标检视镭射，点击单卡进入 360° 鉴赏";
+      btnReopen.classList.remove("hidden");
+    }, 820);
+  }
+
+  // Re-open Pack Ritual Button
+  btnReopen.addEventListener("click", () => {
+    if (appState === "inspect") exitInspectMode();
+    appState = "pack";
+    btnReopen.classList.add("hidden");
+    stageStatus.textContent = "仪式阶段 · 密封神秘补充包";
+    cardsStage.classList.remove("active");
+
+    cutProgress = 0;
+    packWrapper.style.setProperty("--cut-progress", "0");
+    packTopCap.style.transition = "none";
+    packTopCap.style.transform = "";
+    packTopCap.style.opacity = "1";
+    packBody.style.transition = "none";
+    packBody.style.transform = "";
+    packBody.style.opacity = "1";
+    packStage.classList.remove("hidden");
+    SoundFX.playChime(true);
+  });
+
+  /* =========================================================================
+     8. CARD POINTER INTERACTION, 360° DRAG FLIP & APPRECIATION MODE
+     ========================================================================= */
+  let isDraggingInspectCard = false;
+  let dragPrevX = 0;
+  let dragMovedDistance = 0;
+
+  function computeInspectOffsetForCard(cardState) {
+    // Temporarily measure natural gallery slot center
+    const curTransform = cardState.slot.style.transform;
+    cardState.slot.style.transform = "translate3d(0px, 0px, 0px) scale(1)";
+    const rect = cardState.slot.getBoundingClientRect();
+    cardState.slot.style.transform = curTransform;
+
+    const slotCx = rect.left + rect.width / 2;
+    const slotCy = rect.top + rect.height / 2;
+    const wide = window.innerWidth > 1080;
+    const destCx = wide ? window.innerWidth * 0.5 - 155 : window.innerWidth * 0.5;
+    const destCy = wide ? window.innerHeight * 0.5 + 8 : window.innerHeight * 0.36;
+    const maxCardH = wide ? window.innerHeight * 0.74 : window.innerHeight * 0.50;
+    const scale = Math.min(1.36, Math.max(0.95, maxCardH / rect.height));
+
+    return {
+      dx: destCx - slotCx,
+      dy: destCy - slotCy,
+      scale
+    };
+  }
+
+  function enterInspectMode(index) {
+    inspectedIndex = index;
+    appState = "inspect";
+    autoTurntable = false;
+    btnTurntable.classList.remove("active");
+    document.body.classList.add("inspect-mode");
+    stageStatus.textContent = "殿堂鉴赏模式 · 支持 360° 翻转卡背与色温/镭射调校";
+    SoundFX.playChime(true);
+
+    cards.forEach((c, idx) => {
+      if (idx === index) {
+        c.slot.classList.add("inspected");
+        const { dx, dy, scale } = computeInspectOffsetForCard(c);
+        c.targetSlotX = dx;
+        c.targetSlotY = dy;
+        c.targetSlotScale = scale;
+        c.targetFlipY = 0;
+        dockRarity.textContent = c.meta.rarityFull;
+        dockTitle.textContent = c.meta.name;
+      } else {
+        c.slot.classList.remove("inspected");
+        c.targetSlotX = 0;
+        c.targetSlotY = 0;
+        c.targetSlotScale = 0.92;
+        c.targetTx = 0;
+        c.targetTy = 0;
+      }
+    });
+    updateAngleUI(0);
+  }
+
+  function exitInspectMode() {
+    if (appState !== "inspect") return;
+    appState = "gallery";
+    autoTurntable = false;
+    btnTurntable.classList.remove("active");
+    document.body.classList.remove("inspect-mode");
+    stageStatus.textContent = "卡阵陈列 · 移动鼠标检视镭射，点击单卡进入 360° 鉴赏";
+    SoundFX.playChime(false);
+
+    cards.forEach((c) => {
+      c.slot.classList.remove("inspected");
+      c.targetSlotX = 0;
+      c.targetSlotY = 0;
+      c.targetSlotScale = 1;
+      // Smoothly return card face-up to nearest 360 multiple
+      c.targetFlipY = Math.round(c.targetFlipY / 360) * 360;
+      c.targetTx = 0;
+      c.targetTy = 0;
+      c.targetGlareOp = 0.22;
+    });
+    inspectedIndex = -1;
+  }
+
+  window.addEventListener("resize", () => {
+    if (appState === "inspect" && inspectedIndex >= 0) {
+      const c = cards[inspectedIndex];
+      const { dx, dy, scale } = computeInspectOffsetForCard(c);
+      c.targetSlotX = dx;
+      c.targetSlotY = dy;
+      c.targetSlotScale = scale;
+    }
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && appState === "inspect") exitInspectMode();
+  });
+
+  backdropCatcher.addEventListener("click", () => {
+    if (appState === "inspect") exitInspectMode();
+  });
+
+  btnExitInspect.addEventListener("click", exitInspectMode);
+
+  btnPrevCard.addEventListener("click", () => {
+    if (appState !== "inspect") return;
+    enterInspectMode((inspectedIndex + cards.length - 1) % cards.length);
+  });
+
+  btnNextCard.addEventListener("click", () => {
+    if (appState !== "inspect") return;
+    enterInspectMode((inspectedIndex + 1) % cards.length);
+  });
+
+  // 180° Flip Button (Inspects Ornate Card Back Crest!)
+  btnFlip180.addEventListener("click", () => {
+    if (appState !== "inspect" || inspectedIndex < 0) return;
+    const c = cards[inspectedIndex];
+    autoTurntable = false;
+    btnTurntable.classList.remove("active");
+    const snapped = Math.round(c.targetFlipY / 180) * 180;
+    c.targetFlipY = snapped + 180;
+    SoundFX.playCardFly(80);
+  });
+
+  // 360° Museum Auto-Turntable Toggle
+  btnTurntable.addEventListener("click", () => {
+    if (appState !== "inspect") return;
+    autoTurntable = !autoTurntable;
+    btnTurntable.classList.toggle("active", autoTurntable);
+  });
+
+  // 360° Angle Scrub Slider
+  sliderAngle.addEventListener("input", () => {
+    if (appState !== "inspect" || inspectedIndex < 0) return;
+    autoTurntable = false;
+    btnTurntable.classList.remove("active");
+    const c = cards[inspectedIndex];
+    const deg = parseFloat(sliderAngle.value);
+    const baseTurn = Math.floor(c.flipY / 360) * 360;
+    c.targetFlipY = baseTurn + deg;
+  });
+
+  // Holographic Intensity Slider (0% ~ 200%)
+  sliderHolo.addEventListener("input", () => {
+    const pct = parseInt(sliderHolo.value, 10);
+    valHolo.textContent = `${pct}%`;
+    document.documentElement.style.setProperty("--holo-intensity", (pct / 100).toFixed(2));
+  });
+
+  // Ambient Light Color Temperature Slider (2000K ~ 12000K)
+  function applyKelvin(kelvin) {
+    const [r, g, b] = kelvinToRGB(kelvin);
+    const distFromDaylight = Math.abs(kelvin - 6500) / 5500;
+    const tintStrength = (0.06 + distFromDaylight * 0.28).toFixed(3);
+    const root = document.documentElement.style;
+    root.setProperty("--ambient-r", r);
+    root.setProperty("--ambient-g", g);
+    root.setProperty("--ambient-b", b);
+    root.setProperty("--ambient-rgb", `${r}, ${g}, ${b}`);
+    root.setProperty("--kelvin-tint-strength", tintStrength);
+    valKelvin.textContent = describeKelvin(kelvin);
+  }
+
+  sliderKelvin.addEventListener("input", () => {
+    applyKelvin(parseInt(sliderKelvin.value, 10));
+  });
+  applyKelvin(6500);
+
+  btnResetOptics.addEventListener("click", () => {
+    sliderHolo.value = "100";
+    valHolo.textContent = "100%";
+    document.documentElement.style.setProperty("--holo-intensity", "1");
+    sliderKelvin.value = "6500";
+    applyKelvin(6500);
+    if (appState === "inspect" && inspectedIndex >= 0) {
+      autoTurntable = false;
+      btnTurntable.classList.remove("active");
+      cards[inspectedIndex].targetFlipY = 0;
+    }
+    SoundFX.playChime(true);
+  });
+
+  function updateAngleUI(rawDeg) {
+    const norm = ((Math.round(rawDeg) % 360) + 360) % 360;
+    const isBack = norm > 90 && norm < 270;
+    valAngle.textContent = `${isBack ? "卡背纹章" : "卡面正面"} · ${norm}°`;
+    if (document.activeElement !== sliderAngle) {
+      sliderAngle.value = String(norm);
+    }
+  }
+
+  // Per-Card Pointer Hover Tilt & 360° Drag Rotation
+  cards.forEach((c) => {
+    c.perspectiveEl.addEventListener("pointerenter", () => {
+      c.hovered = true;
+    });
+
+    c.perspectiveEl.addEventListener("pointermove", (e) => {
+      if (appState !== "gallery" && appState !== "inspect") return;
+      if (appState === "inspect" && c.index !== inspectedIndex) return;
+
+      const rect = c.perspectiveEl.getBoundingClientRect();
+      const px = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      const py = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+      const nx = px * 2 - 1; // -1 .. +1
+      const ny = py * 2 - 1; // -1 .. +1
+
+      c.targetMx = px * 100;
+      c.targetMy = py * 100;
+      c.targetTx = -ny * 20;
+      c.targetTy = nx * 22;
+      c.targetGlareOp = 0.35 + Math.hypot(nx, ny) * 0.55;
+    });
+
+    c.perspectiveEl.addEventListener("pointerleave", () => {
+      c.hovered = false;
+      if (!isDraggingInspectCard) {
+        c.targetTx = 0;
+        c.targetTy = 0;
+        c.targetMx = 50;
+        c.targetMy = 50;
+        c.targetGlareOp = 0.22;
+      }
+    });
+
+    c.perspectiveEl.addEventListener("pointerdown", (e) => {
+      if (appState === "gallery") {
+        dragMovedDistance = 0;
+        dragPrevX = e.clientX;
+      } else if (appState === "inspect" && c.index === inspectedIndex) {
+        isDraggingInspectCard = true;
+        autoTurntable = false;
+        btnTurntable.classList.remove("active");
+        dragPrevX = e.clientX;
+        dragMovedDistance = 0;
+        c.perspectiveEl.setPointerCapture(e.pointerId);
+      }
+    });
+
+    c.perspectiveEl.addEventListener("pointermove", (e) => {
+      if (isDraggingInspectCard && appState === "inspect" && c.index === inspectedIndex) {
+        const dx = e.clientX - dragPrevX;
+        dragPrevX = e.clientX;
+        dragMovedDistance += Math.abs(dx);
+        c.targetFlipY += dx * 0.72;
+      }
+    });
+
+    c.perspectiveEl.addEventListener("pointerup", (e) => {
+      if (appState === "gallery" && c.revealed) {
+        enterInspectMode(c.index);
+      } else if (isDraggingInspectCard) {
+        isDraggingInspectCard = false;
+        try { c.perspectiveEl.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+    });
+
+    c.perspectiveEl.addEventListener("pointercancel", (e) => {
+      if (isDraggingInspectCard) {
+        isDraggingInspectCard = false;
+        try { c.perspectiveEl.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+    });
+
+    c.perspectiveEl.addEventListener("dblclick", () => {
+      if (appState === "inspect" && c.index === inspectedIndex) {
+        btnFlip180.click();
+      }
+    });
+  });
+
+  /* =========================================================================
+     9. MASTER 60/120FPS SPRING-DAMPER & OPTICAL SHADER LOOP
+     ========================================================================= */
+  let lastTime = performance.now();
+
+  function tick(now) {
+    const dt = Math.min(0.032, (now - lastTime) / 1000);
+    lastTime = now;
+
+    // 9.1 Pack 3D Hover Smoothing
+    if (appState === "pack" || appState === "opening") {
+      packRx += (targetPackRx - packRx) * Math.min(1, dt * 10);
+      packRy += (targetPackRy - packRy) * Math.min(1, dt * 10);
+      pack3d.style.setProperty("--pack-rx", `${packRx.toFixed(2)}deg`);
+      pack3d.style.setProperty("--pack-ry", `${packRy.toFixed(2)}deg`);
+      pack3d.style.setProperty("--pack-bg-x", `${packBgX.toFixed(1)}%`);
+      pack3d.style.setProperty("--pack-bg-y", `${packBgY.toFixed(1)}%`);
+      pack3d.style.setProperty("--pack-sheen-angle", `${(packRy * 1.6).toFixed(1)}deg`);
+    }
+
+    // 9.2 Card Damped Spring Physics + Optical Diffraction Binding
+    const stiffness = 155;
+    const damping = 18.5;
+
+    for (const c of cards) {
+      if (appState === "inspect" && c.index === inspectedIndex && autoTurntable && !isDraggingInspectCard) {
+        c.targetFlipY += dt * 44; // Smooth 360° turntable spin
+      }
+
+      // Spring-damper for X/Y perspective tilt
+      const ax = (c.targetTx - c.tx) * stiffness - c.vx * damping;
+      const ay = (c.targetTy - c.ty) * stiffness - c.vy * damping;
+      c.vx += ax * dt;
+      c.vy += ay * dt;
+      c.tx += c.vx * dt;
+      c.ty += c.vy * dt;
+
+      // Spring-damper for 360° flip angle
+      const aFlip = (c.targetFlipY - c.flipY) * 115 - c.vFlip * 16.5;
+      c.vFlip += aFlip * dt;
+      c.flipY += c.vFlip * dt;
+
+      // Smooth pointer & glare interpolation
+      const lerpFactor = Math.min(1, dt * 12);
+      c.mx += (c.targetMx - c.mx) * lerpFactor;
+      c.my += (c.targetMy - c.my) * lerpFactor;
+      c.glareOp += (c.targetGlareOp - c.glareOp) * lerpFactor;
+
+      // Smooth slot position & hover elevation
+      const hoverLift = (appState === "gallery" && c.hovered) ? -14 : 0;
+      const hoverScale = (appState === "gallery" && c.hovered) ? 1.045 : c.targetSlotScale;
+      const slotLerp = Math.min(1, dt * 10.5);
+      c.slotX += (c.targetSlotX - c.slotX) * slotLerp;
+      c.slotY += ((c.targetSlotY + hoverLift) - c.slotY) * slotLerp;
+      c.slotScale += (hoverScale - c.slotScale) * slotLerp;
+      c.slotOp += (c.targetSlotOp - c.slotOp) * slotLerp;
+
+      c.slot.style.opacity = c.slotOp.toFixed(3);
+      c.slot.style.transform = `translate3d(${c.slotX.toFixed(2)}px, ${c.slotY.toFixed(2)}px, 0) scale(${c.slotScale.toFixed(4)})`;
+
+      // Combine cursor tilt AND 360° rotational normal so spinning 360° also drives live rainbow foil & sweep glare!
+      const totalRotY = c.flipY + c.ty;
+      const rotRad = (totalRotY * Math.PI) / 180;
+      const rotSin = Math.sin(rotRad);
+      const pxNorm = (c.mx - 50) / 50; // -1 .. +1
+      const pyNorm = (c.my - 50) / 50; // -1 .. +1
+
+      const bgX = 50 + pxNorm * 36 + rotSin * 44;
+      const bgY = 50 + pyNorm * 36 + (c.tx / 20) * 18;
+      const holoAngle = pxNorm * 48 + pyNorm * 24 + rotSin * 95;
+      const sweepPos = 50 + pxNorm * 56 + pyNorm * 22 + rotSin * 58;
+      const holoActive = Math.min(1, 0.26 + Math.hypot(pxNorm, pyNorm) * 0.68 + Math.abs(rotSin) * 0.65);
+
+      const st = c.rotatorEl.style;
+      st.setProperty("--rx", `${c.tx.toFixed(2)}deg`);
+      st.setProperty("--ry", `${totalRotY.toFixed(2)}deg`);
+      st.setProperty("--mx", `${(50 + pxNorm * 42 + rotSin * 28).toFixed(1)}%`);
+      st.setProperty("--my", `${c.my.toFixed(1)}%`);
+      st.setProperty("--px", pxNorm.toFixed(3));
+      st.setProperty("--py", pyNorm.toFixed(3));
+      st.setProperty("--bg-x", `${bgX.toFixed(2)}%`);
+      st.setProperty("--bg-y", `${bgY.toFixed(2)}%`);
+      st.setProperty("--holo-angle", `${holoAngle.toFixed(1)}deg`);
+      st.setProperty("--sweep-pos", `${sweepPos.toFixed(1)}%`);
+      st.setProperty("--glare-op", c.glareOp.toFixed(3));
+      st.setProperty("--holo-active", holoActive.toFixed(3));
+
+      if (appState === "inspect" && c.index === inspectedIndex) {
+        updateAngleUI(totalRotY);
+      }
+    }
+
+    FXEngine.render(now);
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
