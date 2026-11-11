@@ -7,22 +7,22 @@
 ## 测试条件
 
 - 工具：Google Antigravity
-- 模型：Gemini 4 Carbon，High 档，Turbo 模式
+- 模型：Gemini 4 Carbon，High 档，Turbo 模式；**例外：`01_gta6` 和 `05_minecraft-sunset` 是用上一代 Gemini 4 Argon（High）跑的**（按 Antigravity 会话记录核对过），Carbon 做的同一题是 `01b` 和 `05b`。视频里也都标了「上一代 · Gemini 4 Argon」。
 - 时间：2026 年 11 月 9 日到 11 日
-- 每个会话只跑一次，做成什么样就是什么样，没有挑结果。`01b`、`05b` 是另开新会话重做的那一次，也都放在这里。
+- 每个会话只跑一次，做成什么样就是什么样，没有挑结果。`01b`、`05b` 是换成 Carbon、另开新会话重做的那一次。
 
 ## 项目
 
 | 文件夹 | 题目 | 提示词类型 | 模型干了多久 | 怎么运行 |
 |---|---|---|---|---|
-| [`01_gta6`](01_gta6/) | GTA 6 | 一句话 | 20 分 | `npm install` → `npm run dev` |
-| [`01b_gta6_second-try`](01b_gta6_second-try/) | GTA 6，第二次 | 一句话（多加了一句要求） | 34 分 | `npm install` → `npm run dev` |
+| [`01_gta6`](01_gta6/) | GTA 6（**Gemini 4 Argon**） | 一句话 | 20 分 | `npm install` → `npm run dev` |
+| [`01b_gta6_second-try`](01b_gta6_second-try/) | GTA 6，第二次（Carbon） | 一句话（多加了一句要求） | 34 分 | `npm install` → `npm run dev` |
 | [`02_cs2-dust2`](02_cs2-dust2/) | CS · Dust2 | 一句话 | 36 分 | `npm install` → `npm run dev` |
 | [`03_self-intro-15s`](03_self-intro-15s/) | 15 秒自我介绍动画 | 一句话 | 43 分 | Python 脚本，见文件夹里的 README |
 | [`04_antigravity-promo_v1`](04_antigravity-promo_v1/) | 反重力宣传片，第一版 | 一句话（模型自己用了 opuscar 风格库） | 2 轮，约 45 分 | 要装 opuscar，`sh build.sh` |
 | [`04b_antigravity-promo_apple`](04b_antigravity-promo_apple/) | 反重力宣传片，苹果风 | 在上一版后面追加两句限定 | 2 轮，约 56 分 | 要装 opuscar 并补官方素材，`sh build.sh` |
-| [`05_minecraft-sunset`](05_minecraft-sunset/) | Minecraft 永恒日落 | 详细要求（后面追问了 5 次） | 6 轮，约 2 小时 18 分 | `npm install` → `npm run dev` |
-| [`05b_minecraft-sunset_rerun`](05b_minecraft-sunset_rerun/) | Minecraft 永恒日落，重跑 | 详细要求 | 32 分 | `npm install` → `npx vite --port 5188` |
+| [`05_minecraft-sunset`](05_minecraft-sunset/) | Minecraft 永恒日落（**Gemini 4 Argon**） | 详细要求（后面追问了 5 次） | 6 轮，约 2 小时 18 分 | `npm install` → `npm run dev` |
+| [`05b_minecraft-sunset_rerun`](05b_minecraft-sunset_rerun/) | Minecraft 永恒日落，重跑（Carbon） | 详细要求 | 32 分 | `npm install` → `npx vite --port 5188` |
 | [`06_course-selection`](06_course-selection/) | 老教务选课系统重设计 | 详细要求 | 22 分 | 浏览器打开 html |
 | [`07_tcg-holo-viewer`](07_tcg-holo-viewer/) | 全息镭射卡牌开包器 | 详细要求 | 48 分 | 浏览器打开 html |
 | [`08_mini-video-editor`](08_mini-video-editor/) | 迷你多轨剪辑器 | 详细要求 | 1 小时 13 分 | 浏览器打开 html |
